@@ -3,15 +3,33 @@ package com.magit.engine;
 import java.util.Date;
 
 public abstract class BasicFile {
-    private String name, editorName;
+    private String name, editorName, fullPathName;
     private Date date;
     private eFileTypes type;
+    private int level;
 
-    public BasicFile(String name, String editorName, eFileTypes type) {
+    public BasicFile(String fullPathName, String name, String editorName, eFileTypes type) {
+        this.fullPathName = fullPathName;
         this.name = name;
         this.date = new Date();
         this.editorName = editorName;
         this.type = type;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
+    public String getFullPathName() {
+        return fullPathName;
+    }
+
+    public void setFullPathName(String fullPathName) {
+        this.fullPathName = fullPathName;
     }
 
     public String getName() {
@@ -44,5 +62,15 @@ public abstract class BasicFile {
 
     public void setType(eFileTypes type) {
         this.type = type;
+    }
+
+    @Override
+    public int hashCode() {
+        return fullPathName.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof BasicFile && fullPathName.equals(((BasicFile) obj).getFullPathName());
     }
 }

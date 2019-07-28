@@ -2,6 +2,10 @@ package com.magit.settings;
 
 public class LangEN {
     public static final String
+            COMMIT_CREATED_SUCCESSFULLY = "Commit created successfully!",
+            ERROR_PARSE_CURRENT_DATE = "Sorry, but somehow i got a weird error.. sorry but you will need to try again.",
+            ERROR_CREATE_COMMIT_FILE = "Error while create commit file, please check folder permissions.",
+            DATE_FORMAT = "dd.MM.yyyy - HH:mm:ss:SSS",
             MENU_OPTION_OPEN_RESOURCE = "Open an XML repository file",
             MENU_OPTION_NAME_UPDATE = "Change user name",
             MENU_OPTION_CHANGE_REPO = "Change active repository",
@@ -19,5 +23,22 @@ public class LangEN {
             MENU_PLEASE_CHOOSE = "Please choose your command number: ",
             END_PROGRAM_MESSAGE = "Thank you for using M.A.GIT, hope to see you again.",
             MENU_CHOICE_NOT_NUMBER = "You entered invalid number, please try again.",
-            ASK_FOR_PATH_FOR_REPO = "Please enter path for your new repository: ";
+            ASK_FOR_PATH_FOR_REPO = "Please enter path for your new repository: ",
+            ENTER_YOUR_COMMAND_NUMBER = "Please enter you command number: ",
+            USER_ADMINISTRATOR = "Administrator",
+            MAGIT_BRANCH_HEAD_NAME = "HEAD",
+            SHOW_STATUS_NEW = "New files:",
+            SHOW_STATUS_EDITED = "Edited files:",
+            SHOW_STATUS_DELETED = "Deleted files:",
+            ERROR_COMMIT_FAILED = "Commit failed, please try again.",
+            COMMAND_FAILED = "Command executing failed, please try again.",
+            SHOW_STATUS_SAPERATOR = "=================================",
+            MAGIT_BRANCH_MASTER     = "Master",
+            MAGIT_TOP_MASSAGE = "Magit Menu                    Current User: ",
+            ERROR_REPOSITORY = "Repository Error: ",
+            ENTER_COMMENT_FOR_COMMIT = "Please enter your comment for new commit:",
+            TRY_AGAIN_OR_CHOOSE_OTHER_COMMAND = "Press 'y' or 'YES' to try again or any key to return to main menu",
+            COMMAND_EXECUTED_SUCCESSFULLY = "The command executed successfully!" ,
+            NEW_REPOSITORY_CREATED_SUCCESSFULLY = "The repository '%s' created successfully!",
+            ERROR_CREATE_FILE_HEAD = "Creating HEAD branch file failed! please check folder permissions and try again.";
 }

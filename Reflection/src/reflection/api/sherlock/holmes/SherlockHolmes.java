@@ -1,7 +1,6 @@
 package reflection.api.sherlock.holmes;
 
 import reflection.api.Investigator;
-
 import java.lang.reflect.*;
 import java.util.*;
 
@@ -12,8 +11,8 @@ public class SherlockHolmes implements Investigator {
     @Override
     public void load(Object anInstanceOfSomething) {
         this.Interrogate = anInstanceOfSomething;
-        InterrogateClass = Interrogate.getClass();
-        superClass = InterrogateClass.getSuperclass();
+        this.InterrogateClass = Interrogate.getClass();
+        this.superClass = InterrogateClass.getSuperclass();
     }
 
     @Override
@@ -23,7 +22,7 @@ public class SherlockHolmes implements Investigator {
 
     @Override
     public int getTotalNumberOfConstructors() {
-        return InterrogateClass.getConstructors().length;
+        return InterrogateClass.getDeclaredConstructors().length;
     }
 
     @Override
