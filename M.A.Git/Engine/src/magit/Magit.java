@@ -4,6 +4,7 @@ package magit;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
+import utils.MapKeys;
 import utils.Settings;
 
 import java.io.File;
@@ -12,6 +13,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Path;
 import java.text.ParseException;
+import java.util.List;
+import java.util.Map;
 
 public class Magit {
     private Path rootFolder;
@@ -68,13 +71,13 @@ public class Magit {
 
     public void setCurrentRepository(Repository currentRepository) {
         this.currentRepository = currentRepository;
-        currentBranch = currentRepository.getBranches().get(0);
+        this.currentBranch = currentRepository.getActiveBranch();
     }
 
     public void commitMagit(String currentUser, String comment) throws IOException, MyFileException, RepositoryException {
         Commit newCommit = new Commit(currentBranch.getCommit());
         newCommit.createCommitFile(currentRepository, currentRepository.scanRepository(currentUser), currentUser, comment);
-        currentBranch.setCommit(newCommit, currentRepository.getBranchesPath().toString(), currentBranch.getName());
+        currentBranch.setCommit(newCommit, currentRepository.getBranchesPath().toString());
         currentRepository.setLastCommit(newCommit);
     }
 
@@ -101,5 +104,40 @@ public class Magit {
             }
             root.delete();
         }
+    }
+
+    public boolean checkout(String branchName) throws RepositoryException, MyFileException, IOException {
+        Map<MapKeys, List<BasicFile>> delta = currentRepository.scanRepository(currentUser);
+        for (Map.Entry<MapKeys, List<BasicFile>> entry : delta.entrySet()) {
+            if (entry.getValue().size() > 0)
+                throw new RepositoryException(eErrorCodes.THERE_IS_OPENED_ISSUES);
+        }
+
+        if (new File(currentRepository.getBranchesPath() + File.separator + branchName).exists()) {
+            Branch branch = currentRepository.searchBranch(branchName);
+            if (branch == null)
+                throw new RepositoryException(eErrorCodes.BRANCH_NOT_EXIST);
+            else {
+                currentBranch = branch;
+                deleteOldFiles(this.rootFolder.toString());
+                currentRepository.getRootFolder().setBlobMap(currentRepository.loadDataFromCommit(branch.getCommit()));
+                layoutRepositoryByRootFolder();
+                return true;
+            }
+        }
+        else {
+            throw new RepositoryException(eErrorCodes.BRANCH_NOT_EXIST);
+        }
+    }
+
+    private void layoutRepositoryByRootFolder() {
+    }
+
+    public void removeBranch(String branchName) {
+        List<Branch> branches = currentRepository.getBranches();
+        Branch temp = new Branch(branchName);
+        int index = branches.indexOf(temp);
+        if(index != -1)
+            branches.remove(index);
     }
 }

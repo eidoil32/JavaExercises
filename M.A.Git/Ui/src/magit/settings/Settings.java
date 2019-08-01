@@ -2,50 +2,33 @@ package magit.settings;
 
 import magit.ui.eMenuItem;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class Settings {
-    public static int MENU_SIZE = 13, EXIT_CHOICE = MENU_SIZE;
+    public static int MENU_SIZE = 13;
     public static final String
             MAGIT_BRANCH_HEAD = "head",
             MAGIT_FOLDER = ".magit",
             SHOW_STATUS_SEPARATOR = "=================================",
             EMPTY_COMMIT = "null";
-    private static final Map<Integer, String> menu_options = new HashMap<>();
-    public static final Map<Integer, eMenuItem> e_menu_options = new HashMap<>();
-    public static final Map<eMenuItem, Integer> get_number_of_menu = new HashMap<>();
+    public static final int
+            MENU_ITEM_EXIT = 13,
+            MENU_ITEM_CREATE_NEW_REPO = 12,
+            MENU_ITEM_SHOW_ACTIVE_BRANCH_HISTORY = 11,
+            MENU_ITEM_CHECK_OUT = 10,
+            MENU_ITEM_DELETE_BRANCH = 9,
+            MENU_ITEM_CREATE_NEW_BRANCH = 8,
+            MENU_ITEM_SHOW_ALL_BRANCHES = 7,
+            MENU_ITEM_COMMIT = 6,
+            MENU_ITEM_SHOW_CURRENT_STATUS = 5,
+            MENU_ITEM_SHOW_ALL_HISTORY = 4,
+            MENU_ITEM_CHANGE_REPO = 3,
+            MENU_ITEM_NAME_UPDATE = 2,
+            MENU_ITEM_OPEN_RESOURCE = 1;
     public static final StringBuilder MAIN_MENU = new StringBuilder();
 
     public Settings() {
-        CreateMapOfeMenuItems();
-        menu_options.put(eMenuItem.NAME_UPDATE.getPlace(), LangEN.MENU_OPTION_NAME_UPDATE);
-        menu_options.put(eMenuItem.OPEN_RESOURCE.getPlace(), LangEN.MENU_OPTION_OPEN_RESOURCE);
-        menu_options.put(eMenuItem.CHANGE_REPO.getPlace(), LangEN.MENU_OPTION_CHANGE_REPO);
-        menu_options.put(eMenuItem.CREATE_NEW_REPO.getPlace(), LangEN.MENU_OPTION_CREATE_NEW_REPO);
-        menu_options.put(eMenuItem.SHOW_ALL_HISTORY.getPlace(), LangEN.MENU_OPTION_SHOW_ALL_HISTORY);
-        menu_options.put(eMenuItem.SHOW_CURRENT_STATUS.getPlace(), LangEN.MENU_OPTION_SHOW_CURRENT_STATUS);
-        menu_options.put(eMenuItem.COMMIT.getPlace(), LangEN.MENU_OPTION_COMMIT);
-        menu_options.put(eMenuItem.SHOW_ALL_BRANCHES.getPlace(), LangEN.MENU_OPTION_SHOW_ALL_BRANCHES);
-        menu_options.put(eMenuItem.CREATE_NEW_BRANCH.getPlace(), LangEN.MENU_OPTION_CREATE_NEW_BRANCH);
-        menu_options.put(eMenuItem.DELETE_BRANCH.getPlace(), LangEN.MENU_OPTION_DELETE_BRANCH);
-        menu_options.put(eMenuItem.CHECK_OUT.getPlace(), LangEN.MENU_OPTION_CHECK_OUT);
-        menu_options.put(eMenuItem.SHOW_ACTIVE_BRANCH_HISTORY.getPlace(), LangEN.MENU_OPTION_SHOW_ACTIVE_BRANCH_HISTORY);
-        menu_options.put(eMenuItem.EXIT.getPlace(), LangEN.MENU_OPTION_EXIT);
-        createMenuOneTime();
-    }
-
-    private void createMenuOneTime() {
-        for (int i = 0; i < MENU_SIZE; i++) {
-            MAIN_MENU.append(String.format("%d - %s", i + 1, Settings.menu_options.get(i))).append(System.lineSeparator());
-        }
-    }
-
-    private void CreateMapOfeMenuItems() {
-        eMenuItem[] enumArray = eMenuItem.values();
-        for (int i = 0; i < MENU_SIZE; i++) {
-            get_number_of_menu.put(enumArray[i], i);
-            e_menu_options.put(i, enumArray[i]);
+        for (int i = 1; i <= MENU_SIZE; i++) {
+            String itemName = eMenuItem.getItem(i).get().getName();
+            MAIN_MENU.append(String.format("%d - %s", i, itemName)).append(System.lineSeparator());
         }
     }
 }

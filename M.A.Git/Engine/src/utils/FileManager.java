@@ -31,7 +31,6 @@ public class FileManager {
         String sourceFile = file.getFullPathName();
         FileOutputStream fos;
         if (file.getType() == eFileTypes.FOLDER) {
-            ((Folder) file).calcFolderSHAONE();
             File folderTXT = new File(pathToObject.toString() + File.separator + Settings.TEMP_FOLDER_NAME);
             try {
                 folderTXT.createNewFile();

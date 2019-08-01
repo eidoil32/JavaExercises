@@ -1,8 +1,11 @@
 package magit;
 
 import exceptions.MyFileException;
+import exceptions.RepositoryException;
+import exceptions.eErrorCodes;
 import org.apache.commons.codec.digest.DigestUtils;
 import utils.FileManager;
+import utils.LangEN;
 import utils.MapKeys;
 import utils.Settings;
 
@@ -59,15 +62,18 @@ public class Commit {
     }
 
     public void createCommitFile(Repository currentRepository, Map<MapKeys, List<BasicFile>> listMap, String currentUser, String comment)
-            throws IOException, MyFileException {
+            throws IOException, MyFileException, RepositoryException {
         StringBuilder stringBuilder = new StringBuilder();
 
         this.date = new Date();
         this.creator = currentUser;
 
-        createNewAndEditedFiles(listMap, currentRepository, currentUser);
-        currentRepository.setSHAONE(currentRepository.getRootFolder().getSHA_ONE());
-        stringBuilder.append(currentRepository.getSHAONE()).append(System.lineSeparator()); // repository sha-1
+        if(noChanges(listMap))
+            throw new RepositoryException(eErrorCodes.NOTHING_NEW);
+
+        createNewAndEditedFiles(listMap, currentRepository);
+        currentRepository.setSHA_ONE(currentRepository.getRootFolder().getSHA_ONE());
+        stringBuilder.append(currentRepository.getSHA_ONE()).append(System.lineSeparator()); // repository sha-1
         stringBuilder.append(prevCommitSHA_ONE).append(System.lineSeparator()); //last commit sha-1
         this.comment = comment;
         stringBuilder.append(this.comment).append(System.lineSeparator());
@@ -82,8 +88,17 @@ public class Commit {
         fileWriter.close();
     }
 
-    private void createNewAndEditedFiles(Map<MapKeys, List<BasicFile>> listMap, Repository currentRepository, String currentUser) throws MyFileException, IOException {
-        currentRepository.updateRepository(listMap, currentRepository.getRootFolder(), currentUser);
+    private boolean noChanges(Map<MapKeys, List<BasicFile>> listMap) {
+        for (Map.Entry<MapKeys,List<BasicFile>> entry : listMap.entrySet()) {
+            if(entry.getValue().size() > 0)
+                return false;
+        }
+        return true;
+    }
+
+    private void createNewAndEditedFiles(Map<MapKeys, List<BasicFile>> listMap, Repository currentRepository) throws MyFileException {
+        currentRepository.updateRepository(listMap, currentRepository.getRootFolder());
+        currentRepository.calcSHA_ONE();
         zipAllChainOfInherit(currentRepository.getRootFolder(), currentRepository);
     }
 
@@ -130,5 +145,17 @@ public class Commit {
         DateFormat df = new SimpleDateFormat(Settings.DATE_FORMAT);
         this.date = df.parse(commitFile.get(3));
         this.creator = commitFile.get(4);
+    }
+
+    public Commit getPrevCommit() {
+        return prevCommit;
+    }
+
+    @Override
+    public String toString() {
+        return LangEN.COMMIT_SHA_ONE + SHA_ONE + System.lineSeparator()
+                + LangEN.COMMIT_COMMENT + comment + System.lineSeparator()
+                + LangEN.COMMIT_DATE + date + System.lineSeparator()
+                + LangEN.COMMIT_CREATOR + creator + System.lineSeparator();
     }
 }

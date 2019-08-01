@@ -29,6 +29,6 @@ public class MainMenu {
             return getChoice();
         }
 
-        return Settings.e_menu_options.get(integer - 1);
+        return eMenuItem.getItem(integer).get();
     }
 }

@@ -5,6 +5,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Comparator;
+import java.util.Map;
 import java.util.TreeMap;
 
 public class Folder extends Blob {
@@ -33,6 +34,11 @@ public class Folder extends Blob {
 
     public void calcFolderSHAONE()
     {
+        for (Map.Entry<BasicFile,Blob> entry : blobMap.getMap().entrySet())
+        {
+            if(entry.getValue().getType() == eFileTypes.FOLDER)
+                ((Folder)entry.getValue()).calcFolderSHAONE();
+        }
         this.setContent(blobMap.toString());
         this.setSHA_ONE(DigestUtils.sha1Hex(getContent()));
     }

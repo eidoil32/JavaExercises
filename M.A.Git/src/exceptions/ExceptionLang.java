@@ -17,7 +17,12 @@ public class ExceptionLang {
             OPEN_FILE_FAILED = String.format("Opening file failed! %s.", FILE_EXIST_OR_PERMISSIONS),
             INSERT_FILE_TO_ZIP_FAILED = "Insert data to zip file failed! please try again.",
             WRITE_TO_FILE_FAILED = String.format("Writing to file failed! %s.", FILE_EXIST_OR_PERMISSIONS),
+            NOTHING_NEW = "Nothing new in the working copy, no need for commit.",
             CLOSE_FILE_FAILED = "Closing file failed, I really don't know what happens, please try command again.",
+            DELETE_FILE_FAILED = "Deleting '%s' file failed! magit will not work properly!" + System.lineSeparator() +
+                    "Please check delete this file and try again.",
+            BRANCH_NOT_EXIST = "The branch %s is not exist!",
+            THERE_IS_OPENED_ISSUES = "Cannot checkout because there files that not saved (do commit first and try again)",
             PARSE_BLOB_TO_FOLDER_FAILED = "FATAL ERROR: while parsing blob to folder failed (maybe corrupted file)",
             SCAN_FOLDER_FAILED = "We sorry, but we can't scan the folder you give us.\nPlease try again.";
 }

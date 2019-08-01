@@ -91,7 +91,30 @@ public enum eErrorCodes {
             return ExceptionLang.MAGIT_FOLDER_ALREADY_EXIST;
         }
     },
-
+    BRANCH_NOT_EXIST {
+        @Override
+        public String getPersonalMessage() {
+            return ExceptionLang.BRANCH_NOT_EXIST;
+        }
+    },
+    THERE_IS_OPENED_ISSUES {
+        @Override
+        public String getPersonalMessage() {
+            return ExceptionLang.THERE_IS_OPENED_ISSUES;
+        }
+    },
+    DELETE_FILE_FAILED {
+        @Override
+        public String getPersonalMessage() {
+            return ExceptionLang.DELETE_FILE_FAILED;
+        }
+    },
+    NOTHING_NEW {
+        @Override
+        public String getPersonalMessage() {
+            return ExceptionLang.NOTHING_NEW;
+        }
+    },
     PARSE_BLOB_TO_FOLDER_FAILED {
         @Override
         public String getPersonalMessage() {

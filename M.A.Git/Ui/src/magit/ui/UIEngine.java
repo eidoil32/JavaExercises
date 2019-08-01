@@ -3,7 +3,6 @@ package magit.ui;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import magit.Magit;
-import magit.eTypeOfString;
 import magit.settings.LangEN;
 import magit.settings.Settings;
 
@@ -18,7 +17,7 @@ public class UIEngine {
         String currentUser;
         try {
             do {
-                currentUser = Main.engine.getSystem().getCurrentUser();
+                currentUser = system.getCurrentUser();
                 MainMenu.showMenu(currentUser);
             } while (executeCommand(MainMenu.getChoice(), currentUser));
         } catch (IOException e) {
@@ -32,7 +31,7 @@ public class UIEngine {
     private boolean executeCommand(eMenuItem menuItem, String currentUser) throws IOException {
         try {
             if (system.getCurrentRepository() != null || menuItem.isAllow()) {
-                String results = menuItem.executeCommand(currentUser);
+                String results = menuItem.executeCommand(currentUser,system);
                 if (results != null)
                     System.out.println(results);
                 else
@@ -49,15 +48,5 @@ public class UIEngine {
         }
 
         return true;
-    }
-
-    public Magit getSystem() {
-        return system;
-    }
-
-    public String askUserForString(String message, eTypeOfString type) {
-        System.out.println(message);
-        String userAnswer = new Scanner(System.in).nextLine();
-        return type.valid(userAnswer) ? userAnswer : null;
     }
 }

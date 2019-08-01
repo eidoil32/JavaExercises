@@ -2,6 +2,8 @@ package magit;
 
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
+import utils.LangEN;
+import utils.Settings;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,7 +27,7 @@ public class Branch {
         this.commit = commit;
         this.activeBranch = null;
         this.SHA_ONE = commit == null ? null : commit.getSHAONE();
-        File file = new File(pathToBranchesFolder + "\\" + name);
+        File file = new File(pathToBranchesFolder + File.separator + name);
         if (!file.createNewFile()) // branch already exists
         {
             throw new RepositoryException(eErrorCodes.BRANCH_ALREADY_EXIST);
@@ -33,47 +35,73 @@ public class Branch {
     }
 
     public Branch(boolean isHead, Branch activeBranch) {
-        this.name = "HEAD";
-        this.commit = null;
-        this.SHA_ONE = activeBranch.getName();
-        this.activeBranch = activeBranch;
+        if (isHead) {
+            this.name = Settings.MAGIT_BRANCH_HEAD;
+            this.commit = null;
+            this.SHA_ONE = activeBranch.getName();
+            this.activeBranch = activeBranch;
+        }
+    }
+
+    public void setCommit(Commit commit, String pathToBranches) throws RepositoryException {
+        this.commit = commit;
+        if (commit != null) {
+            PrintWriter writer;
+            try {
+                writer = new PrintWriter(pathToBranches + File.separator + name);
+            } catch (FileNotFoundException e) {
+                throw new RepositoryException(eErrorCodes.OPEN_BRANCH_FILE_FAILED);
+            }
+            writer.print(commit.getSHAONE());
+            writer.close();
+            this.SHA_ONE = commit.getSHAONE();
+        }
+    }
+
+    public String getCommitDataHistory() {
+        Commit commit = this.commit;
+        StringBuilder stringBuilder = new StringBuilder();
+        while (commit != null) {
+            stringBuilder.append(commit).append(System.lineSeparator());
+            commit = commit.getPrevCommit();
+        }
+
+        return stringBuilder.toString();
+    }
+
+    public Branch getActiveBranch() {
+        return activeBranch;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Branch) {
+            return name.equals(((Branch) obj).getName());
+        }
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return LangEN.BRANCH_NAME + name + System.lineSeparator()
+                + LangEN.BRANCH_LAST_COMMIT_SHA + commit.getSHAONE() + System.lineSeparator()
+                + LangEN.BRANCH_LAST_COMMIT_COMMENT + commit.getComment() + System.lineSeparator();
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getSHA_ONE() {
         return SHA_ONE;
     }
 
-    public void setSHA_ONE(String SHA_ONE) {
-        this.SHA_ONE = SHA_ONE;
-    }
-
     public Commit getCommit() {
         return commit;
-    }
-
-    public void setCommit(Commit commit, String pathToBranches, String branchName) throws RepositoryException {
-        this.commit = commit;
-        if (commit != null) {
-            PrintWriter writer;
-            try {
-                writer = new PrintWriter(pathToBranches + File.separator + branchName);
-            } catch (FileNotFoundException e) {
-                throw new RepositoryException(eErrorCodes.OPEN_BRANCH_FILE_FAILED);
-            }
-            writer.print(commit.getSHAONE());
-            writer.close();
-        }
-    }
-
-    public Branch getActiveBranch() {
-        return activeBranch;
     }
 }
