@@ -9,23 +9,6 @@
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/BasicFile.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/BasicFile.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Blob.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Blob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Branch.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Branch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Commit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Folder.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Repository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/utils/MapKeys.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/MapKeys.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/utils/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ui/src/magit/settings/LangEN.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ui/src/magit/settings/LangEN.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ui/src/magit/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ui/src/magit/settings/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ui/src/magit/ui/MainMenu.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ui/src/magit/ui/MainMenu.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ui/src/magit/ui/UIEngine.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ui/src/magit/ui/UIEngine.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/exceptions/ExceptionLang.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/exceptions/ExceptionLang.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/exceptions/eErrorCodes.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/exceptions/eErrorCodes.java" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -59,26 +42,26 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="95">
-              <caret line="90" column="39" selection-start-line="90" selection-start-column="39" selection-end-line="90" selection-end-column="39" />
+            <state relative-caret-position="544">
+              <caret line="56" column="58" lean-forward="true" selection-start-line="56" selection-start-column="58" selection-end-line="56" selection-end-column="58" />
             </state>
           </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/magit/Blob.java">
+        <entry file="file://$PROJECT_DIR$/Engine/src/magit/Magit.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="522">
-              <caret line="58" column="50" selection-start-line="58" selection-start-column="50" selection-end-line="58" selection-end-column="50" />
+            <state relative-caret-position="227">
+              <caret line="68" column="16" selection-start-line="68" selection-start-column="16" selection-end-line="68" selection-end-column="16" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/UIEngine.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
-              <caret line="21" selection-start-line="21" selection-end-line="21" />
+            <state relative-caret-position="391">
+              <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
             </state>
           </provider>
         </entry>
@@ -86,7 +69,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Engine/src/magit/BasicFile.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="100">
+            <state relative-caret-position="1071">
               <caret line="63" selection-start-line="63" selection-end-line="63" />
             </state>
           </provider>
@@ -95,17 +78,17 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Engine/src/magit/Commit.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="420">
+            <state relative-caret-position="799">
               <caret line="47" column="52" selection-start-line="47" selection-start-column="40" selection-end-line="47" selection-end-column="52" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/Engine/src/magit/Repository.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="967">
-              <caret line="327" selection-start-line="327" selection-end-line="327" />
+            <state relative-caret-position="216">
+              <caret line="124" column="32" lean-forward="true" selection-start-line="124" selection-start-column="32" selection-end-line="124" selection-end-column="32" />
             </state>
           </provider>
         </entry>
@@ -113,7 +96,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Engine/src/utils/FileManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="647">
+            <state relative-caret-position="2023">
               <caret line="119" selection-start-line="119" selection-end-line="119" />
             </state>
           </provider>
@@ -131,7 +114,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="jar://$PROJECT_DIR$/external/commons-io-2.6.jar!/org/apache/commons/io/FilenameUtils.class">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
+            <state relative-caret-position="6307">
               <caret line="374" selection-start-line="374" selection-end-line="374" />
             </state>
           </provider>
@@ -140,7 +123,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Engine/src/magit/BlobMap.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="236">
+            <state relative-caret-position="799">
               <caret line="47" selection-start-line="47" selection-end-line="47" />
             </state>
           </provider>
@@ -165,6 +148,11 @@
     </replaceStrings>
   </component>
   <component name="Git.Settings">
+    <option name="PREVIOUS_COMMIT_AUTHORS">
+      <list>
+        <option value="-" />
+      </list>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
   <component name="IdeDocumentHistory">
@@ -293,8 +281,8 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -370,6 +358,7 @@
       <workItem from="1564483718417" duration="8670000" />
       <workItem from="1564498726225" duration="9091000" />
       <workItem from="1564564178397" duration="18579000" />
+      <workItem from="1564643083314" duration="382000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -378,11 +367,18 @@
       <option name="project" value="LOCAL" />
       <updated>1564482903941</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Finish making options:&#10; - Commit: user can save current state of his repository folder&#10; - Change repository: user can load and using magit on old repository folder and using all features.&#10; - Change User: now when user commit M.A.git will save how make the changes.&#10; - New branch: making the option to working on different branches.">
+      <created>1564643458678</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1564643458678</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="40301000" />
+    <option name="totallyTimeSpent" value="40683000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -395,8 +391,9 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
+    <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49756098" visible="true" weight="0.26308724" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49756098" visible="true" weight="0.2671141" />
       <window_info id="Structure" order="1" sideWeight="0.502439" side_tool="true" weight="0.25637585" />
       <window_info id="Image Layers" order="2" />
       <window_info id="Designer" order="3" />
@@ -462,19 +459,10 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Split to 2 modules (Ui and Engine)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Split to 2 modules (Ui and Engine)" />
+    <MESSAGE value="Finish making options:&#10; - Commit: user can save current state of his repository folder&#10; - Change repository: user can load and using magit on old repository folder and using all features.&#10; - Change User: now when user commit M.A.git will save how make the changes.&#10; - New branch: making the option to working on different branches." />
+    <option name="LAST_COMMIT_MESSAGE" value="Finish making options:&#10; - Commit: user can save current state of his repository folder&#10; - Change repository: user can load and using magit on old repository folder and using all features.&#10; - Change User: now when user commit M.A.git will save how make the changes.&#10; - New branch: making the option to working on different branches." />
   </component>
   <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Ui/src/magit/ui/UIEngine.java</url>
-          <line>21</line>
-          <properties />
-          <option name="timeStamp" value="28" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
     <watches-manager>
       <configuration name="Application">
         <watch expression="((TreeMap.Entry)((TreeMap)((BlobMap)((Folder)file).blobMap).map).entrySet().toArray()[1]).getValue()" custom="java.util.TreeMap,java.util.TreeMap.Entry,magit.BlobMap,magit.Folder" />
@@ -600,13 +588,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Magit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="46">
-          <caret line="75" column="26" lean-forward="true" selection-start-line="75" selection-start-column="26" selection-end-line="75" selection-end-column="26" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/magit/Folder.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -614,24 +595,31 @@
         </state>
       </provider>
     </entry>
-    <entry file="jar://$PROJECT_DIR$/external/commons-io-2.6.jar!/org/apache/commons/io/FilenameUtils.class">
+    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Blob.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="374" selection-start-line="374" selection-end-line="374" />
+        <state relative-caret-position="986">
+          <caret line="58" column="50" selection-start-line="58" selection-start-column="50" selection-end-line="58" selection-end-column="50" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Blob.java">
+    <entry file="file://$PROJECT_DIR$/Engine/src/magit/BasicFile.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="522">
-          <caret line="58" column="50" selection-start-line="58" selection-start-column="50" selection-end-line="58" selection-end-column="50" />
+        <state relative-caret-position="1071">
+          <caret line="63" selection-start-line="63" selection-end-line="63" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/magit/Commit.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
+        <state relative-caret-position="799">
           <caret line="47" column="52" selection-start-line="47" selection-start-column="40" selection-end-line="47" selection-end-column="52" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/utils/FileManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2023">
+          <caret line="119" selection-start-line="119" selection-end-line="119" />
         </state>
       </provider>
     </entry>
@@ -642,45 +630,45 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/utils/FileManager.java">
+    <entry file="jar://$PROJECT_DIR$/external/commons-io-2.6.jar!/org/apache/commons/io/FilenameUtils.class">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="647">
-          <caret line="119" selection-start-line="119" selection-end-line="119" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/BasicFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="63" selection-start-line="63" selection-end-line="63" />
+        <state relative-caret-position="6307">
+          <caret line="374" selection-start-line="374" selection-end-line="374" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Engine/src/magit/BlobMap.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="236">
+        <state relative-caret-position="799">
           <caret line="47" selection-start-line="47" selection-end-line="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Repository.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="967">
-          <caret line="327" selection-start-line="327" selection-end-line="327" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="90" column="39" selection-start-line="90" selection-start-column="39" selection-end-line="90" selection-end-column="39" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/UIEngine.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="21" selection-start-line="21" selection-end-line="21" />
+        <state relative-caret-position="391">
+          <caret line="23" column="33" lean-forward="true" selection-start-line="23" selection-start-column="33" selection-end-line="23" selection-end-column="33" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Magit.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="227">
+          <caret line="68" column="16" selection-start-line="68" selection-start-column="16" selection-end-line="68" selection-end-column="16" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="544">
+          <caret line="56" column="58" lean-forward="true" selection-start-line="56" selection-start-column="58" selection-end-line="56" selection-end-column="58" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Repository.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="216">
+          <caret line="124" column="32" lean-forward="true" selection-start-line="124" selection-start-column="32" selection-end-line="124" selection-end-column="32" />
         </state>
       </provider>
     </entry>
