@@ -2,39 +2,36 @@ package magit;
 
 import utils.Settings;
 
-import java.io.File;
-import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
 public class BlobMap {
-    private Map<BasicFile, Blob> fileBlobMap;
+    private Map<BasicFile, Blob> map;
 
     public BlobMap(Map<BasicFile, Blob> fileBlobMap) {
-        this.fileBlobMap = new HashMap<>();
+        if (fileBlobMap != null)
+            this.map = fileBlobMap;
+        else
+            this.map = new HashMap<>();
     }
 
-    public Map<BasicFile, Blob> getFileBlobMap() {
-        return fileBlobMap;
-    }
-
-    public void setNewMap(Map<BasicFile, Blob> fileBlobMap)
-    {
-        this.fileBlobMap = fileBlobMap;
+    public Map<BasicFile, Blob> getMap() {
+        return map;
     }
 
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Map.Entry<BasicFile, Blob> entry : fileBlobMap.entrySet()) {
+        for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
             Blob blob = entry.getValue();
             String type = blob.getType() == eFileTypes.FOLDER ? Settings.FOLDER_TYPE_IN_FOLDER_TABLE : Settings.FILE_TYPE_IN_FOLDER_TABLE;
             stringBuilder
-                    .append(blob.getName())             .append(Settings.FOLDER_TABLE_DELIMITER)
-                    .append(blob.getSHA_ONE())          .append(Settings.FOLDER_TABLE_DELIMITER)
-                    .append(type)                       .append(Settings.FOLDER_TABLE_DELIMITER)
-                    .append(blob.getEditorName())       .append(Settings.FOLDER_TABLE_DELIMITER)
-                    .append(blob.getDate().toString())  .append(System.lineSeparator());
+                    .append(blob.getName()).append(Settings.FOLDER_TABLE_DELIMITER)
+                    .append(blob.getSHA_ONE()).append(Settings.FOLDER_TABLE_DELIMITER)
+                    .append(type).append(Settings.FOLDER_TABLE_DELIMITER)
+                    .append(blob.getEditorName()).append(Settings.FOLDER_TABLE_DELIMITER)
+                    .append(new SimpleDateFormat(Settings.DATE_FORMAT).format(blob.getDate())).append(System.lineSeparator());
         }
 
         return stringBuilder.toString();
@@ -43,19 +40,59 @@ public class BlobMap {
     public void addToMap(BasicFile key, BasicFile value, eFileTypes type) {
         switch (type) {
             case FILE:
-                fileBlobMap.put(key, (Blob) value);
+                map.put(key, (Blob) value);
+                break;
             case FOLDER:
-                fileBlobMap.put(key, (Folder) value);
+                map.put(key, (Folder) value);
         }
     }
 
-    public BasicFile getBlobByFile(File f) throws IOException {
-        Blob temp;
-        if (f.isDirectory()) {
-            temp = new Folder(f.toPath(), Settings.USER_ADMINISTRATOR);
-        } else {
-            temp = new Blob(f.toPath(), Settings.USER_ADMINISTRATOR);
+    public void remove(BasicFile file) {
+        if (map.remove(file) == null) //file not exist in map
+        {
+            for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+                if (entry.getValue().getType() == eFileTypes.FOLDER) {
+                    ((Folder) entry.getValue()).getBlobMap().remove(file);
+                }
+            }
         }
-        return fileBlobMap.get(temp);
+    }
+
+    public boolean replace(BasicFile file, Folder root)
+    {
+        if(file.getRootFolder().equals(root)) {
+            map.remove(file);
+            map.put(file, (Blob) file);
+            return true;
+        }
+        else {
+            for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+                if (entry.getValue().getType() == eFileTypes.FOLDER) {
+                    Folder myRoot = (Folder) entry.getValue();
+                    boolean result = myRoot.getBlobMap().replace(file,myRoot);
+                    if(myRoot.getRootFolder().equals(root) && result)
+                    {
+                        Folder temp = (Folder)map.get(myRoot);
+                        BlobMap tempBlob = temp.getBlobMap();
+                        map.remove(myRoot);
+                        map.put(myRoot,myRoot);
+                        myRoot.setBlobMap(tempBlob);
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    public void addNew(BasicFile file, Folder root) {
+        if(file.getRootFolder().equals(root))
+            map.put(file,(Blob)file);
+        else {
+            for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+                if (entry.getValue().getType() == eFileTypes.FOLDER) {
+                    ((Folder) entry.getValue()).getBlobMap().addNew(file,(Folder) entry.getValue());
+                }
+            }
+        }
     }
 }

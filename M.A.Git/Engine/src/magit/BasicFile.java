@@ -1,12 +1,12 @@
 package magit;
 
+import java.io.File;
 import java.util.Date;
 
 public abstract class BasicFile {
     private String name, editorName, fullPathName;
     private Date date;
     private eFileTypes type;
-    private int level;
     private Folder rootFolder;
 
     public BasicFile(String fullPathName, String name, String editorName, eFileTypes type) {
@@ -17,13 +17,7 @@ public abstract class BasicFile {
         this.type = type;
     }
 
-    public int getLevel() {
-        return level;
-    }
-
-    public void setLevel(int level) {
-        this.level = level;
-    }
+    public BasicFile() {}
 
     public String getFullPathName() {
         return fullPathName;
@@ -81,5 +75,32 @@ public abstract class BasicFile {
 
     public void setRootFolder(Folder rootFolder) {
         this.rootFolder = rootFolder;
+    }
+
+    @Override
+    public String toString() {
+        return rootFolder == null ? name : rootFolder + File.separator + name;
+    }
+
+    public void updateAllChain(String currentUser) {
+        this.editorName = currentUser;
+        if (rootFolder != null)
+            rootFolder.updateAllChain(currentUser);
+    }
+
+    public Folder tryParseFolder()
+    {
+        if(this instanceof Folder)
+            return (Folder) this;
+        else
+            return null;
+    }
+
+    public Blob tryParseBlob()
+    {
+        if(this instanceof Blob)
+            return (Blob) this;
+        else
+            return null;
     }
 }

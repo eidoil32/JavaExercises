@@ -13,9 +13,13 @@ public class Settings {
             FOLDER_TABLE_DELIMITER = ",",
             MAGIT_FOLDER = ".magit",
             USER_ADMINISTRATOR = "Administrator",
+            REPOSITORY_NAME = "repository.magit",
             EMPTY_COMMIT = "null",
             OBJECT_FOLDER = "object",
             BRANCHES_FOLDER = "branches",
             TEMP_FOLDER_NAME = "temp.magit",
+            SHOW_STATUS_NEW = "New files:",
+            SHOW_STATUS_EDITED = "Edited files:",
+            SHOW_STATUS_DELETED = "Deleted files:",
             TEMP_UNZIP_FOLDER = "unZipTemp";
 }

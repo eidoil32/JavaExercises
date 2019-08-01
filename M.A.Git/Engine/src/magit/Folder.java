@@ -17,8 +17,10 @@ public class Folder extends Blob {
         blobMap = new BlobMap(new TreeMap<>(Comparator.comparing(BasicFile::getFullPathName)));
     }
 
+    public Folder() {}
+
     public void AddBlob(Blob blob) {
-        blobMap.getFileBlobMap().put(blob, blob);
+        blobMap.getMap().put(blob, blob);
     }
 
     public BlobMap getBlobMap() {

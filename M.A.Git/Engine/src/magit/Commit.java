@@ -58,15 +58,15 @@ public class Commit {
         return SHA_ONE;
     }
 
-    public void createCommitFile(Repository currentRepository, Map<String, List<BasicFile>> listMap, String currentUser, String comment)
+    public void createCommitFile(Repository currentRepository, Map<MapKeys, List<BasicFile>> listMap, String currentUser, String comment)
             throws IOException, MyFileException {
         StringBuilder stringBuilder = new StringBuilder();
 
         this.date = new Date();
         this.creator = currentUser;
 
-        createNewAndEditedFiles(listMap, currentRepository,currentUser);
-
+        createNewAndEditedFiles(listMap, currentRepository, currentUser);
+        currentRepository.setSHAONE(currentRepository.getRootFolder().getSHA_ONE());
         stringBuilder.append(currentRepository.getSHAONE()).append(System.lineSeparator()); // repository sha-1
         stringBuilder.append(prevCommitSHA_ONE).append(System.lineSeparator()); //last commit sha-1
         this.comment = comment;
@@ -82,23 +82,25 @@ public class Commit {
         fileWriter.close();
     }
 
-    private void createNewAndEditedFiles(Map<String, List<BasicFile>> listMap, Repository currentRepository, String currentUser) throws MyFileException, IOException {
-        List<BasicFile> newFiles = listMap.get(MapKeys.LIST_NEW);
-        for (BasicFile file : newFiles) {
-            FileManager.zipFile(file, currentRepository.getObjectPath());
+    private void createNewAndEditedFiles(Map<MapKeys, List<BasicFile>> listMap, Repository currentRepository, String currentUser) throws MyFileException, IOException {
+        currentRepository.updateRepository(listMap, currentRepository.getRootFolder(), currentUser);
+        zipAllChainOfInherit(currentRepository.getRootFolder(), currentRepository);
+    }
+
+    private void zipAllChainOfInherit(BasicFile file, Repository currentRepository) throws MyFileException {
+        FileManager.zipFile(file, currentRepository.getObjectPath());
+        Folder f = file.tryParseFolder();
+        if (f != null) {
+            for (Map.Entry<BasicFile, Blob> entry : f.getBlobMap().getMap().entrySet()) {
+                zipAllChainOfInherit(entry.getValue(),currentRepository);
+            }
         }
-        List<BasicFile> editedFiles = listMap.get(MapKeys.LIST_CHANGED);
-        for (BasicFile file : editedFiles) {
-            FileManager.zipFile(file, currentRepository.getObjectPath());
-        }
-        currentRepository.updateRepository(listMap,currentUser);
     }
 
     public String showAllHistory() {
-        if(this.prevCommit == null)
+        if (this.prevCommit == null)
             return "";
-        else
-        {
+        else {
             StringBuilder stringBuilder = new StringBuilder();
             return stringBuilder.toString();
         }
@@ -116,9 +118,9 @@ public class Commit {
         String prevCommit_sha;
         List<String> commitFile = Files.readAllLines(Paths.get(objectPath + File.separator + commit_sha));
         prevCommit_sha = commitFile.get(1);
-        if(!prevCommit_sha.equals(Settings.EMPTY_COMMIT)) {
+        if (!prevCommit_sha.equals(Settings.EMPTY_COMMIT)) {
             this.prevCommit = new Commit(commitFile.get(1), objectPath.toString());
-            this.prevCommit.loadDataFromFile(objectPath,prevCommit_sha);
+            this.prevCommit.loadDataFromFile(objectPath, prevCommit_sha);
         } else {
             this.prevCommit = null;
             this.prevCommitSHA_ONE = Settings.EMPTY_COMMIT;

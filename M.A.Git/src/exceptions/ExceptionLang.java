@@ -5,7 +5,7 @@ public class ExceptionLang {
             FOLDER_PERMISSIONS = "please check folder permissions and try again.",
             FILE_EXIST_OR_PERMISSIONS = "please check if file exist or have the right permissions.",
             FILE_NOT_EXIST = "Sorry, but file is not exist",
-            CANNOT_RECOVER_BRANCH = "Cannot recover active barnch from HEAD, magit folder is corrupted!",
+            CANNOT_RECOVER_BRANCH = "Cannot recover active branch from HEAD, magit folder is corrupted!",
             BRANCH_ALREADY_EXIST = "This branch already exist!",
             MAGIT_FOLDER_ALREADY_EXIST = "It's seems that the path you give us already an magit repository, we cannot create new repository there!",
             READ_FROM_FILE_FAILED = String.format("Reading from file failed, %s", FILE_EXIST_OR_PERMISSIONS),
@@ -18,5 +18,6 @@ public class ExceptionLang {
             INSERT_FILE_TO_ZIP_FAILED = "Insert data to zip file failed! please try again.",
             WRITE_TO_FILE_FAILED = String.format("Writing to file failed! %s.", FILE_EXIST_OR_PERMISSIONS),
             CLOSE_FILE_FAILED = "Closing file failed, I really don't know what happens, please try command again.",
+            PARSE_BLOB_TO_FOLDER_FAILED = "FATAL ERROR: while parsing blob to folder failed (maybe corrupted file)",
             SCAN_FOLDER_FAILED = "We sorry, but we can't scan the folder you give us.\nPlease try again.";
 }

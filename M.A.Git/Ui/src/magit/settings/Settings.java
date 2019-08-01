@@ -8,8 +8,11 @@ import java.util.Map;
 public class Settings {
     public static int MENU_SIZE = 13, EXIT_CHOICE = MENU_SIZE;
     public static final String
-            MAGIT_BRANCH_HEAD = "HEAD";
-    public static final Map<Integer, String> menu_options = new HashMap<>();
+            MAGIT_BRANCH_HEAD = "head",
+            MAGIT_FOLDER = ".magit",
+            SHOW_STATUS_SEPARATOR = "=================================",
+            EMPTY_COMMIT = "null";
+    private static final Map<Integer, String> menu_options = new HashMap<>();
     public static final Map<Integer, eMenuItem> e_menu_options = new HashMap<>();
     public static final Map<eMenuItem, Integer> get_number_of_menu = new HashMap<>();
     public static final StringBuilder MAIN_MENU = new StringBuilder();
@@ -32,7 +35,7 @@ public class Settings {
         createMenuOneTime();
     }
 
-    public void createMenuOneTime() {
+    private void createMenuOneTime() {
         for (int i = 0; i < MENU_SIZE; i++) {
             MAIN_MENU.append(String.format("%d - %s", i + 1, Settings.menu_options.get(i))).append(System.lineSeparator());
         }

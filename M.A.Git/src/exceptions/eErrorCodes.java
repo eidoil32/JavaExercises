@@ -90,6 +90,13 @@ public enum eErrorCodes {
         public String getPersonalMessage() {
             return ExceptionLang.MAGIT_FOLDER_ALREADY_EXIST;
         }
+    },
+
+    PARSE_BLOB_TO_FOLDER_FAILED {
+        @Override
+        public String getPersonalMessage() {
+            return ExceptionLang.PARSE_BLOB_TO_FOLDER_FAILED;
+        }
     };
 
     public String getPersonalMessage() {

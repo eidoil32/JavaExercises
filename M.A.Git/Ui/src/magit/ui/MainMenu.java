@@ -9,7 +9,7 @@ public class MainMenu {
     private static final int menu_size = Settings.MENU_SIZE;
 
     public static void showMenu(String currentUser) {
-        System.out.println(String.format("%S %s", LangEN.MAGIT_TOP_MASSAGE, currentUser));
+        System.out.println(String.format("%s %s", LangEN.MAGIT_TOP_MASSAGE, currentUser));
         System.out.println(Settings.MAIN_MENU.toString());
     }
 

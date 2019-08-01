@@ -16,13 +16,12 @@ public class UIEngine {
 
     public void start() {
         String currentUser;
-        try{
+        try {
             do {
                 currentUser = Main.engine.getSystem().getCurrentUser();
                 MainMenu.showMenu(currentUser);
-            } while(executeCommand(MainMenu.getChoice(),currentUser)) ;
-        } catch (IOException e)
-        {
+            } while (executeCommand(MainMenu.getChoice(), currentUser));
+        } catch (IOException e) {
             System.out.println(LangEN.COMMAND_FAILED + e.getMessage());
             start();
         }
@@ -32,17 +31,21 @@ public class UIEngine {
 
     private boolean executeCommand(eMenuItem menuItem, String currentUser) throws IOException {
         try {
-            String results = menuItem.executeCommand(currentUser);
-            if(results != null)
-                System.out.println(results);
-            else
-                return false;
+            if (system.getCurrentRepository() != null || menuItem.isAllow()) {
+                String results = menuItem.executeCommand(currentUser);
+                if (results != null)
+                    System.out.println(results);
+                else
+                    return false;
+            } else {
+                System.out.println(LangEN.NO_ACTIVE_REPOSITORY);
+            }
         } catch (RepositoryException | MyFileException e) {
-            System.out.println(String.format("%s%s",LangEN.ERROR_REPOSITORY,e.getMessage()));
+            System.out.println(String.format("%s%s", LangEN.ERROR_REPOSITORY, e.getMessage()));
             System.out.println(LangEN.TRY_AGAIN_OR_CHOOSE_OTHER_COMMAND);
             String userChoice = new Scanner(System.in).nextLine();
-            if(userChoice.equals("Y") || userChoice.toLowerCase().equals("yes"))
-                executeCommand(menuItem,currentUser);
+            if (userChoice.equals("Y") || userChoice.toLowerCase().equals("yes"))
+                executeCommand(menuItem, currentUser);
         }
 
         return true;
@@ -52,8 +55,7 @@ public class UIEngine {
         return system;
     }
 
-    public String askUserForString(String message, eTypeOfString type)
-    {
+    public String askUserForString(String message, eTypeOfString type) {
         System.out.println(message);
         String userAnswer = new Scanner(System.in).nextLine();
         return type.valid(userAnswer) ? userAnswer : null;

@@ -3,31 +3,40 @@ package magit;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import utils.FileManager;
 import utils.MapKeys;
-import utils.ParseSHA;
 import utils.Settings;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Repository {
-    private Path currentPath, magitPath, objectPath, branchesPath;
+    private Path currentPath, magitPath, objectPath, branchesPath, repoNamePath;
     private Folder rootFolder;
     private Commit lastCommit;
     private List<Branch> branches;
     private String name, SHAONE;
 
-    public Repository(Path repositoryPath, String currentUser) throws RepositoryException, IOException { // set clean repository
+    public Folder getRootFolder() {
+        return rootFolder;
+    }
+
+    public void setRootFolder(Folder rootFolder) {
+        this.rootFolder = rootFolder;
+    }
+
+    public Repository(Path repositoryPath, String currentUser, String name) throws RepositoryException, IOException { // set clean repository
         this.currentPath = repositoryPath;
         initialisePaths();
         createNewMagitFolder();
+        createRepositoryFile(name);
         this.rootFolder = new Folder(repositoryPath, currentUser);
         this.lastCommit = null;
         this.branches = new LinkedList<>();
@@ -35,8 +44,16 @@ public class Repository {
         Branch head = new Branch(true, master);
         this.branches.add(master);
         this.branches.add(head);
-        this.name = repositoryPath.getName(repositoryPath.getNameCount() - 1).toString();
-        this.SHAONE = DigestUtils.sha1Hex(ParseSHA.parseSHA(this));
+        this.name = name;
+        this.SHAONE = null;
+    }
+
+    private void createRepositoryFile(String name) throws IOException {
+        File createRepositoryName = new File(repoNamePath.toString());
+        createRepositoryName.createNewFile();
+        PrintWriter writer = new PrintWriter(createRepositoryName);
+        writer.print(name);
+        writer.close();
     }
 
     public Repository(Path repositoryPath, boolean isOld, String currentUser) throws IOException, RepositoryException {
@@ -63,14 +80,19 @@ public class Repository {
         this.branches.add(active);
         this.branches.add(head);
         this.rootFolder = new Folder(repositoryPath, currentUser);
-        this.name = repositoryPath.getName(repositoryPath.getNameCount() - 1).toString();
-        this.SHAONE = DigestUtils.sha1Hex(ParseSHA.parseSHA(this));
+        this.name = loadFromRepositoryFile();
+        this.SHAONE = lastCommit == null ? null : lastCommit.getSHAONE();
+    }
+
+    private String loadFromRepositoryFile() throws IOException {
+        return Files.readAllLines(repoNamePath).get(0);
     }
 
     private void initialisePaths() {
         this.magitPath = Paths.get(this.currentPath + "//" + Settings.MAGIT_FOLDER);
         this.objectPath = Paths.get(magitPath + "//" + Settings.OBJECT_FOLDER);
         this.branchesPath = Paths.get(magitPath + "//" + Settings.BRANCHES_FOLDER);
+        this.repoNamePath = Paths.get(magitPath + File.separator + Settings.REPOSITORY_NAME);
     }
 
     private void createNewMagitFolder() throws RepositoryException {
@@ -164,47 +186,84 @@ public class Repository {
         this.SHAONE = SHAONE;
     }
 
-    public Map<String, List<BasicFile>> scanRepository() throws IOException, MyFileException, RepositoryException {
-        Map<String, List<BasicFile>> repository = new HashMap<>();
+    public Map<MapKeys, List<BasicFile>> scanRepository(String currentUser) throws IOException, MyFileException, RepositoryException {
+        Map<MapKeys, List<BasicFile>> repository = new HashMap<>();
         repository.put(MapKeys.LIST_NEW, new ArrayList<>());
         repository.put(MapKeys.LIST_CHANGED, new ArrayList<>());
         repository.put(MapKeys.LIST_DELETED, new ArrayList<>());
 
-        Folder rootFolder = new Folder(currentPath, Settings.USER_ADMINISTRATOR);
+        Folder rootFolder = new Folder(currentPath, currentUser);
         rootFolder.setRootFolder(null);
-        scanRecursiveFolder(rootFolder, rootFolder);
 
-        scanBetweenMaps(rootFolder.getBlobMap().getFileBlobMap(), this.rootFolder.getBlobMap().getFileBlobMap(), repository);
+        scanRecursiveFolder(rootFolder, rootFolder, currentUser);
+
+        if (this.rootFolder.getBlobMap().getMap().size() == 0) {
+            loadLastCommit();
+        }
+
+        scanBetweenMaps(rootFolder.getBlobMap().getMap(), this.rootFolder.getBlobMap().getMap(), repository);
+        scanForDeletedFiles(rootFolder.getBlobMap().getMap(), this.rootFolder.getBlobMap().getMap(), repository.get(MapKeys.LIST_DELETED));
 
         return repository;
     }
 
-    private void scanBetweenMaps(Map<BasicFile, Blob> newFiles, Map<BasicFile, Blob> oldFiles, Map<String, List<BasicFile>> repository)
-            throws MyFileException, RepositoryException, IOException {
-        List<BasicFile> deletedFiles, addedFiles, editedFiles;
-        deletedFiles = repository.get(MapKeys.LIST_DELETED);
-        addedFiles = repository.get(MapKeys.LIST_NEW);
-        editedFiles = repository.get(MapKeys.LIST_CHANGED);
-
-        if (oldFiles.size() == 0) {
-            loadLastCommit();
-        }
-
-        for (Map.Entry<BasicFile, Blob> entry : newFiles.entrySet()) {
-            if (!oldFiles.containsKey(entry.getKey())) {
-                addFilesToList(addedFiles, entry.getValue());
+    private void scanForDeletedFiles(Map<BasicFile, Blob> newFiles, Map<BasicFile, Blob> oldFiles, List<BasicFile> deletedList) {
+        for (Map.Entry<BasicFile, Blob> entry : oldFiles.entrySet()) {
+            Blob blob = entry.getValue();
+            if (blob.getType() == eFileTypes.FILE) {
+                if (!newFiles.containsKey(blob)) {
+                    deletedList.add(blob);
+                }
             } else {
-                Blob file = entry.getValue();
-                if (!oldFiles.get(file).getSHA_ONE().equals(file.getSHA_ONE())) {
-                    checkAndAddFilesToList(oldFiles, editedFiles, file);
+                Folder folder = (Folder) blob;
+                if (!newFiles.containsKey(folder)) {
+                    deletedList.add(folder);
+                } else {
+                    Folder newFolder = (Folder) newFiles.get(folder);
+                    scanForDeletedFiles(newFolder.getBlobMap().getMap(), folder.getBlobMap().getMap(), deletedList);
                 }
             }
         }
+    }
 
-        for (Map.Entry<BasicFile, Blob> entry : oldFiles.entrySet()) {
-            if (!newFiles.containsKey(entry.getKey())) {
-                deletedFiles.add(entry.getValue());
+    private void scanBetweenMaps(Map<BasicFile, Blob> newFiles, Map<BasicFile, Blob> oldFiles, Map<MapKeys, List<BasicFile>> repository) throws RepositoryException {
+        List<BasicFile> addedFiles, editedFiles;
+        addedFiles = repository.get(MapKeys.LIST_NEW);
+        editedFiles = repository.get(MapKeys.LIST_CHANGED);
+
+        for (Map.Entry<BasicFile, Blob> entry : newFiles.entrySet()) {
+            Blob blob = entry.getValue();
+            if (blob.getType() == eFileTypes.FILE) {
+                if (oldFiles.containsKey(blob)) {
+                    Blob originalBlob = oldFiles.get(blob);
+                    if (!originalBlob.getSHA_ONE().equals(blob.getSHA_ONE())) {
+                        editedFiles.add(blob);
+                    }
+                } else {
+                    addedFiles.add(blob);
+                }
+            } else {
+                Folder folder = blob.tryParseFolder();
+                if(folder != null) {
+                    if (!oldFiles.containsKey(folder)) {
+                        addedFiles.add(folder);
+                        addAllFolderFiles(addedFiles, folder.getBlobMap().getMap());
+                    } else {
+                        Folder originalFolder = (Folder) oldFiles.get(folder);
+                        scanBetweenMaps(folder.getBlobMap().getMap(), originalFolder.getBlobMap().getMap(), repository);
+                    }
+                } else
+                    throw new RepositoryException(eErrorCodes.PARSE_BLOB_TO_FOLDER_FAILED);
             }
+        }
+    }
+
+    private void addAllFolderFiles(List<BasicFile> fileList, Map<BasicFile, Blob> map) {
+        for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+            Blob blob = entry.getValue();
+            fileList.add(blob);
+            if (blob.getType() == eFileTypes.FOLDER)
+                addAllFolderFiles(fileList, ((Folder) blob).getBlobMap().getMap());
         }
     }
 
@@ -255,7 +314,7 @@ public class Repository {
         if (file == null) {
             throw new RepositoryException(eErrorCodes.ERROR_LOAD_REPOSITORY);
         } else {
-            BlobMap files = new BlobMap(new TreeMap<>(Comparator.comparing(BasicFile::getFullPathName)));
+            BlobMap files = new BlobMap(new HashMap<>());
             if (FilenameUtils.getExtension(file.toString()).equals(Settings.FOLDER_FILE_EXTENSION)) {
                 List<String> folderContent;
                 try {
@@ -263,11 +322,12 @@ public class Repository {
                 } catch (IOException e) {
                     throw new MyFileException(eErrorCodes.READ_FROM_FILE_FAILED, file.toString());
                 }
+                file.delete();
                 for (String line : folderContent) {
                     String[] row = line.split(Settings.FOLDER_DELIMITER);
-                    if (row.length != 0) {
+                    if (row.length > 1) {
                         if (row[2].equals(Settings.FILE_TYPE_IN_FOLDER_TABLE)) {
-                            Blob temp = new Blob(rootFolder.getFilePath(), row[3]);
+                            Blob temp = recoverFromSHA(objectPath,row,rootFolder);
                             files.addToMap(temp, temp, eFileTypes.FILE);
                         } else {
                             Folder temp = new Folder(Paths.get(rootFolder.getFilePath() + File.separator + row[0]), row[3]);
@@ -281,118 +341,63 @@ public class Repository {
                 Blob temp = new Blob(file.toPath(), rootFolder.getEditorName());
                 files.addToMap(temp, temp, eFileTypes.FILE);
             }
+            new File(objectPath + File.separator + Settings.TEMP_UNZIP_FOLDER).delete(); //delete temp folder!
             return files;
         }
     }
 
-    private void checkAndAddFilesToList(Map<BasicFile, Blob> oldFiles, List<BasicFile> editedFiles, Blob file) {
-        editedFiles.add(file);
-        if (file.getType() == eFileTypes.FOLDER) {
-            if (!oldFiles.get(file).getSHA_ONE().equals(file.getSHA_ONE())) {
-                Map<BasicFile, Blob> files = ((Folder) file).getBlobMap().getFileBlobMap();
-                for (Map.Entry<BasicFile, Blob> entry : files.entrySet()) {
-                    if (!oldFiles.get(entry.getValue()).getSHA_ONE().equals(entry.getValue().getSHA_ONE())) {
-                        checkAndAddFilesToList(oldFiles, editedFiles, entry.getValue());
-                    }
-                }
-            }
+    private Blob recoverFromSHA(Path objectPath, String[] row, Folder rootFolder) throws IOException {
+        Blob blob = new Blob();
+        File file = FileManager.unZipFile(new File(objectPath + File.separator + row[1]),objectPath + File.separator + Settings.TEMP_UNZIP_FOLDER);
+        blob.setRootFolder(rootFolder);
+        blob.setEditorName(row[3]);
+        String date = row[4];
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Settings.DATE_FORMAT);
+        try {
+            blob.setDate(dateFormat.parse(date));
+        } catch (ParseException e) {
+            blob.setDate(new Date());
         }
+
+        blob.setContent(Files.readAllLines(file.toPath()));
+        blob.setSHA_ONE(row[1]);
+        blob.setFilePath(Paths.get(rootFolder.getFilePath() + File.separator + row[0]));
+        blob.setName(row[0]);
+        blob.setType(eFileTypes.FILE);
+        file.delete();
+        return blob;
     }
 
-    private void addFilesToList(List<BasicFile> addedFiles, BasicFile e) {
-        addedFiles.add(e);
-        if (e.getType() == eFileTypes.FOLDER) {
-            Map<BasicFile, Blob> files = ((Folder) e).getBlobMap().getFileBlobMap();
-            for (Map.Entry<BasicFile, Blob> entry : files.entrySet()) {
-                addFilesToList(addedFiles, entry.getValue());
-            }
-        }
-    }
-
-    private void scanRecursiveFolder(Folder rootFolder, Blob blob) throws IOException {
+    private void scanRecursiveFolder(Folder rootFolder, Blob blob, String currentUser) throws IOException {
         if (!(blob == rootFolder)) {
             rootFolder.AddBlob(blob);
+            rootFolder.calcFolderSHAONE();
         }
-        if (blob.getType() == eFileTypes.FOLDER) {
-            Folder temp_RootFolder = (Folder) blob;
+        Folder temp_RootFolder = blob.tryParseFolder();
+        if (temp_RootFolder != null) {
             File folder = new File(blob.getFullPathName());
             File[] fileList = Objects.requireNonNull(folder.listFiles());
             for (File f : fileList) {
                 if (!f.getName().equals(Settings.MAGIT_FOLDER)) {
                     if (f.isDirectory()) {
-                        Folder temp = new Folder(f.toPath(), Settings.USER_ADMINISTRATOR);
+                        Folder temp = new Folder(f.toPath(), currentUser);
                         temp.setRootFolder(temp_RootFolder);
-                        scanRecursiveFolder(temp_RootFolder, temp);
+                        scanRecursiveFolder(temp_RootFolder, temp, currentUser);
                     } else {
-                        Blob temp = new Blob(f.toPath(), Settings.USER_ADMINISTRATOR);
+                        Blob temp = new Blob(f.toPath(), currentUser);
                         temp.setRootFolder(temp_RootFolder);
-                        scanRecursiveFolder(temp_RootFolder, temp);
+                        scanRecursiveFolder(temp_RootFolder, temp, currentUser);
                     }
                 }
             }
         }
     }
 
-    public void updateRepository(Map<String, List<BasicFile>> files, String currentUser) throws IOException, MyFileException {
-        boolean isSomeThingChanged = false;
-
-        Map<BasicFile, Blob> tempMap, originalMap = rootFolder.getBlobMap().getFileBlobMap();
-        List<BasicFile> fileList = files.get(MapKeys.LIST_DELETED);
-        fileList.sort(Comparator.comparingInt(o -> o.getFullPathName().split("\"").length));
-        Folder temp;
-
-        for (BasicFile file : fileList) {
-            temp = file.getRootFolder();
-            tempMap = temp.getBlobMap().getFileBlobMap();
-            tempMap.remove(file);
-            isSomeThingChanged = true;
-        }
-
-        fileList = files.get(MapKeys.LIST_CHANGED);
-        fileList.sort(Comparator.comparingInt(o -> o.getFullPathName().split("\"").length));
-
-        for (BasicFile file : fileList) {
-            temp = file.getRootFolder();
-            tempMap = temp.getBlobMap().getFileBlobMap();
-            tempMap.remove(file);
-            putFile(tempMap, file, temp,currentUser);
-            isSomeThingChanged = true;
-        }
-
-        fileList = files.get(MapKeys.LIST_NEW);
-        fileList.sort(Comparator.comparingInt(o -> o.getFullPathName().split("\"").length));
-
-        for (BasicFile file : fileList) {
-            temp = file.getRootFolder();
-            if (originalMap.containsKey(temp)) {
-                temp = ((Folder) originalMap.get(temp));
-                tempMap = temp.getBlobMap().getFileBlobMap();
-            } else {
-                tempMap = originalMap;
-                temp = rootFolder;
+    public void updateRepository(Map<MapKeys, List<BasicFile>> files, Folder rootFolder, String currentUser) throws IOException, MyFileException {
+        for (Map.Entry<MapKeys, List<BasicFile>> listEntry : files.entrySet()) {
+            for (BasicFile file : listEntry.getValue()) {
+                listEntry.getKey().execute(rootFolder.getBlobMap(), file,rootFolder);
             }
-            putFile(tempMap, file, temp,currentUser);
-            temp.calcFolderSHAONE();
-            isSomeThingChanged = true;
-        }
-
-        if (isSomeThingChanged) {
-            SHAONE = DigestUtils.sha1Hex(rootFolder.getBlobMap().toString());
-            FileManager.zipFile(rootFolder, objectPath);
-        }
-    }
-
-    private void putFile(Map<BasicFile, Blob> files, BasicFile file, Folder rootFolder, String currentUser) throws IOException {
-        if (file.getType() == eFileTypes.FOLDER) {
-            Folder temp = new Folder(((Blob) file).getFilePath(), currentUser);
-            temp.setDate(new Date());
-            temp.setRootFolder(rootFolder);
-            files.put(temp, temp);
-        } else {
-            Blob temp = new Blob(((Blob) file).getFilePath(), currentUser);
-            temp.setDate(new Date());
-            temp.setRootFolder(rootFolder);
-            files.put(temp, temp);
         }
     }
 
@@ -431,6 +436,20 @@ public class Repository {
         for (Branch branch : branches) {
             if (branch.getName().equals(Settings.MAGIT_BRANCH_HEAD))
                 return branch.getActiveBranch();
+        }
+        return null;
+    }
+
+    public void addBranch(Branch branch) {
+        branches.add(branch);
+    }
+
+    public Branch searchBranch(String branchName) {
+        for (Branch branch : branches) {
+            if (branch.getName().equals(branchName))
+                return branch;
+            else
+                return null;
         }
         return null;
     }

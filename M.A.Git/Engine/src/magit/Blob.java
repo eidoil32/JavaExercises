@@ -6,6 +6,7 @@ import utils.FileManager;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.List;
 
 public class Blob extends BasicFile {
     private String content;
@@ -21,12 +22,24 @@ public class Blob extends BasicFile {
         this.filePath = filePath;
     }
 
+    public Blob() {}
+
     public String getContent() {
         return content;
     }
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public void setContent(List<String> contentFromFile)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (String string : contentFromFile)
+        {
+            stringBuilder.append(string);
+        }
+        this.content = stringBuilder.toString();
     }
 
     public String getSHA_ONE() {
@@ -43,13 +56,6 @@ public class Blob extends BasicFile {
 
     public void setFilePath(Path filePath) {
         this.filePath = filePath;
-    }
-
-    @Override
-    public String toString() {
-        return super.toString() +
-                "\nFile content: " + content +
-                "\nFile SHA-1: " + SHA_ONE +
-                "\nFile Path: " + filePath.toString();
+        this.setFullPathName(filePath.toString());
     }
 }

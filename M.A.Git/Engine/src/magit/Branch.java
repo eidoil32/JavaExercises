@@ -13,8 +13,7 @@ public class Branch {
     private Commit commit;
     private Branch activeBranch;
 
-    public Branch(String name)
-    {
+    public Branch(String name) {
         this.name = name;
         this.commit = null;
         this.SHA_ONE = null;
@@ -27,14 +26,13 @@ public class Branch {
         this.activeBranch = null;
         this.SHA_ONE = commit == null ? null : commit.getSHAONE();
         File file = new File(pathToBranchesFolder + "\\" + name);
-        if(!file.createNewFile()) // branch already exists
+        if (!file.createNewFile()) // branch already exists
         {
             throw new RepositoryException(eErrorCodes.BRANCH_ALREADY_EXIST);
         }
     }
 
-    public Branch(boolean isHead, Branch activeBranch)
-    {
+    public Branch(boolean isHead, Branch activeBranch) {
         this.name = "HEAD";
         this.commit = null;
         this.SHA_ONE = activeBranch.getName();
@@ -57,14 +55,13 @@ public class Branch {
         this.SHA_ONE = SHA_ONE;
     }
 
-
     public Commit getCommit() {
         return commit;
     }
 
     public void setCommit(Commit commit, String pathToBranches, String branchName) throws RepositoryException {
         this.commit = commit;
-        if(commit != null) {
+        if (commit != null) {
             PrintWriter writer;
             try {
                 writer = new PrintWriter(pathToBranches + File.separator + branchName);
