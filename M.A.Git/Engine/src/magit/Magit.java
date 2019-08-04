@@ -2,20 +2,18 @@ package magit;
 
 
 import exceptions.MyFileException;
-import exceptions.MyXMLException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
 import languages.LangEN;
 import settings.Settings;
-import utils.FileManager;
 import utils.MapKeys;
-import xml.basic.MagitRepository;
 
-import javax.xml.bind.JAXBException;
-import java.io.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -250,26 +248,11 @@ public class Magit {
         return false;
     }
 
-    public Magit XML_MagitFactory(String xml_path) throws RepositoryException, IOException, MyXMLException {
-        InputStream inputStream = Magit.class.getResourceAsStream(xml_path);
-        try {
-            MagitRepository magit = FileManager.deserializeFrom(inputStream);
-            return parseMagitRepository(magit);
-        } catch (JAXBException e) {
-            throw new RepositoryException(eErrorCodes.XML_PARSE_FAILED);
-        }
-    }
-
-    private Magit parseMagitRepository(MagitRepository xmlMagit) throws RepositoryException, IOException, MyXMLException {
-        Magit magit = new Magit();
-        magit.setRootFolder(Paths.get(xmlMagit.getLocation()));
-        Repository repository = Repository.XML_RepositoryFactory(xmlMagit);
-        magit.setCurrentRepository(repository);
-        magit.setCurrentBranch(repository.getActiveBranch());
-        return magit;
-    }
-
     public void recoverOldCommit(Commit oldCommit) throws RepositoryException {
         currentBranch.setCommit(oldCommit, currentRepository.getBranchesPath().toString());
+    }
+
+    public void afterXMLLayout() throws IOException {
+        layoutRepositoryByRootFolder(currentRepository.getRootFolder().getBlobMap().getMap());
     }
 }

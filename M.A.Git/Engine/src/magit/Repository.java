@@ -9,7 +9,10 @@ import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
 import utils.FileManager;
 import utils.MapKeys;
-import xml.basic.*;
+import xml.basic.MagitRepository;
+import xml.basic.MagitSingleBranch;
+import xml.basic.MagitSingleCommit;
+import xml.basic.MagitSingleFolder;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -52,51 +55,54 @@ public class Repository {
         }
     }
 
-    public Repository(String repositoryPath) throws IOException {
+    private Repository(String repositoryPath) throws IOException {
         this.currentPath = Paths.get(repositoryPath);
         initialisePaths();
         createRepositoryFolders();
+        this.branches = new LinkedList<>();
     }
 
     private void createRepositoryFolders() throws IOException {
         new File(magitPath.toString()).mkdirs();
         new File(objectPath.toString()).mkdirs();
-        new File(branches.toString()).mkdirs();
+        new File(branchesPath.toString()).mkdirs();
+        new File(branchesPath + File.separator + Settings.MAGIT_BRANCH_HEAD).createNewFile();
         new File(repoNamePath.toString()).createNewFile();
     }
 
-    public static Repository XML_RepositoryFactory(MagitRepository xmlMagit) throws IOException, MyXMLException {
+    public static Repository XML_RepositoryFactory(MagitRepository xmlMagit)
+            throws IOException, MyXMLException, RepositoryException, MyFileException {
         Repository repository = new Repository(xmlMagit.getLocation());
+        repository.setName(xmlMagit.getName());
+        Commit tempInstance = new Commit();
+        String headName = xmlMagit.getMagitBranches().getHead();
 
-        int lastCommit;
-
-        List<MagitBlob> blobs = xmlMagit.getMagitBlobs().getMagitBlob();
         List<MagitSingleFolder> folders = xmlMagit.getMagitFolders().getMagitSingleFolder();
-        List<MagitSingleCommit> commits = xmlMagit.getMagitCommits().getMagitSingleCommit();
         List<MagitSingleBranch> branches = xmlMagit.getMagitBranches().getMagitSingleBranch();
 
-        Map<Integer,Commit> commitMap = new HashMap<>();
-
-        commits.sort(Comparator.comparingInt(o -> Integer.parseInt(o.getId()))); //sort by small to big
-
-        for (MagitSingleCommit commit : commits) {
-            String rootFolderID = commit.getRootFolder().getId();
-            MagitSingleFolder xml_rootFolder = Folder.findRootFolder(folders,rootFolderID);
-
-            Folder rootFolder = Folder.XML_Parser(xml_rootFolder,folders,blobs,null,xmlMagit.getLocation());
-
-            Commit temp = Commit.XML_Parser(commit,rootFolder);
-            commitMap.put(Integer.parseInt(commit.getId()),temp);
+        for (MagitSingleBranch branch : branches) {
+            String commitID = branch.getPointedCommit().getId();
+            MagitSingleCommit pointedMagitCommit = Commit.XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), commitID);
+            MagitSingleFolder pointedRootFolder = Folder.findRootFolder(folders, pointedMagitCommit.getRootFolder().getId());
+            Folder rootFolder = Folder.XML_Parser(pointedRootFolder, xmlMagit, null, xmlMagit.getLocation());
+            Commit pointedCommit = tempInstance.XML_Parser(xmlMagit, pointedMagitCommit, rootFolder);
+            Branch temp = Branch.XML_Parser(branch, pointedCommit, repository.getBranchesPath().toString());
+            repository.addBranch(temp);
+            if (branch.getName().equals(headName)) {
+                repository.addBranch(new Branch(true, temp));
+                repository.updateHeadFile(headName);
+                repository.lastCommit = temp.getCommit();
+                repository.rootFolder = rootFolder;
+            }
         }
 
-
-        repository.setBranches(Branch.XML_Parser(commits,branches,rootFolder));
-        Branch active = repository.getActiveBranch();
-        Commit.XML_Parser(repository.getBranches(),commits,rootFolder);
-        repository.setLastCommit(active.getCommit());
-        repository.setName(xmlMagit.getName());
-
         return repository;
+    }
+
+    private void updateHeadFile(String branchName) throws FileNotFoundException {
+        PrintWriter writer = new PrintWriter(new File(branchesPath + File.separator + Settings.MAGIT_BRANCH_HEAD));
+        writer.print(branchName);
+        writer.close();
     }
 
     private void scanRecursiveFolder(Folder rootFolder, Blob blob, String currentUser) throws IOException {
@@ -276,7 +282,7 @@ public class Repository {
                             files.addToMap(temp);
                         } else {
                             Folder temp = new Folder();
-                            temp.completeMissingData(row,rootFolder.getFullPathName(),rootFolder);
+                            temp.completeMissingData(row, rootFolder.getFullPathName(), rootFolder);
                             files.addToMap(temp);
                             temp.setBlobMap(recoverOldRepository(Objects.requireNonNull(FileManager.unZipFile(new File(objectPath + File.separator + row[1]),
                                     objectPath + File.separator + Settings.TEMP_UNZIP_FOLDER)), temp));
@@ -311,7 +317,7 @@ public class Repository {
         scanBetweenMaps(rootFolder.getBlobMap().getMap(), this.rootFolder.getBlobMap().getMap(), repository);
         scanForDeletedFiles(rootFolder.getBlobMap().getMap(), this.rootFolder.getBlobMap().getMap(), repository.get(MapKeys.LIST_DELETED));
 
-        if(noChanged(repository)) {
+        if (noChanged(repository)) {
             return null;
         }
         return repository;
@@ -352,7 +358,7 @@ public class Repository {
         }
     }
 
-    public List<Branch> loadBranches() throws IOException, RepositoryException {
+    private List<Branch> loadBranches() throws IOException, RepositoryException {
         List<Branch> branches = new LinkedList<>();
         File[] branchesFiles = new File(branchesPath.toString()).listFiles();
         File headBranch = null;

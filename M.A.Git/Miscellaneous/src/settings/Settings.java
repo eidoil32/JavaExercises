@@ -1,5 +1,8 @@
 package settings;
 
+import java.io.File;
+import java.util.regex.Pattern;
+
 public class Settings {
     public static final int
             MENU_ITEM_EXIT = 13,
@@ -25,6 +28,12 @@ public class Settings {
             XML_LOAD_PACKAGE = "xml.basic",
             MAGIT_BRANCH_HEAD = "head",
             MAGIT_FOLDER = ".magit",
+            COMMIT_MAP = "COMMIT_MAP",
+            TEMP_FILE = "temp.magit",
+            XML_EXTENSION = "xml",
+            BASIC_SLASH = "/",
+            SEPARATOR_PATTERN = Pattern.quote(File.separator),
+            XML_ITEM_COMMIT_TYPE = "MagitCommit",
             SHOW_STATUS_SEPARATOR = "=================================",
             EMPTY_COMMIT = "null",
             DATE_FORMAT = "dd.MM.yyyy-HH:mm:ss:SSS",

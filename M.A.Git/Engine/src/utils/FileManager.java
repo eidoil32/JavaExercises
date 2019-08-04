@@ -15,7 +15,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -25,11 +25,10 @@ public class FileManager {
         return FileUtils.readFileToString(new File(filePath.toUri()), Settings.FILE_ENCODING);
     }
 
-    public static List<File> scanFolder(String rootPath) {
-        return new ArrayList<>(Arrays.asList(Objects.requireNonNull(new File(rootPath).listFiles())));
-    }
-
     public static void zipFile(BasicFile file, Path pathToObject) throws MyFileException {
+        boolean tempFileExist = false;
+        File tempFile = null;
+
         String sourceFile = file.getFullPathName();
         FileOutputStream fos;
         if (file.getType() == eFileTypes.FOLDER) {
@@ -44,6 +43,20 @@ public class FileManager {
                 throw new MyFileException(eErrorCodes.CREATE_TEMP_FOLDER_FILE_FAILED, file.getName());
             }
 
+        } else {
+            if (!new File(sourceFile).exists()) {
+                sourceFile = pathToObject + File.separator + Settings.TEMP_FILE;
+                tempFile = new File(pathToObject + File.separator + Settings.TEMP_FILE);
+                try {
+                    tempFile.createNewFile();
+                    PrintWriter writer = new PrintWriter(tempFile);
+                    writer.print(((Blob)file).getContent());
+                    writer.close();
+                } catch (IOException e) {
+                    throw new MyFileException(eErrorCodes.OPEN_FILE_FAILED, pathToObject.toString() + File.separator + ((Blob) file).getSHA_ONE());
+                }
+                tempFileExist = true;
+            }
         }
         try {
             fos = new FileOutputStream(pathToObject.toString() + File.separator + ((Blob) file).getSHA_ONE());
@@ -85,6 +98,9 @@ public class FileManager {
         }
         if (file.getType() == eFileTypes.FOLDER)
             fileToZip.delete();
+        if(tempFileExist) {
+            tempFile.delete();
+        }
     }
 
     public static MagitRepository deserializeFrom(InputStream in) throws JAXBException {
@@ -96,7 +112,7 @@ public class FileManager {
     public static File unZipFile(File file, String pathToTempFolder) {
         File dir = new File(pathToTempFolder);
         // create output directory if it doesn't exist
-        if(!dir.exists()) dir.mkdirs();
+        if (!dir.exists()) dir.mkdirs();
         FileInputStream fis;
         //buffer for read and write data to file
         byte[] buffer = new byte[1024];
@@ -104,7 +120,7 @@ public class FileManager {
             fis = new FileInputStream(file);
             ZipInputStream zis = new ZipInputStream(fis);
             ZipEntry ze = zis.getNextEntry();
-            while(ze != null){
+            while (ze != null) {
                 String fileName = ze.getName();
                 File newFile = new File(pathToTempFolder + File.separator + fileName);
                 //System.out.println("Unzipping to "+newFile.getAbsolutePath());
@@ -128,5 +144,22 @@ public class FileManager {
         } catch (IOException e) {
             return null;
         }
+    }
+
+    public static String ignoreLastPartOfPath(String location) {
+        String[] splitterFileName;
+        StringBuilder stringBuilder = new StringBuilder();
+
+        if (location.contains(Settings.BASIC_SLASH)) {
+            splitterFileName = location.split(Settings.BASIC_SLASH);
+        } else {
+            splitterFileName = location.split(Settings.SEPARATOR_PATTERN);
+        }
+
+        for (int i = 0; i < splitterFileName.length - 1; i++) {
+            stringBuilder.append(splitterFileName[i]).append(File.separator);
+        }
+
+        return stringBuilder.toString();
     }
 }

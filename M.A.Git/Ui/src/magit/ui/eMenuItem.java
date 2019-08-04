@@ -1,16 +1,19 @@
 package magit.ui;
 
 import exceptions.MyFileException;
+import exceptions.MyXMLException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
 import languages.LangEN;
 import magit.*;
+import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
+import utils.FileManager;
 import utils.MapKeys;
+import xml.basic.MagitRepository;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.xml.bind.JAXBException;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -18,7 +21,35 @@ public enum eMenuItem {
     OPEN_RESOURCE(LangEN.MENU_OPTION_OPEN_RESOURCE, Settings.MENU_ITEM_OPEN_RESOURCE, true) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
-            return null;
+            String xmlPath = printAndAskFromString(LangEN.ENTER_XML_PATH);
+            File xmlFile = new File(xmlPath);
+            if (xmlFile.exists()) {
+                String extension = FilenameUtils.getExtension(xmlFile.getName());
+                if (extension.equals(Settings.XML_EXTENSION)) {
+                    try {
+                        File initialFile = new File(xmlPath);
+                        InputStream inputStream = new FileInputStream(initialFile);
+                        MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
+                        magit.setCurrentRepository(Repository.XML_RepositoryFactory(magitRepository));
+                        magit.afterXMLLayout();
+                        return LangEN.LOAD_REPOSITORY_FROM_XML_SUCCESSED;
+                    } catch (IOException e) {
+                        return LangEN.UNKNOWN_FATAL_ERROR + e.getMessage();
+                    } catch (RepositoryException e) {
+                        return e.getCode().getMessage();
+                    } catch (MyFileException e) {
+                        return e.getCode().getMessage();
+                    } catch (MyXMLException e) {
+                        return e.getMessage();
+                    } catch (JAXBException e) {
+                        return LangEN.XML_PARSE_FAILED;
+                    }
+                } else {
+                    return LangEN.NONE_XML_FILE_EXTINCTION;
+                }
+            } else {
+                return String.format(LangEN.XML_FILE_NOT_FOUND, xmlFile.getName());
+            }
         }
     },
 
@@ -43,7 +74,7 @@ public enum eMenuItem {
                 } catch (RepositoryException e) {
                     return e.getCode().getMessage();
                 } catch (IOException e) {
-                    return String.format(LangEN.READING_FROM_FILE_FAILED,basicPath.getName());
+                    return String.format(LangEN.READING_FROM_FILE_FAILED, basicPath.getName());
                 }
                 return String.format(LangEN.LOAD_REPOSITORY_SUCCESS, magit.getCurrentRepository().getName());
             } else {
@@ -269,7 +300,7 @@ public enum eMenuItem {
     MENU_OPTION_RESET_BRANCH_TO_COMMIT(LangEN.MENU_OPTION_RESET_BRANCH_TO_COMMIT, 15, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) throws RepositoryException, IOException, MyFileException {
-            String user_SHA_ONE = printAndAskFromString(String.format(LangEN.CHOOSE_SHA_ONE_FOR_BRANCH,magit.getCurrentBranch().getName()));
+            String user_SHA_ONE = printAndAskFromString(String.format(LangEN.CHOOSE_SHA_ONE_FOR_BRANCH, magit.getCurrentBranch().getName()));
             try {
                 Commit oldCommit = magit.changeBranchPoint(user_SHA_ONE);
                 if (oldCommit == null) {

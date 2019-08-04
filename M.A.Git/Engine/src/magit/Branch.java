@@ -5,13 +5,11 @@ import exceptions.eErrorCodes;
 import languages.LangEN;
 import settings.Settings;
 import xml.basic.MagitSingleBranch;
-import xml.basic.MagitSingleCommit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 public class Branch {
     private String name, SHA_ONE;
@@ -46,8 +44,12 @@ public class Branch {
         }
     }
 
-    public static List<Branch> XML_Parser(List<MagitSingleCommit> commits, List<MagitSingleBranch> branches, Folder rootFolder) {
-
+    public static Branch XML_Parser(MagitSingleBranch singleBranch, Commit commit, String pathToBranchesFolder) throws IOException, RepositoryException {
+        Branch temp = new Branch(singleBranch.getName(), commit, pathToBranchesFolder);
+        PrintWriter writer = new PrintWriter(new File(pathToBranchesFolder + File.separator + temp.getName()));
+        writer.print(temp.getSHA_ONE());
+        writer.close();
+        return temp;
     }
 
     public void setCommit(Commit commit, String pathToBranches) throws RepositoryException {

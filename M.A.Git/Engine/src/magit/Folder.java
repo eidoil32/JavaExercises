@@ -6,6 +6,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
 import xml.basic.Item;
 import xml.basic.MagitBlob;
+import xml.basic.MagitRepository;
 import xml.basic.MagitSingleFolder;
 
 import java.io.File;
@@ -30,12 +31,17 @@ public class Folder extends Blob {
     public Folder() {
     } // empty c'tor for recovering from SHA-1
 
-    public Folder(MagitSingleFolder folder, Folder root, String path) throws MyXMLException {
+    private Folder(MagitSingleFolder folder, Folder root, String path) throws MyXMLException {
         this.type = eFileTypes.FOLDER;
         this.editorName = folder.getLastUpdater();
         this.rootFolder = root;
-        this.fullPathName = path + File.separator + name;
         this.name = folder.getName();
+        if(this.name == null) {
+            this.name = new File(path).getName();
+            this.fullPathName = path;
+        } else {
+            this.fullPathName = path + File.separator + name;
+        }
         this.filePath = Paths.get(fullPathName);
         try {
             this.date = new SimpleDateFormat(Settings.DATE_FORMAT).parse(folder.getLastUpdateDate());
@@ -54,10 +60,13 @@ public class Folder extends Blob {
         throw new MyXMLException(eErrorCodesXML.FOLDER_POINT_TO_NONSEXIST_FOLDER, item.getId());
     }
 
-    public static Folder XML_Parser(MagitSingleFolder root, List<MagitSingleFolder> folders, List<MagitBlob> blobs, Folder root_Folder, String path)
+    public static Folder XML_Parser(MagitSingleFolder root, MagitRepository xmlMagit, Folder root_Folder, String path)
             throws MyXMLException {
         BlobMap rootBlobMap = new BlobMap(new HashMap<>());
         Folder rootFolder = new Folder(root, root_Folder, path);
+
+        List<MagitBlob> blobs = xmlMagit.getMagitBlobs().getMagitBlob();
+        List<MagitSingleFolder> folders = xmlMagit.getMagitFolders().getMagitSingleFolder();
 
         rootFolder.setBlobMap(rootBlobMap);
         List<Item> subFiles = root.getItems().getItem();
@@ -70,7 +79,7 @@ public class Folder extends Blob {
                 if(temp.isIsRoot()) {
                     throw new MyXMLException(eErrorCodesXML.DUPLICATE_ROOT_FOLDER,root.getName());
                 }
-                rootBlobMap.addToMap(XML_Parser(temp,folders,blobs,rootFolder,rootFolder.fullPathName));
+                rootBlobMap.addToMap(XML_Parser(temp,xmlMagit,rootFolder,rootFolder.fullPathName));
             } else {
                 throw new MyXMLException(eErrorCodesXML.ITEM_WITH_UNKNOWN_TYPE,item.getType());
             }
