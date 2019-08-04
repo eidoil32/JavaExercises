@@ -1,5 +1,6 @@
 package utils;
 
+import languages.LangEN;
 import magit.BasicFile;
 import magit.BlobMap;
 import magit.Folder;
@@ -13,7 +14,7 @@ public enum MapKeys {
 
         @Override
         public String toString() {
-            return Settings.SHOW_STATUS_DELETED;
+            return LangEN.SHOW_STATUS_DELETED;
         }
     }, LIST_NEW {
         @Override
@@ -23,7 +24,7 @@ public enum MapKeys {
 
         @Override
         public String toString() {
-            return Settings.SHOW_STATUS_NEW;
+            return LangEN.SHOW_STATUS_NEW;
         }
     }, LIST_CHANGED {
         @Override
@@ -33,7 +34,7 @@ public enum MapKeys {
 
         @Override
         public String toString() {
-            return Settings.SHOW_STATUS_EDITED;
+            return LangEN.SHOW_STATUS_EDITED;
         }
     };
 

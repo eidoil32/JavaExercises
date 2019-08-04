@@ -2,13 +2,16 @@ package magit;
 
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
-import utils.LangEN;
-import utils.Settings;
+import languages.LangEN;
+import settings.Settings;
+import xml.basic.MagitSingleBranch;
+import xml.basic.MagitSingleCommit;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class Branch {
     private String name, SHA_ONE;
@@ -26,7 +29,7 @@ public class Branch {
         this.name = name;
         this.commit = commit;
         this.activeBranch = null;
-        this.SHA_ONE = commit == null ? null : commit.getSHAONE();
+        this.SHA_ONE = commit == null ? null : commit.getSHA_ONE();
         File file = new File(pathToBranchesFolder + File.separator + name);
         if (!file.createNewFile()) // branch already exists
         {
@@ -43,6 +46,10 @@ public class Branch {
         }
     }
 
+    public static List<Branch> XML_Parser(List<MagitSingleCommit> commits, List<MagitSingleBranch> branches, Folder rootFolder) {
+
+    }
+
     public void setCommit(Commit commit, String pathToBranches) throws RepositoryException {
         this.commit = commit;
         if (commit != null) {
@@ -52,9 +59,9 @@ public class Branch {
             } catch (FileNotFoundException e) {
                 throw new RepositoryException(eErrorCodes.OPEN_BRANCH_FILE_FAILED);
             }
-            writer.print(commit.getSHAONE());
+            writer.print(commit.getSHA_ONE());
             writer.close();
-            this.SHA_ONE = commit.getSHAONE();
+            this.SHA_ONE = commit.getSHA_ONE();
         }
     }
 
@@ -89,7 +96,7 @@ public class Branch {
     @Override
     public String toString() {
         return LangEN.BRANCH_NAME + name + System.lineSeparator()
-                + LangEN.BRANCH_LAST_COMMIT_SHA + commit.getSHAONE() + System.lineSeparator()
+                + LangEN.BRANCH_LAST_COMMIT_SHA + commit.getSHA_ONE() + System.lineSeparator()
                 + LangEN.BRANCH_LAST_COMMIT_COMMENT + commit.getComment() + System.lineSeparator();
     }
 

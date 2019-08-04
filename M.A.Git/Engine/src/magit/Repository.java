@@ -1,20 +1,20 @@
 package magit;
 
 import exceptions.MyFileException;
+import exceptions.MyXMLException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import settings.Settings;
 import utils.FileManager;
 import utils.MapKeys;
-import utils.Settings;
+import xml.basic.*;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Repository {
@@ -47,8 +47,56 @@ public class Repository {
             this.branches = loadBranches();
             this.rootFolder = new Folder(repositoryPath, currentUser);
             this.name = loadFromRepositoryFile();
-            this.SHA_ONE = lastCommit == null ? null : lastCommit.getSHAONE();
+            this.lastCommit = loadFromHEAD(branchesPath);
+            this.SHA_ONE = lastCommit == null ? null : lastCommit.getSHA_ONE();
         }
+    }
+
+    public Repository(String repositoryPath) throws IOException {
+        this.currentPath = Paths.get(repositoryPath);
+        initialisePaths();
+        createRepositoryFolders();
+    }
+
+    private void createRepositoryFolders() throws IOException {
+        new File(magitPath.toString()).mkdirs();
+        new File(objectPath.toString()).mkdirs();
+        new File(branches.toString()).mkdirs();
+        new File(repoNamePath.toString()).createNewFile();
+    }
+
+    public static Repository XML_RepositoryFactory(MagitRepository xmlMagit) throws IOException, MyXMLException {
+        Repository repository = new Repository(xmlMagit.getLocation());
+
+        int lastCommit;
+
+        List<MagitBlob> blobs = xmlMagit.getMagitBlobs().getMagitBlob();
+        List<MagitSingleFolder> folders = xmlMagit.getMagitFolders().getMagitSingleFolder();
+        List<MagitSingleCommit> commits = xmlMagit.getMagitCommits().getMagitSingleCommit();
+        List<MagitSingleBranch> branches = xmlMagit.getMagitBranches().getMagitSingleBranch();
+
+        Map<Integer,Commit> commitMap = new HashMap<>();
+
+        commits.sort(Comparator.comparingInt(o -> Integer.parseInt(o.getId()))); //sort by small to big
+
+        for (MagitSingleCommit commit : commits) {
+            String rootFolderID = commit.getRootFolder().getId();
+            MagitSingleFolder xml_rootFolder = Folder.findRootFolder(folders,rootFolderID);
+
+            Folder rootFolder = Folder.XML_Parser(xml_rootFolder,folders,blobs,null,xmlMagit.getLocation());
+
+            Commit temp = Commit.XML_Parser(commit,rootFolder);
+            commitMap.put(Integer.parseInt(commit.getId()),temp);
+        }
+
+
+        repository.setBranches(Branch.XML_Parser(commits,branches,rootFolder));
+        Branch active = repository.getActiveBranch();
+        Commit.XML_Parser(repository.getBranches(),commits,rootFolder);
+        repository.setLastCommit(active.getCommit());
+        repository.setName(xmlMagit.getName());
+
+        return repository;
     }
 
     private void scanRecursiveFolder(Folder rootFolder, Blob blob, String currentUser) throws IOException {
@@ -87,9 +135,9 @@ public class Repository {
     }
 
     private void initialisePaths() {
-        this.magitPath = Paths.get(this.currentPath + "//" + Settings.MAGIT_FOLDER);
-        this.objectPath = Paths.get(magitPath + "//" + Settings.OBJECT_FOLDER);
-        this.branchesPath = Paths.get(magitPath + "//" + Settings.BRANCHES_FOLDER);
+        this.magitPath = Paths.get(this.currentPath + File.separator + Settings.MAGIT_FOLDER);
+        this.objectPath = Paths.get(magitPath + File.separator + Settings.OBJECT_FOLDER);
+        this.branchesPath = Paths.get(magitPath + File.separator + Settings.BRANCHES_FOLDER);
         this.repoNamePath = Paths.get(magitPath + File.separator + Settings.REPOSITORY_NAME);
     }
 
@@ -224,11 +272,12 @@ public class Repository {
                     String[] row = line.split(Settings.FOLDER_DELIMITER);
                     if (row.length > 1) {
                         if (row[2].equals(Settings.FILE_TYPE_IN_FOLDER_TABLE)) {
-                            Blob temp = recoverFromSHA(objectPath, row, rootFolder);
-                            files.addToMap(temp, temp, eFileTypes.FILE);
+                            Blob temp = Blob.BlobFactory(objectPath, row, rootFolder);
+                            files.addToMap(temp);
                         } else {
-                            Folder temp = new Folder(Paths.get(rootFolder.getFilePath() + File.separator + row[0]), row[3]);
-                            files.addToMap(temp, temp, eFileTypes.FOLDER);
+                            Folder temp = new Folder();
+                            temp.completeMissingData(row,rootFolder.getFullPathName(),rootFolder);
+                            files.addToMap(temp);
                             temp.setBlobMap(recoverOldRepository(Objects.requireNonNull(FileManager.unZipFile(new File(objectPath + File.separator + row[1]),
                                     objectPath + File.separator + Settings.TEMP_UNZIP_FOLDER)), temp));
                         }
@@ -236,36 +285,12 @@ public class Repository {
                 }
             } else {
                 Blob temp = new Blob(file.toPath(), rootFolder.getEditorName());
-                files.addToMap(temp, temp, eFileTypes.FILE);
+                files.addToMap(temp);
             }
             File tempFolder = new File(objectPath + File.separator + Settings.TEMP_UNZIP_FOLDER);
             tempFolder.delete();
             return files;
         }
-    }
-
-    private Blob recoverFromSHA(Path objectPath, String[] row, Folder rootFolder) throws IOException, MyFileException {
-        Blob blob = new Blob();
-        File file = FileManager.unZipFile(new File(objectPath + File.separator + row[1]), objectPath + File.separator + Settings.TEMP_UNZIP_FOLDER);
-        blob.setRootFolder(rootFolder);
-        blob.setEditorName(row[3]);
-        String date = row[4];
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Settings.DATE_FORMAT);
-        try {
-            blob.setDate(dateFormat.parse(date));
-        } catch (ParseException e) {
-            blob.setDate(new Date());
-        }
-
-        blob.setContent(Files.readAllLines(Objects.requireNonNull(file).toPath()));
-        blob.setSHA_ONE(row[1]);
-        blob.setFilePath(Paths.get(rootFolder.getFilePath() + File.separator + row[0]));
-        blob.setName(row[0]);
-        blob.setType(eFileTypes.FILE);
-        if (!file.delete()) {
-            throw new MyFileException(eErrorCodes.DELETE_FILE_FAILED, file.getPath());
-        }
-        return blob;
     }
 
     public Map<MapKeys, List<BasicFile>> scanRepository(String currentUser) throws IOException, MyFileException, RepositoryException {
@@ -286,13 +311,24 @@ public class Repository {
         scanBetweenMaps(rootFolder.getBlobMap().getMap(), this.rootFolder.getBlobMap().getMap(), repository);
         scanForDeletedFiles(rootFolder.getBlobMap().getMap(), this.rootFolder.getBlobMap().getMap(), repository.get(MapKeys.LIST_DELETED));
 
+        if(noChanged(repository)) {
+            return null;
+        }
         return repository;
+    }
+
+    private boolean noChanged(Map<MapKeys, List<BasicFile>> repository) {
+        for (Map.Entry<MapKeys, List<BasicFile>> entry : repository.entrySet()) {
+            if (entry.getValue().size() > 0)
+                return false;
+        }
+        return true;
     }
 
     public BlobMap loadDataFromCommit(Commit commit) throws MyFileException, RepositoryException, IOException {
         lastCommit = commit;
         if (lastCommit != null) {
-            File lastWC = new File(objectPath + File.separator + lastCommit.getSHAONE());
+            File lastWC = new File(objectPath + File.separator + lastCommit.getSHA_ONE());
             String wcSHA;
             try {
                 BufferedReader br = new BufferedReader(new FileReader(lastWC));
@@ -414,5 +450,27 @@ public class Repository {
 
     public Folder getRootFolder() {
         return rootFolder;
+    }
+
+    public void setRootFolder(Folder rootFolder) {
+        this.rootFolder = rootFolder;
+    }
+
+    public void setBranches(List<Branch> branches) {
+        this.branches = branches;
+    }
+
+    public void setName(String name) throws IOException {
+        File repoName = new File(repoNamePath.toString());
+        PrintWriter writer;
+        try {
+            writer = new PrintWriter(repoName);
+        } catch (FileNotFoundException e) {
+            repoName.createNewFile();
+            writer = new PrintWriter(repoName);
+        }
+        writer.print(name);
+        writer.close();
+        this.name = name;
     }
 }

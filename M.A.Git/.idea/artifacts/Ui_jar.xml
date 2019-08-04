@@ -3,11 +3,6 @@
     <output-path>$PROJECT_DIR$/out/artifacts/Ui_jar</output-path>
     <root id="archive" name="Ui.jar">
       <element id="module-output" name="Ui" />
-      <element id="module-output" name="Engine" />
-      <element id="module-output" name="M.A.Git" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/external/commons-io-2.6.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/external/commons-codec-1.12.jar" path-in-jar="/" />
-      <element id="extracted-dir" path="$PROJECT_DIR$/external/commons-collections4-4.3.jar" path-in-jar="/" />
     </root>
   </artifact>
 </component>

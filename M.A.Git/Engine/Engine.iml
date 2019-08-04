@@ -9,5 +9,7 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="external" level="project" />
     <orderEntry type="module" module-name="M.A.Git" />
+    <orderEntry type="module" module-name="Languages" />
+    <orderEntry type="module" module-name="Miscellaneous" />
   </component>
 </module>

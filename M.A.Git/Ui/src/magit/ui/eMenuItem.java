@@ -3,9 +3,9 @@ package magit.ui;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
+import languages.LangEN;
 import magit.*;
-import magit.settings.LangEN;
-import magit.settings.Settings;
+import settings.Settings;
 import utils.MapKeys;
 
 import java.io.File;
@@ -15,23 +15,14 @@ import java.nio.file.Paths;
 import java.util.*;
 
 public enum eMenuItem {
-    OPEN_RESOURCE(LangEN.MENU_OPTION_OPEN_RESOURCE, Settings.MENU_ITEM_OPEN_RESOURCE) {
+    OPEN_RESOURCE(LangEN.MENU_OPTION_OPEN_RESOURCE, Settings.MENU_ITEM_OPEN_RESOURCE, true) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
             return null;
         }
-
-        @Override
-        public boolean isAllow() {
-            return true;
-        }
     },
-    NAME_UPDATE(LangEN.MENU_OPTION_NAME_UPDATE, Settings.MENU_ITEM_NAME_UPDATE) {
-        @Override
-        public boolean isAllow() {
-            return true;
-        }
 
+    NAME_UPDATE(LangEN.MENU_OPTION_NAME_UPDATE, Settings.MENU_ITEM_NAME_UPDATE, true) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
             String newName = printAndAskFromString(LangEN.PLEASE_ENTER_YOUR_NAME);
@@ -39,42 +30,48 @@ public enum eMenuItem {
             return String.format(LangEN.CHANGE_NAME_SUCCESSFULLY_TO, newName);
         }
     },
-    CHANGE_REPO(LangEN.MENU_OPTION_CHANGE_REPO, Settings.MENU_ITEM_CHANGE_REPO) {
+
+    CHANGE_REPO(LangEN.MENU_OPTION_CHANGE_REPO, Settings.MENU_ITEM_CHANGE_REPO, true) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
-            String path = printAndAskFromString(LangEN.PLEASE_ENTER_REPOSITORY_PATH);
+            String path = printAndAskFromString(LangEN.ASK_FOR_PATH_FOR_REPO);
 
             File basicPath = new File(path + File.separator + Settings.MAGIT_FOLDER);
             if (basicPath.exists()) {
                 try {
                     magit.setCurrentRepository(new Repository(Paths.get(path), true, currentUser));
                 } catch (RepositoryException e) {
-                    return e.getCode().getPersonalMessage();
+                    return e.getCode().getMessage();
                 } catch (IOException e) {
-                    return LangEN.READING_FROM_FILE_FAILED;
+                    return String.format(LangEN.READING_FROM_FILE_FAILED,basicPath.getName());
                 }
-                return String.format(LangEN.LOAD_REPOSITORY_SUCCESS,magit.getCurrentRepository().getName());
+                return String.format(LangEN.LOAD_REPOSITORY_SUCCESS, magit.getCurrentRepository().getName());
             } else {
                 return LangEN.LOAD_REPOSITORY_FAILED_NOT_EXIST_MAGIT;
             }
         }
-
-        @Override
-        public boolean isAllow() {
-            return true;
-        }
     },
-    SHOW_ALL_HISTORY(LangEN.MENU_OPTION_SHOW_ALL_HISTORY, Settings.MENU_ITEM_SHOW_ALL_HISTORY) {
+
+    SHOW_ALL_HISTORY(LangEN.MENU_OPTION_SHOW_ALL_HISTORY, Settings.MENU_ITEM_SHOW_ALL_HISTORY, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
-            Commit lastCommit = magit.getCurrentRepository().getLastCommit();
-            if (lastCommit == null)
-                return LangEN.NO_COMMIT_HISTORY;
-            else
-                return lastCommit.showAllHistory();
+            String result = null;
+            try {
+                result = magit.showCurrentCommitHistory();
+                if (result != null)
+                    return result;
+            } catch (RepositoryException e) {
+                return e.getCode().getMessage();
+            } catch (IOException e) {
+                return LangEN.UNKNOWN_FATAL_ERROR + e.getMessage();
+            } catch (MyFileException e) {
+                return e.getCode().getMessage();
+            }
+            return LangEN.NO_COMMIT_HISTORY;
         }
     },
-    SHOW_CURRENT_STATUS(LangEN.MENU_OPTION_SHOW_CURRENT_STATUS, Settings.MENU_ITEM_SHOW_CURRENT_STATUS) {
+
+    SHOW_CURRENT_STATUS(LangEN.MENU_OPTION_SHOW_CURRENT_STATUS, Settings.MENU_ITEM_SHOW_CURRENT_STATUS, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) throws IOException {
             Repository repository = magit.getCurrentRepository();
@@ -82,31 +79,34 @@ public enum eMenuItem {
             try {
                 fileLists = repository.scanRepository(currentUser);
             } catch (MyFileException e) {
-                System.out.println(e.getCode().getPersonalMessage());
+                System.out.println(e.getCode().getMessage());
             } catch (RepositoryException e) {
-                System.out.println(e.getCode().getPersonalMessage());
+                System.out.println(e.getCode().getMessage());
             }
 
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(LangEN.REPOSITORY_NAME).append(repository.getName())
-                    .append(LangEN.REPOSITORY_PATH).append(repository.getMagitPath()).append(System.lineSeparator());
-
-            assert fileLists != null;
-            for (Map.Entry<MapKeys, List<BasicFile>> entry : fileLists.entrySet()) {
-                List<BasicFile> temp = entry.getValue();
-                if (temp.size() > 0) {
-                    stringBuilder.append(entry.getKey()).append(System.lineSeparator());
-                    for (BasicFile file : temp) {
-                        stringBuilder.append(file).append(System.lineSeparator());
+            if (fileLists == null) {
+                return LangEN.NOTHING_TO_SHOW;
+            } else {
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(LangEN.REPOSITORY_NAME).append(repository.getName())
+                        .append(LangEN.REPOSITORY_PATH).append(repository.getMagitPath()).append(System.lineSeparator());
+                for (Map.Entry<MapKeys, List<BasicFile>> entry : fileLists.entrySet()) {
+                    List<BasicFile> temp = entry.getValue();
+                    if (temp.size() > 0) {
+                        stringBuilder.append(entry.getKey()).append(System.lineSeparator());
+                        for (BasicFile file : temp) {
+                            stringBuilder.append(file.shortPath()).append(System.lineSeparator());
+                        }
+                        stringBuilder.append(Settings.SHOW_STATUS_SEPARATOR).append(System.lineSeparator());
                     }
-                    stringBuilder.append(Settings.SHOW_STATUS_SEPARATOR).append(System.lineSeparator());
                 }
-            }
 
-            return stringBuilder.toString();
+                return stringBuilder.toString();
+            }
         }
     },
-    COMMIT(LangEN.MENU_OPTION_COMMIT, Settings.MENU_ITEM_COMMIT) {
+
+    COMMIT(LangEN.MENU_OPTION_COMMIT, Settings.MENU_ITEM_COMMIT, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
             try {
@@ -116,13 +116,14 @@ public enum eMenuItem {
             } catch (IOException e) {
                 return LangEN.ERROR_CREATE_COMMIT_FILE;
             } catch (RepositoryException e) {
-                return e.getCode().getPersonalMessage();
+                return e.getCode().getMessage();
             } catch (MyFileException e) {
-                return e.getCode().getPersonalMessage() + e.getFilename();
+                return e.getCode().getMessage() + e.getFilename();
             }
         }
     },
-    SHOW_ALL_BRANCHES(LangEN.MENU_OPTION_SHOW_ALL_BRANCHES, Settings.MENU_ITEM_SHOW_ALL_BRANCHES) {
+
+    SHOW_ALL_BRANCHES(LangEN.MENU_OPTION_SHOW_ALL_BRANCHES, Settings.MENU_ITEM_SHOW_ALL_BRANCHES, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
             try {
@@ -141,7 +142,8 @@ public enum eMenuItem {
             }
         }
     },
-    CREATE_NEW_BRANCH(LangEN.MENU_OPTION_CREATE_NEW_BRANCH, Settings.MENU_ITEM_CREATE_NEW_BRANCH) {
+
+    CREATE_NEW_BRANCH(LangEN.MENU_OPTION_CREATE_NEW_BRANCH, Settings.MENU_ITEM_CREATE_NEW_BRANCH, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
             Branch activeBranch = magit.getCurrentBranch();
@@ -157,21 +159,36 @@ public enum eMenuItem {
                     Branch branch = new Branch(newBranchName, lastCommit, magit.getCurrentRepository().getBranchesPath().toString());
                     PrintWriter writer = new PrintWriter(newBranch);
                     if (lastCommit != null)
-                        writer.print(branch.getCommit().getSHAONE());
+                        writer.print(branch.getCommit().getSHA_ONE());
                     else
                         writer.print(Settings.EMPTY_COMMIT);
                     writer.close();
                     magit.getCurrentRepository().addBranch(branch);
-                    return String.format(LangEN.BRANCH_CREATED_SUCCESSFULLY, newBranchName);
+                    String choice = printAndAskFromString(LangEN.DO_CHECKOUT_NOW);
+                    choice = choice.toLowerCase();
+                    if (choice.equals(LangEN.LOWERCASE_SHORT_YES) || choice.equals(LangEN.LOWERCASE_LONG_YES)) {
+                        if (magit.tryCheckout(newBranchName)) {
+                            return LangEN.CHECKOUT_COMPLETE_SUCCESSFULLY;
+                        }
+                        return LangEN.CHECKOUT_FAILED;
+                    } else {
+                        return String.format(LangEN.BRANCH_CREATED_SUCCESSFULLY, newBranchName);
+                    }
                 } catch (IOException e) {
                     return String.format(LangEN.CREATE_BRANCH_FILE_FAILED, newBranchName);
                 } catch (RepositoryException e) {
-                    return String.format(LangEN.CREATE_BRANCH_FILE_FAILED, newBranchName) + e.getCode().getPersonalMessage();
+                    if (e.getCode() == eErrorCodes.THERE_IS_OPENED_ISSUES) {
+                        return String.format(LangEN.BRANCH_CREATED_BUT_WITHOUT_CHECKOUT, newBranchName);
+                    }
+                    return String.format(LangEN.CREATE_BRANCH_FILE_FAILED, newBranchName) + e.getCode().getMessage();
+                } catch (MyFileException e) {
+                    return e.getCode().getMessage();
                 }
             }
         }
     },
-    DELETE_BRANCH(LangEN.MENU_OPTION_DELETE_BRANCH, Settings.MENU_ITEM_DELETE_BRANCH) {
+
+    DELETE_BRANCH(LangEN.MENU_OPTION_DELETE_BRANCH, Settings.MENU_ITEM_DELETE_BRANCH, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
             String branchName = printAndAskFromString(LangEN.PLEASE_ENTER_BRANCH_NAME + LangEN.YOU_WANT_TO_DELETE + ": ");
@@ -192,30 +209,42 @@ public enum eMenuItem {
             return String.format(LangEN.BRANCH_NOT_EXIST, branchName);
         }
     },
-    CHECK_OUT(LangEN.MENU_OPTION_CHECK_OUT, Settings.MENU_ITEM_CHECK_OUT) {
+
+    CHECK_OUT(LangEN.MENU_OPTION_CHECK_OUT, Settings.MENU_ITEM_CHECK_OUT, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
+            String branchName = printAndAskFromString(LangEN.PLEASE_ENTER_BRANCH_NAME);
             try {
-                if (magit.checkout(printAndAskFromString(LangEN.PLEASE_ENTER_BRANCH_NAME))) {
+                if (magit.tryCheckout(branchName)) {
                     return LangEN.CHECKOUT_COMPLETE_SUCCESSFULLY;
+                } else {
+                    String choice = printAndAskFromString(LangEN.IGNORE_OPENED_ISSUES);
+                    if (choice.equals(LangEN.LOWERCASE_LONG_YES) || choice.equals(LangEN.LOWERCASE_SHORT_YES)) {
+                        if (magit.checkout(branchName))
+                            return LangEN.CHECKOUT_COMPLETE_SUCCESSFULLY;
+                    } else {
+                        return LangEN.CHECKOUT_FAILED_USER_CANCEL;
+                    }
                 }
                 return LangEN.CHECKOUT_FAILED;
             } catch (IOException e) {
                 return String.format(LangEN.READING_FROM_FILE_FAILED, e.getMessage());
             } catch (MyFileException e) {
-                return e.getCode().getPersonalMessage();
+                return e.getCode().getMessage();
             } catch (RepositoryException e) {
-                return e.getCode().getPersonalMessage();
+                return e.getCode().getMessage();
             }
         }
     },
-    SHOW_ACTIVE_BRANCH_HISTORY(LangEN.MENU_OPTION_SHOW_ACTIVE_BRANCH_HISTORY, Settings.MENU_ITEM_SHOW_ACTIVE_BRANCH_HISTORY) {
+
+    SHOW_ACTIVE_BRANCH_HISTORY(LangEN.MENU_OPTION_SHOW_ACTIVE_BRANCH_HISTORY, Settings.MENU_ITEM_SHOW_ACTIVE_BRANCH_HISTORY, false) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
             return magit.getCurrentBranch().getCommitDataHistory();
         }
     },
-    CREATE_NEW_REPO(LangEN.MENU_OPTION_CREATE_NEW_REPO, Settings.MENU_ITEM_CREATE_NEW_REPO) {
+
+    CREATE_NEW_REPO(LangEN.MENU_OPTION_CREATE_NEW_REPO, Settings.MENU_ITEM_CREATE_NEW_REPO, true) {
         @Override
         public String executeCommand(String currentUser, Magit magit) throws IOException, RepositoryException {
             String path, name;
@@ -227,7 +256,7 @@ public enum eMenuItem {
                 magit.setCurrentRepository(new Repository(Paths.get(path), currentUser, name));
             } catch (RepositoryException e) {
                 if (e.getCode() == eErrorCodes.MAGIT_FOLDER_ALREADY_EXIST) {
-                    System.out.println(e.getCode().getPersonalMessage());
+                    System.out.println(e.getCode().getMessage());
                     return LangEN.CREATE_NEW_REPOSITORY_FAILED_ALREADY_EXIST;
                 } else {
                     throw new RepositoryException(e.getCode());
@@ -235,36 +264,58 @@ public enum eMenuItem {
             }
             return String.format(LangEN.NEW_REPOSITORY_CREATED_SUCCESSFULLY, magit.getCurrentRepository().getName());
         }
+    },
 
+    MENU_OPTION_RESET_BRANCH_TO_COMMIT(LangEN.MENU_OPTION_RESET_BRANCH_TO_COMMIT, 15, false) {
         @Override
-        public boolean isAllow() {
-            return true;
+        public String executeCommand(String currentUser, Magit magit) throws RepositoryException, IOException, MyFileException {
+            String user_SHA_ONE = printAndAskFromString(String.format(LangEN.CHOOSE_SHA_ONE_FOR_BRANCH,magit.getCurrentBranch().getName()));
+            try {
+                Commit oldCommit = magit.changeBranchPoint(user_SHA_ONE);
+                if (oldCommit == null) {
+                    return LangEN.CHANGING_SHA_ONE_SUCCESS;
+                } else {
+                    String choice = printAndAskFromString(LangEN.IGNORE_OPENED_ISSUES);
+                    if (choice.equals(LangEN.LOWERCASE_LONG_YES) || choice.equals(LangEN.LOWERCASE_SHORT_YES)) {
+                        if (magit.checkout(magit.getCurrentBranch().getName()))
+                            return LangEN.CHANGING_SHA_ONE_SUCCESS;
+                    } else {
+                        magit.recoverOldCommit(oldCommit);
+                        return LangEN.CHANGING_SHA_ONE_FAILED;
+                    }
+                }
+            } catch (IOException e) {
+                return e.getMessage();
+            } catch (RepositoryException e) {
+                return e.getCode().getMessage();
+            } catch (MyFileException e) {
+                return e.getCode().getMessage();
+            }
+            return LangEN.CHANGING_SHA_ONE_FAILED;
         }
     },
-    EXIT(LangEN.MENU_OPTION_EXIT, Settings.MENU_ITEM_EXIT) {
+
+    EXIT(LangEN.MENU_OPTION_EXIT, Settings.MENU_ITEM_EXIT, true) {
         @Override
         public String executeCommand(String currentUser, Magit magit) {
             return null;
-        }
-
-        @Override
-        public boolean isAllow() {
-            return true;
         }
     };
 
     private String name;
     private int item;
+    private boolean isAllow; //allow to use this command when no repository loaded
 
-    eMenuItem(String name, int item) {
+    eMenuItem(String name, int item, boolean isAllow) {
         this.name = name;
         this.item = item;
+        this.isAllow = isAllow;
     }
 
     public abstract String executeCommand(String currentUser, Magit magit) throws RepositoryException, IOException, MyFileException;
 
     public boolean isAllow() {
-        return false;
+        return this.isAllow;
     }
 
     public String getName() {

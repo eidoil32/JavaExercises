@@ -1,6 +1,6 @@
 package magit;
 
-import utils.Settings;
+import settings.Settings;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -37,14 +37,8 @@ public class BlobMap {
         return stringBuilder.toString();
     }
 
-    public void addToMap(BasicFile key, BasicFile value, eFileTypes type) {
-        switch (type) {
-            case FILE:
-                map.put(key, (Blob) value);
-                break;
-            case FOLDER:
-                map.put(key, (Folder) value);
-        }
+    public void addToMap(Blob blob) {
+        map.put(blob,blob);
     }
 
     public void remove(BasicFile file) {
@@ -94,5 +88,9 @@ public class BlobMap {
                 }
             }
         }
+    }
+
+    public boolean isEmpty() {
+        return map.isEmpty();
     }
 }

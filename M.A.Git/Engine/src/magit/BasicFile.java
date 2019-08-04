@@ -4,10 +4,10 @@ import java.io.File;
 import java.util.Date;
 
 public abstract class BasicFile {
-    private String name, editorName, fullPathName;
-    private Date date;
-    private eFileTypes type;
-    private Folder rootFolder;
+    protected String name, editorName, fullPathName;
+    protected Date date;
+    protected eFileTypes type;
+    protected Folder rootFolder;
 
     public BasicFile(String fullPathName, String name, String editorName, eFileTypes type) {
         this.fullPathName = fullPathName;
@@ -77,11 +77,6 @@ public abstract class BasicFile {
         this.rootFolder = rootFolder;
     }
 
-    @Override
-    public String toString() {
-        return rootFolder == null ? name : rootFolder + File.separator + name;
-    }
-
     public void updateAllChain(String currentUser) {
         this.editorName = currentUser;
         if (rootFolder != null)
@@ -102,5 +97,9 @@ public abstract class BasicFile {
             return (Blob) this;
         else
             return null;
+    }
+
+    public String shortPath() {
+        return rootFolder == null ? name : rootFolder.shortPath() + File.separator + name;
     }
 }

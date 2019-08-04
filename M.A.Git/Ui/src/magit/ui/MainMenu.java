@@ -1,7 +1,7 @@
 package magit.ui;
 
-import magit.settings.LangEN;
-import magit.settings.Settings;
+import languages.LangEN;
+import settings.Settings;
 
 import java.util.Scanner;
 
@@ -10,7 +10,7 @@ public class MainMenu {
 
     public static void showMenu(String currentUser) {
         System.out.println(String.format("%s %s", LangEN.MAGIT_TOP_MASSAGE, currentUser));
-        System.out.println(Settings.MAIN_MENU.toString());
+        System.out.println(UIEngine.MAIN_MENU.toString());
     }
 
     public static eMenuItem getChoice() {

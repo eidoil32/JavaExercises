@@ -7,13 +7,15 @@ import magit.Blob;
 import magit.Folder;
 import magit.eFileTypes;
 import org.apache.commons.io.FileUtils;
+import settings.Settings;
+import xml.basic.MagitRepository;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 import java.io.*;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -83,6 +85,12 @@ public class FileManager {
         }
         if (file.getType() == eFileTypes.FOLDER)
             fileToZip.delete();
+    }
+
+    public static MagitRepository deserializeFrom(InputStream in) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance(Settings.XML_LOAD_PACKAGE);
+        Unmarshaller u = jc.createUnmarshaller();
+        return (MagitRepository) u.unmarshal(in);
     }
 
     public static File unZipFile(File file, String pathToTempFolder) {

@@ -1,13 +1,12 @@
 package magit;
 
-import exceptions.MyFileException;
-import exceptions.RepositoryException;
-import exceptions.eErrorCodes;
+import exceptions.*;
+import languages.LangEN;
 import org.apache.commons.codec.digest.DigestUtils;
+import settings.Settings;
 import utils.FileManager;
-import utils.LangEN;
 import utils.MapKeys;
-import utils.Settings;
+import xml.basic.MagitSingleCommit;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -23,7 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Commit {
-    private String SHA_ONE, prevCommitSHA_ONE;
+    private String SHA_ONE, prevCommitSHA_ONE, rootFolderSHA_ONE;
     private String comment, creator;
     private Date date;
     private Commit prevCommit;
@@ -35,7 +34,7 @@ public class Commit {
     public Commit(Commit commit) {
         this.prevCommit = commit;
         if (commit != null) {
-            this.prevCommitSHA_ONE = commit.getSHAONE();
+            this.prevCommitSHA_ONE = commit.getSHA_ONE();
         }
     }
 
@@ -57,7 +56,22 @@ public class Commit {
         }
     }
 
-    public String getSHAONE() {
+    public static Commit XML_Parser(MagitSingleCommit commit, Folder rootFolder) throws MyXMLException {
+        Commit temp = new Commit();
+        temp.creator = commit.getAuthor();
+        try {
+            temp.date = new SimpleDateFormat(Settings.DATE_FORMAT).parse(commit.getDateOfCreation());
+        } catch (ParseException e) {
+            throw new MyXMLException(eErrorCodesXML.WRONG_DATE_FORMAT,commit.getDateOfCreation());
+        }
+        temp.comment = commit.getMessage();
+        temp.rootFolderSHA_ONE = rootFolder.getSHA_ONE();
+        temp.SHA_ONE =
+        return temp;
+    }
+
+
+    public String getSHA_ONE() {
         return SHA_ONE;
     }
 
@@ -67,33 +81,29 @@ public class Commit {
 
         this.date = new Date();
         this.creator = currentUser;
+        this.comment = comment;
+        createNewAndEditedFiles(listMap, currentRepository);
+        this.rootFolderSHA_ONE = currentRepository.getRootFolder().getSHA_ONE();
+        currentRepository.setSHA_ONE(this.rootFolderSHA_ONE);
 
-        if(noChanges(listMap))
+        if(listMap == null)
             throw new RepositoryException(eErrorCodes.NOTHING_NEW);
 
-        createNewAndEditedFiles(listMap, currentRepository);
-        currentRepository.setSHA_ONE(currentRepository.getRootFolder().getSHA_ONE());
-        stringBuilder.append(currentRepository.getSHA_ONE()).append(System.lineSeparator()); // repository sha-1
-        stringBuilder.append(prevCommitSHA_ONE).append(System.lineSeparator()); //last commit sha-1
-        this.comment = comment;
+
+        stringBuilder.append(this.rootFolderSHA_ONE).append(System.lineSeparator()); // repository sha-1
+        stringBuilder.append(this.prevCommitSHA_ONE).append(System.lineSeparator()); //last commit sha-1
         stringBuilder.append(this.comment).append(System.lineSeparator());
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Settings.DATE_FORMAT);
-        stringBuilder.append(dateFormat.format(date)).append(System.lineSeparator());
+        stringBuilder.append(new SimpleDateFormat(Settings.DATE_FORMAT).format(this.date)).append(System.lineSeparator());
         stringBuilder.append(this.creator).append(System.lineSeparator());
-        File commit = new File(currentRepository.getObjectPath().toString() + File.separator + DigestUtils.sha1Hex(stringBuilder.toString()));
+
+        this.SHA_ONE = DigestUtils.sha1Hex(stringBuilder.toString());
+
+        File commit = new File(currentRepository.getObjectPath().toString() + File.separator + this.SHA_ONE));
         commit.createNewFile();
         FileWriter fileWriter = new FileWriter(commit);
         fileWriter.write(stringBuilder.toString());
-        this.SHA_ONE = DigestUtils.sha1Hex(stringBuilder.toString());
-        fileWriter.close();
-    }
 
-    private boolean noChanges(Map<MapKeys, List<BasicFile>> listMap) {
-        for (Map.Entry<MapKeys,List<BasicFile>> entry : listMap.entrySet()) {
-            if(entry.getValue().size() > 0)
-                return false;
-        }
-        return true;
+        fileWriter.close();
     }
 
     private void createNewAndEditedFiles(Map<MapKeys, List<BasicFile>> listMap, Repository currentRepository) throws MyFileException {
@@ -117,6 +127,7 @@ public class Commit {
             return "";
         else {
             StringBuilder stringBuilder = new StringBuilder();
+
             return stringBuilder.toString();
         }
     }
@@ -125,13 +136,19 @@ public class Commit {
         return comment;
     }
 
-    public void setComment(String comment) {
-        this.comment = comment;
+    public String getRootFolderSHA_ONE() {
+        return rootFolderSHA_ONE;
     }
 
-    public void loadDataFromFile(Path objectPath, String commit_sha) throws IOException, ParseException {
+    public void setRootFolderSHA_ONE(String rootFolderSHA_ONE) {
+        this.rootFolderSHA_ONE = rootFolderSHA_ONE;
+    }
+
+    public void loadDataFromFile(Path objectPath, String commit_sha) throws IOException, RepositoryException {
         String prevCommit_sha;
+
         List<String> commitFile = Files.readAllLines(Paths.get(objectPath + File.separator + commit_sha));
+
         prevCommit_sha = commitFile.get(1);
         if (!prevCommit_sha.equals(Settings.EMPTY_COMMIT)) {
             this.prevCommit = new Commit(commitFile.get(1), objectPath.toString());
@@ -141,14 +158,45 @@ public class Commit {
             this.prevCommitSHA_ONE = Settings.EMPTY_COMMIT;
         }
         this.comment = commitFile.get(2);
-        this.SHA_ONE = commitFile.get(0);
+        //this.SHA_ONE = commitFile.get(0);
+        this.SHA_ONE = commit_sha;
+        this.rootFolderSHA_ONE = commitFile.get(0);
+        // TODO:: check who effects changing SHA_ONE to RootFolderSHA_ONE
         DateFormat df = new SimpleDateFormat(Settings.DATE_FORMAT);
-        this.date = df.parse(commitFile.get(3));
+        try {
+            this.date = df.parse(commitFile.get(3));
+        } catch (ParseException e) {
+            throw new RepositoryException(eErrorCodes.WRONG_DATE_FORM);
+        }
         this.creator = commitFile.get(4);
     }
 
     public Commit getPrevCommit() {
         return prevCommit;
+    }
+
+    public void setSHA_ONE(String SHA_ONE) {
+        this.SHA_ONE = SHA_ONE;
+    }
+
+    public void setPrevCommitSHA_ONE(String prevCommitSHA_ONE) {
+        this.prevCommitSHA_ONE = prevCommitSHA_ONE;
+    }
+
+    public void setComment(String comment) {
+        this.comment = comment;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setPrevCommit(Commit prevCommit) {
+        this.prevCommit = prevCommit;
     }
 
     @Override

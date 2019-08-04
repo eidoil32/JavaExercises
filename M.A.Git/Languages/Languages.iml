@@ -7,9 +7,5 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="external" level="project" />
-    <orderEntry type="module" module-name="Engine" />
-    <orderEntry type="module" module-name="Languages" />
-    <orderEntry type="module" module-name="Miscellaneous" />
   </component>
 </module>
