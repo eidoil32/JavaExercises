@@ -78,14 +78,16 @@ public class Commit {
         String pathToObject = xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER + File.separator + Settings.OBJECT_FOLDER;
         zipAllChainOfInherit(rootFolder, Paths.get(pathToObject));
 
-        List<PrecedingCommits.PrecedingCommit> prevCommits = commit.getPrecedingCommits().getPrecedingCommit();
-        if (prevCommits.size() > 2) {
-            throw new MyXMLException(eErrorCodesXML.TOO_MANY_PREV_COMMITS, commit.getId());
-        } else {
-            for (PrecedingCommits.PrecedingCommit precedingCommit : prevCommits) {
-                MagitSingleCommit tempCommit = XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), precedingCommit.getId());
-                MagitSingleFolder tempFolder = Folder.findRootFolder(xmlMagit.getMagitFolders().getMagitSingleFolder(), tempCommit.getRootFolder().getId());
-                addPrevCommit(XML_Parser(xmlMagit, tempCommit, Folder.XML_Parser(tempFolder, xmlMagit, null, xmlMagit.getLocation())));
+        if (commit.getPrecedingCommits() != null) {
+            List<PrecedingCommits.PrecedingCommit> prevCommits = commit.getPrecedingCommits().getPrecedingCommit();
+            if (prevCommits.size() > 2) {
+                throw new MyXMLException(eErrorCodesXML.TOO_MANY_PREV_COMMITS, commit.getId());
+            } else {
+                for (PrecedingCommits.PrecedingCommit precedingCommit : prevCommits) {
+                    MagitSingleCommit tempCommit = XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), precedingCommit.getId());
+                    MagitSingleFolder tempFolder = Folder.findRootFolder(xmlMagit.getMagitFolders().getMagitSingleFolder(), tempCommit.getRootFolder().getId());
+                    addPrevCommit(XML_Parser(xmlMagit, tempCommit, Folder.XML_Parser(tempFolder, xmlMagit, null, xmlMagit.getLocation())));
+                }
             }
         }
         temp.calcContent();
@@ -129,7 +131,6 @@ public class Commit {
         createNewAndEditedFiles(listMap, currentRepository);
         this.rootFolderSHA_ONE = currentRepository.getRootFolder().getSHA_ONE();
         currentRepository.setSHA_ONE(this.rootFolderSHA_ONE);
-
         if (listMap == null)
             throw new RepositoryException(eErrorCodes.NOTHING_NEW);
 
@@ -139,7 +140,7 @@ public class Commit {
         File commit = new File(currentRepository.getObjectPath().toString() + File.separator + this.SHA_ONE);
         commit.createNewFile();
         FileWriter fileWriter = new FileWriter(commit);
-        fileWriter.write(this.SHA_ONE);
+        fileWriter.write(this.content);
         fileWriter.close();
     }
 

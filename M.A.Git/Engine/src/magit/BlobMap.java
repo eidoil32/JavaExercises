@@ -93,4 +93,17 @@ public class BlobMap {
     public boolean isEmpty() {
         return map.isEmpty();
     }
+
+    public String getBasicData() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+            Blob blob = entry.getValue();
+            stringBuilder
+                    .append(blob.getName()).append(Settings.FOLDER_TABLE_DELIMITER)
+                    .append(blob.getSHA_ONE()).append(Settings.FOLDER_TABLE_DELIMITER)
+                    .append(System.lineSeparator());
+        }
+
+        return stringBuilder.toString();
+    }
 }

@@ -1,12 +1,14 @@
 package magit;
 
 
-import exceptions.MyFileException;
-import exceptions.RepositoryException;
-import exceptions.eErrorCodes;
+import exceptions.*;
 import languages.LangEN;
 import settings.Settings;
 import utils.MapKeys;
+import xml.basic.MagitBlob;
+import xml.basic.MagitRepository;
+import xml.basic.MagitSingleCommit;
+import xml.basic.MagitSingleFolder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +78,8 @@ public class Magit {
     public void setCurrentRepository(Repository currentRepository) {
         this.currentRepository = currentRepository;
         this.currentBranch = currentRepository.getActiveBranch();
-        this.rootFolder = currentRepository.getRootFolder().getFilePath();
+        if (currentRepository.getRootFolder() != null)
+            this.rootFolder = currentRepository.getRootFolder().getFilePath();
     }
 
     public void commitMagit(String currentUser, String comment) throws IOException, MyFileException, RepositoryException {
@@ -253,6 +257,48 @@ public class Magit {
     }
 
     public void afterXMLLayout() throws IOException {
-        layoutRepositoryByRootFolder(currentRepository.getRootFolder().getBlobMap().getMap());
+        if(currentRepository.getRootFolder() != null) {
+            layoutRepositoryByRootFolder(currentRepository.getRootFolder().getBlobMap().getMap());
+        }
+    }
+
+    public void deleteOldMagitFolder(String path) {
+        deleteOldFiles(path + File.separator + Settings.MAGIT_FOLDER);
+        new File(path + File.separator + Settings.MAGIT_FOLDER).delete();
+    }
+
+    public void basicCheckXML(MagitRepository magitRepository) throws MyXMLException {
+        List<MagitBlob> blobs = magitRepository.getMagitBlobs().getMagitBlob();
+        List<MagitSingleFolder> folders = magitRepository.getMagitFolders().getMagitSingleFolder();
+        List<MagitSingleCommit> commits = magitRepository.getMagitCommits().getMagitSingleCommit();
+
+        Map<Integer,Object> tempMap = new HashMap<>();
+
+        for (MagitBlob blob : blobs) {
+            if(tempMap.containsKey(Integer.parseInt(blob.getId()))) {
+                throw new MyXMLException(eErrorCodesXML.DUPLICATE_ID_NUMBER,blob.getId());
+            } else {
+                tempMap.put(Integer.parseInt(blob.getId()),blob);
+            }
+        }
+
+        tempMap = new HashMap<>();
+        for (MagitSingleFolder folder : folders) {
+            if(tempMap.containsKey(Integer.parseInt(folder.getId()))) {
+                throw new MyXMLException(eErrorCodesXML.DUPLICATE_ID_NUMBER,folder.getId());
+            } else {
+                tempMap.put(Integer.parseInt(folder.getId()),folder);
+            }
+        }
+
+        tempMap = new HashMap<>();
+        for (MagitSingleCommit commit : commits) {
+            if(tempMap.containsKey(Integer.parseInt(commit.getId()))) {
+                throw new MyXMLException(eErrorCodesXML.DUPLICATE_ID_NUMBER,commit.getId());
+            } else {
+                tempMap.put(Integer.parseInt(commit.getId()),commit);
+            }
+        }
+
     }
 }

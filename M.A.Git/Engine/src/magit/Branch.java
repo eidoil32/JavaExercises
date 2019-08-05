@@ -97,9 +97,15 @@ public class Branch {
 
     @Override
     public String toString() {
-        return LangEN.BRANCH_NAME + name + System.lineSeparator()
-                + LangEN.BRANCH_LAST_COMMIT_SHA + commit.getSHA_ONE() + System.lineSeparator()
-                + LangEN.BRANCH_LAST_COMMIT_COMMENT + commit.getComment() + System.lineSeparator();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(LangEN.BRANCH_NAME).append(name).append(System.lineSeparator());
+        if(commit != null) {
+            stringBuilder.append(LangEN.BRANCH_LAST_COMMIT_SHA).append(commit.getSHA_ONE()).append(System.lineSeparator());
+            stringBuilder.append(LangEN.BRANCH_LAST_COMMIT_COMMENT).append(commit.getComment()).append(System.lineSeparator());
+        } else {
+            stringBuilder.append(LangEN.BRANCH_NONE_POINT_COMMIT).append(System.lineSeparator());
+        }
+        return stringBuilder.toString();
     }
 
     public String getName() {

@@ -30,6 +30,7 @@ public class Settings {
             MAGIT_FOLDER = ".magit",
             COMMIT_MAP = "COMMIT_MAP",
             TEMP_FILE = "temp.magit",
+            EMPTY_STRING = "",
             XML_EXTENSION = "xml",
             BASIC_SLASH = "/",
             SEPARATOR_PATTERN = Pattern.quote(File.separator),

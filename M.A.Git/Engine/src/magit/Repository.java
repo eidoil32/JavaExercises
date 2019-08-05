@@ -1,9 +1,7 @@
 package magit;
 
-import exceptions.MyFileException;
-import exceptions.MyXMLException;
-import exceptions.RepositoryException;
-import exceptions.eErrorCodes;
+import exceptions.*;
+import languages.LangEN;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
@@ -72,6 +70,10 @@ public class Repository {
 
     public static Repository XML_RepositoryFactory(MagitRepository xmlMagit)
             throws IOException, MyXMLException, RepositoryException, MyFileException {
+        if(new File(xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER).exists()) {
+            throw new MyXMLException(eErrorCodesXML.ALREADY_EXIST_FOLDER,xmlMagit.getLocation());
+        }
+        boolean hasHead = false;
         Repository repository = new Repository(xmlMagit.getLocation());
         repository.setName(xmlMagit.getName());
         Commit tempInstance = new Commit();
@@ -82,18 +84,30 @@ public class Repository {
 
         for (MagitSingleBranch branch : branches) {
             String commitID = branch.getPointedCommit().getId();
-            MagitSingleCommit pointedMagitCommit = Commit.XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), commitID);
-            MagitSingleFolder pointedRootFolder = Folder.findRootFolder(folders, pointedMagitCommit.getRootFolder().getId());
-            Folder rootFolder = Folder.XML_Parser(pointedRootFolder, xmlMagit, null, xmlMagit.getLocation());
-            Commit pointedCommit = tempInstance.XML_Parser(xmlMagit, pointedMagitCommit, rootFolder);
-            Branch temp = Branch.XML_Parser(branch, pointedCommit, repository.getBranchesPath().toString());
+            Branch temp;
+            Folder rootFolder;
+            if (commitID.equals(Settings.EMPTY_STRING)) {
+                temp = new Branch(branch.getName(), null, repository.branchesPath.toString());
+                rootFolder = new Folder(Paths.get(xmlMagit.getLocation()), LangEN.USER_ADMINISTRATOR);
+            } else {
+                MagitSingleCommit pointedMagitCommit = Commit.XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), commitID);
+                MagitSingleFolder pointedRootFolder = Folder.findRootFolder(folders, pointedMagitCommit.getRootFolder().getId());
+                rootFolder = Folder.XML_Parser(pointedRootFolder, xmlMagit, null, xmlMagit.getLocation());
+                Commit pointedCommit = tempInstance.XML_Parser(xmlMagit, pointedMagitCommit, rootFolder);
+                temp = Branch.XML_Parser(branch, pointedCommit, repository.getBranchesPath().toString());
+            }
             repository.addBranch(temp);
             if (branch.getName().equals(headName)) {
                 repository.addBranch(new Branch(true, temp));
                 repository.updateHeadFile(headName);
                 repository.lastCommit = temp.getCommit();
                 repository.rootFolder = rootFolder;
+                hasHead = true;
             }
+        }
+
+        if(!hasHead) {
+            throw new MyXMLException(eErrorCodesXML.HEAD_POINT_TO_NONSEXIST_BRANCH,headName);
         }
 
         return repository;
@@ -184,11 +198,20 @@ public class Repository {
             } else {
                 Folder folder = (Folder) blob;
                 if (!newFiles.containsKey(folder)) {
-                    deletedList.add(folder);
+                    addAllSubFilesToDeleteList(folder, deletedList);
                 } else {
                     Folder newFolder = (Folder) newFiles.get(folder);
                     scanForDeletedFiles(newFolder.getBlobMap().getMap(), folder.getBlobMap().getMap(), deletedList);
                 }
+            }
+        }
+    }
+
+    private void addAllSubFilesToDeleteList(Folder folder, List<BasicFile> deletedList) {
+        for (Map.Entry<BasicFile, Blob> entry : folder.getBlobMap().getMap().entrySet()) {
+            deletedList.add(entry.getValue());
+            if (entry.getValue().getType() == eFileTypes.FOLDER) {
+                addAllSubFilesToDeleteList((Folder) entry.getValue(), deletedList);
             }
         }
     }
@@ -237,15 +260,17 @@ public class Repository {
     private Commit loadFromHEAD(Path branchesPath) {
         File head = new File(branchesPath + File.separator + Settings.MAGIT_BRANCH_HEAD);
         if (head.exists()) {
-            Commit commit;
+            Commit commit = null;
             try {
                 List<String> activeBranch = Files.readAllLines(Paths.get(branchesPath + File.separator + Settings.MAGIT_BRANCH_HEAD));
                 List<String> commitFile = Files.readAllLines(Paths.get(branchesPath + File.separator + activeBranch.get(0)));
-                String commit_sha = commitFile.get(0);
-                if (commit_sha != null)
-                    commit = new Commit(commitFile.get(0), objectPath.toString());
-                else
-                    commit = null;
+                if (commitFile.size() == 1) {
+                    String commit_sha = commitFile.get(0);
+                    if (commit_sha != null)
+                        commit = new Commit(commitFile.get(0), objectPath.toString());
+                    else
+                        commit = null;
+                }
             } catch (IOException e) {
                 commit = null;
             }
@@ -426,9 +451,6 @@ public class Repository {
         return branchesPath;
     }
 
-    public Path getCurrentPath() {
-        return currentPath;
-    }
 
     public Commit getLastCommit() {
         return lastCommit;
@@ -446,10 +468,6 @@ public class Repository {
         return name;
     }
 
-    public String getSHA_ONE() {
-        return SHA_ONE;
-    }
-
     public void setSHA_ONE(String SHA_ONE) {
         this.SHA_ONE = SHA_ONE;
     }
@@ -458,15 +476,7 @@ public class Repository {
         return rootFolder;
     }
 
-    public void setRootFolder(Folder rootFolder) {
-        this.rootFolder = rootFolder;
-    }
-
-    public void setBranches(List<Branch> branches) {
-        this.branches = branches;
-    }
-
-    public void setName(String name) throws IOException {
+    private void setName(String name) throws IOException {
         File repoName = new File(repoNamePath.toString());
         PrintWriter writer;
         try {

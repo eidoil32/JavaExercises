@@ -114,7 +114,7 @@ public class Folder extends Blob {
                 return folder;
             }
         }
-        throw new MyXMLException(eErrorCodesXML.NONE_ROOT_FOLDER, null);
+        throw new MyXMLException(eErrorCodesXML.COMMIT_POINT_TO_NONE_ROOT_FOLDER, null);
     }
 
     public static List<MagitBlob> getBlobs(MagitSingleFolder root, List<MagitBlob> blobs) throws MyXMLException {
@@ -165,7 +165,7 @@ public class Folder extends Blob {
             if (entry.getValue().getType() == eFileTypes.FOLDER)
                 ((Folder) entry.getValue()).calcFolderSHAONE();
         }
-        this.setContent(blobMap.toString());
+        this.setContent(blobMap.getBasicData());
         this.setSHA_ONE(DigestUtils.sha1Hex(getContent()));
     }
 

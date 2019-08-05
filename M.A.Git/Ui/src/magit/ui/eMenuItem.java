@@ -1,9 +1,6 @@
 package magit.ui;
 
-import exceptions.MyFileException;
-import exceptions.MyXMLException;
-import exceptions.RepositoryException;
-import exceptions.eErrorCodes;
+import exceptions.*;
 import languages.LangEN;
 import magit.*;
 import org.apache.commons.io.FilenameUtils;
@@ -26,23 +23,34 @@ public enum eMenuItem {
             if (xmlFile.exists()) {
                 String extension = FilenameUtils.getExtension(xmlFile.getName());
                 if (extension.equals(Settings.XML_EXTENSION)) {
-                    try {
-                        File initialFile = new File(xmlPath);
-                        InputStream inputStream = new FileInputStream(initialFile);
-                        MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
-                        magit.setCurrentRepository(Repository.XML_RepositoryFactory(magitRepository));
-                        magit.afterXMLLayout();
-                        return LangEN.LOAD_REPOSITORY_FROM_XML_SUCCESSED;
-                    } catch (IOException e) {
-                        return LangEN.UNKNOWN_FATAL_ERROR + e.getMessage();
-                    } catch (RepositoryException e) {
-                        return e.getCode().getMessage();
-                    } catch (MyFileException e) {
-                        return e.getCode().getMessage();
-                    } catch (MyXMLException e) {
-                        return e.getMessage();
-                    } catch (JAXBException e) {
-                        return LangEN.XML_PARSE_FAILED;
+                    while(true) {
+                        try {
+                            File initialFile = new File(xmlPath);
+                            InputStream inputStream = new FileInputStream(initialFile);
+                            MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
+                            magit.basicCheckXML(magitRepository);
+                            magit.setCurrentRepository(Repository.XML_RepositoryFactory(magitRepository));
+                            magit.afterXMLLayout();
+                            return LangEN.LOAD_REPOSITORY_FROM_XML_SUCCESSED;
+                        } catch (IOException e) {
+                            return LangEN.UNKNOWN_FATAL_ERROR + e.getMessage();
+                        } catch (RepositoryException e) {
+                            return e.getCode().getMessage();
+                        } catch (MyFileException e) {
+                            return e.getCode().getMessage();
+                        } catch (MyXMLException e) {
+                            System.out.println(LangEN.ERROR_WHILE_LOAD_XML);
+                            if (e.getCode() == eErrorCodesXML.ALREADY_EXIST_FOLDER) {
+                                String choice = printAndAskFromString(LangEN.XML_DELETE_AND_START_NEW_REPOSITORY);
+                                if (choice.equals(LangEN.LOWERCASE_SHORT_YES) || choice.equals(LangEN.LOWERCASE_LONG_YES)) {
+                                    magit.deleteOldMagitFolder(e.getAdditionalData());
+                                }
+                            } else {
+                                return e.getMessage();
+                            }
+                        } catch (JAXBException e) {
+                            return LangEN.XML_PARSE_FAILED;
+                        }
                     }
                 } else {
                     return LangEN.NONE_XML_FILE_EXTINCTION;

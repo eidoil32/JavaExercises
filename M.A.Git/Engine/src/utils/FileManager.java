@@ -34,9 +34,11 @@ public class FileManager {
         if (file.getType() == eFileTypes.FOLDER) {
             File folderTXT = new File(pathToObject.toString() + File.separator + Settings.TEMP_FOLDER_NAME);
             try {
+                Folder temp = (Folder)file;
                 folderTXT.createNewFile();
                 PrintWriter writer = new PrintWriter(folderTXT.getPath());
-                writer.println(((Folder) file).getContent());
+                temp.setContent(temp.getBlobMap().toString());
+                writer.println(temp.getContent());
                 writer.close();
                 sourceFile = folderTXT.getPath();
             } catch (IOException e) {
