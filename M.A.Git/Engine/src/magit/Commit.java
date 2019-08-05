@@ -6,10 +6,9 @@ import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
 import utils.FileManager;
 import utils.MapKeys;
-import xml.basic.MagitRepository;
-import xml.basic.MagitSingleCommit;
-import xml.basic.MagitSingleFolder;
-import xml.basic.PrecedingCommits;
+import utils.WarpBasicFile;
+import utils.WarpInteger;
+import xml.basic.*;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,6 +20,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -210,5 +210,77 @@ public class Commit {
                 + LangEN.COMMIT_COMMENT + comment + System.lineSeparator()
                 + LangEN.COMMIT_DATE + date + System.lineSeparator()
                 + LangEN.COMMIT_CREATOR + creator + System.lineSeparator();
+    }
+
+    public List<MagitSingleCommit> convertToXMLCommit(Repository instance, BlobMap rootBlob, Map<String, Object> values) throws RepositoryException, IOException, MyFileException {
+        List<MagitSingleCommit> commits = new LinkedList<>();
+
+        Map<Commit, Integer> commitIntegerMap = (Map<Commit, Integer>) values.get(Settings.KEY_ALL_COMMITS);
+        MagitSingleCommit singleCommit = new MagitSingleCommit();
+
+        if (prevCommit != null) {
+            commits.addAll(prevCommit.convertToXMLCommit(instance, instance.loadDataFromCommit(prevCommit), values));
+            if (commitIntegerMap.containsKey(prevCommit)) {
+                PrecedingCommits precedingCommits = new PrecedingCommits();
+                PrecedingCommits.PrecedingCommit precedingCommit = new PrecedingCommits.PrecedingCommit();
+                precedingCommit.setId(commitIntegerMap.get(prevCommit).toString());
+                precedingCommits.getPrecedingCommit().add(precedingCommit);
+                singleCommit.setPrecedingCommits(precedingCommits);
+            } else {
+                singleCommit.setPrecedingCommits(new PrecedingCommits());
+            }
+        }
+
+        WarpInteger counterFolders = (WarpInteger) values.get(Settings.KEY_COUNTER_FOLDERS);
+        WarpInteger counterCommits = (WarpInteger) values.get(Settings.KEY_COUNTER_COMMIT);
+
+        singleCommit.setMessage(this.comment);
+        singleCommit.setDateOfCreation(new SimpleDateFormat(Settings.DATE_FORMAT).format(this.date));
+        singleCommit.setAuthor(this.creator);
+        singleCommit.setId(counterCommits.toString());
+        commitIntegerMap.put(this, counterCommits.number);
+        counterCommits.inc();
+
+        Folder temp = new Folder();
+        temp.setBlobMap(rootBlob);
+        temp.setDate(this.date);
+        temp.setType(eFileTypes.FOLDER);
+        temp.setEditorName(this.creator);
+        temp.calcFolderSHAONE();
+
+        RootFolder folder = new RootFolder();
+        folder.setId(counterFolders.toString());
+
+        singleCommit.setRootFolder(folder);
+        Map<WarpBasicFile, Integer> myFolders = (Map<WarpBasicFile, Integer>) values.get(Settings.KEY_ALL_FOLDERS);
+        myFolders.put(new WarpBasicFile(temp), counterFolders.number);
+        counterFolders.inc();
+
+        getListOfItems(rootBlob, values);
+        commits.add(singleCommit);
+        return commits;
+    }
+
+    private void getListOfItems(BlobMap rootBlob, Map<String, Object> values) {
+        Map<WarpBasicFile, Integer> myBlobs = (Map<WarpBasicFile, Integer>) values.get(Settings.KEY_ALL_FILES);
+        Map<WarpBasicFile, Integer> myFolders = (Map<WarpBasicFile, Integer>) values.get(Settings.KEY_ALL_FOLDERS);
+        WarpInteger counterBlobs = (WarpInteger) values.get(Settings.KEY_COUNTER_FILES);
+        WarpInteger counterFolders = (WarpInteger) values.get(Settings.KEY_COUNTER_FOLDERS);
+
+        for (Map.Entry<BasicFile, Blob> entry : rootBlob.getMap().entrySet()) {
+            WarpBasicFile temp = new WarpBasicFile(entry.getValue());
+            if (entry.getValue().getType() == eFileTypes.FILE) {
+                if (!myBlobs.containsKey(temp)) {
+                    myBlobs.put(new WarpBasicFile(entry.getValue()), counterBlobs.number);
+                    counterBlobs.inc();
+                }
+            } else {
+                if (!myFolders.containsKey(temp)) {
+                    myFolders.put(new WarpBasicFile(entry.getValue()), counterFolders.number);
+                    counterFolders.inc();
+                }
+                getListOfItems(((Folder) entry.getValue()).getBlobMap(), values);
+            }
+        }
     }
 }

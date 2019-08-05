@@ -5,7 +5,7 @@ public class MyFileException extends Exception {
     private String filename;
 
     public MyFileException(eErrorCodes code, String filename) {
-        super();
+        super(String.format(code.getMessage(),filename));
         this.code = code;
         this.filename = filename;
     }

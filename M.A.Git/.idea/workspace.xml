@@ -10,31 +10,37 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/Engine/src/utils/WarpBasicFile.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/src/utils/WarpInteger.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Branch.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Branch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/magit/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Commit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Folder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/magit/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Repository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/LangEN.java" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/LangEN.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/MyXMLException.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/MyXMLException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/MyFileException.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/MyFileException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodesXML.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodesXML.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java" beforeDir="false" afterPath="$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/BlobMap.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/BlobMap.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Branch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Branch.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/META-INF/Engine.kotlin_module" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Folder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Folder.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Languages/META-INF/Languages.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/LangEN.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/LangEN.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/M.A.Git/META-INF/M.A.Git.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/META-INF/Miscellaneous.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/MyFileException.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/MyFileException.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodesXML.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodesXML.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Ui/META-INF/Ui.kotlin_module" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$10.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$10.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$11.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$11.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$12.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$12.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$13.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$13.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$14.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$14.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$2.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$2.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$3.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$4.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$4.class" afterDir="false" />
@@ -45,7 +51,6 @@
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$9.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem$9.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Ui/magit/ui/eMenuItem.class" afterDir="false" />
     </list>
-    <ignored path="$PROJECT_DIR$/out/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -71,118 +76,6 @@
   </component>
   <component name="DefaultGradleProjectSettings">
     <option name="isMigrated" value="true" />
-  </component>
-  <component name="FileEditorManager">
-    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/magit/Folder.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="287">
-              <caret line="114" column="13" selection-start-line="114" selection-start-column="13" selection-end-line="114" selection-end-column="13" />
-              <folding>
-                <element signature="method#parseByID#0;class#Folder#0" />
-                <element signature="method#getBlobs#0;class#Folder#0" />
-                <element signature="method#findBlobById#0;class#Folder#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="251">
-              <caret line="43" column="66" lean-forward="true" selection-start-line="43" selection-start-column="66" selection-end-line="43" selection-end-column="66" />
-              <folding>
-                <element signature="method#eMenuItem#0;class#eMenuItem#0" />
-                <element signature="method#isAllow#0;class#eMenuItem#0" />
-                <element signature="method#getName#0;class#eMenuItem#0" />
-                <element signature="method#getItem#0;class#eMenuItem#0" />
-                <element signature="method#getItem#1;class#eMenuItem#0" />
-                <element signature="method#printAndAskFromString#0;class#eMenuItem#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/magit/Blob.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="120">
-              <caret line="124" selection-start-line="124" selection-end-line="124" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/magit/Commit.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="423">
-              <caret line="87" column="68" selection-start-line="87" selection-start-column="68" selection-end-line="87" selection-end-column="68" />
-              <folding>
-                <element signature="method#Commit#1;class#Commit#0" />
-                <element signature="method#Commit#2;class#Commit#0" />
-                <element signature="method#addPrevCommit#0;class#Commit#0" />
-                <element signature="method#getComment#0;class#Commit#0" />
-                <element signature="method#loadDataFromFile#0;class#Commit#0" />
-                <element signature="method#getPrevCommit#0;class#Commit#0" />
-                <element signature="method#toString#0;class#Commit#0" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/magit/Magit.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="352">
-              <caret line="268" lean-forward="true" selection-start-line="268" selection-end-line="268" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Engine/src/magit/Repository.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="431">
-              <caret line="93" column="64" selection-start-line="93" selection-start-column="64" selection-end-line="93" selection-end-column="64" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Languages/Languages.iml">
-          <provider selected="true" editor-type-id="text-editor" />
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Languages/src/languages/LangEN.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="30">
-              <caret line="9" column="99" selection-start-line="9" selection-start-column="99" selection-end-line="9" selection-end-column="99" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodesXML.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="170">
-              <caret line="10" column="24" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="24" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitSingleCommit.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="103">
-              <caret line="99" selection-start-line="99" selection-end-line="99" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -239,166 +132,14 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="IdeDocumentHistory">
-    <option name="CHANGED_PATHS">
-      <list>
-        <option value="$PROJECT_DIR$/Ui/src/magit/ui/Main.java" />
-        <option value="$PROJECT_DIR$/Ui/src/magit/exceptions/eErrorCodes.java" />
-        <option value="$PROJECT_DIR$/Engine/src/utils/ParseSHA.java" />
-        <option value="$PROJECT_DIR$/Ui/src/magit/settings/Settings.java" />
-        <option value="$PROJECT_DIR$/src/exceptions/eErrorCodes.java" />
-        <option value="$PROJECT_DIR$/src/exceptions/ExceptionLang.java" />
-        <option value="$PROJECT_DIR$/Ui/src/magit/settings/LangEN.java" />
-        <option value="$PROJECT_DIR$/Engine/src/utils/LangEN.java" />
-        <option value="$PROJECT_DIR$/Languages/src/LangEN.java" />
-        <option value="$PROJECT_DIR$/Engine/src/utils/Settings.java" />
-        <option value="$PROJECT_DIR$/Miscellaneous/src/settings/MapKeys.java" />
-        <option value="$PROJECT_DIR$/Ui/src/META-INF/MANIFEST.MF" />
-        <option value="$PROJECT_DIR$/Languages/src/languages/English_en.properties" />
-        <option value="$PROJECT_DIR$/Languages/src/languages/LanguagesManager.java" />
-        <option value="$PROJECT_DIR$/Languages/src/languages/English.java" />
-        <option value="$PROJECT_DIR$/Languages/src/languages/language_en_US.properties" />
-        <option value="$PROJECT_DIR$/Ui/src/magit/ui/MainMenu.java" />
-        <option value="$PROJECT_DIR$/Engine/src/utils/MapKeys.java" />
-        <option value="$PROJECT_DIR$/Miscellaneous/src/exceptions/ExceptionLang.java" />
-        <option value="$PROJECT_DIR$/Engine/src/magit/Blob.java" />
-        <option value="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" />
-        <option value="$PROJECT_DIR$/Engine/src/magit/BasicFile.java" />
-        <option value="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" />
-        <option value="$PROJECT_DIR$/Engine/src/magit/Branch.java" />
-        <option value="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" />
-        <option value="$PROJECT_DIR$/Engine/src/utils/FileManager.java" />
-        <option value="$PROJECT_DIR$/Miscellaneous/src/exceptions/MyXMLException.java" />
-        <option value="$PROJECT_DIR$/Ui/src/magit/ui/UIEngine.java" />
-        <option value="$PROJECT_DIR$/Engine/src/magit/Repository.java" />
-        <option value="$PROJECT_DIR$/Engine/src/magit/Commit.java" />
-        <option value="$PROJECT_DIR$/Engine/src/magit/Folder.java" />
-        <option value="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodesXML.java" />
-        <option value="$PROJECT_DIR$/Languages/src/languages/LangEN.java" />
-        <option value="$PROJECT_DIR$/Engine/src/magit/Magit.java" />
-        <option value="$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java" />
-      </list>
-    </option>
-  </component>
-  <component name="MavenProjectNavigator">
-    <treeState>
-      <expand />
-      <select />
-    </treeState>
-  </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="50" />
     <option name="y" value="-10" />
     <option name="width" value="1875" />
     <option name="height" value="1100" />
   </component>
+  <component name="ProjectId" id="1Ozl0sQJwaBkJM9O7wljOjh22NT" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
-  <component name="ProjectView">
-    <navigator proportions="" version="1">
-      <foldersAlwaysOnTop value="true" />
-    </navigator>
-    <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope" />
-      <pane id="ProjectPane">
-        <subPane>
-          <expand>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Engine" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Engine" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Engine" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="magit" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Engine" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="utils" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Languages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Languages" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Languages" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="languages" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Miscellaneous" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Miscellaneous" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Miscellaneous" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="exceptions" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Miscellaneous" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="settings" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Ui" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Ui" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="M.A.Git" type="b2602c69:ProjectViewProjectNode" />
-              <item name="M.A.Git" type="462c0819:PsiDirectoryNode" />
-              <item name="Ui" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="ui" type="462c0819:PsiDirectoryNode" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
-    </panes>
-  </component>
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
@@ -478,6 +219,9 @@
       <workItem from="1564679228284" duration="36652000" />
       <workItem from="1564899138383" duration="22503000" />
       <workItem from="1564939979692" duration="7566000" />
+      <workItem from="1564988088381" duration="4195000" />
+      <workItem from="1564996414165" duration="2428000" />
+      <workItem from="1565016928720" duration="15108000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -517,9 +261,6 @@
     <option name="localTasksCounter" value="6" />
     <servers />
   </component>
-  <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="124851000" />
-  </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
@@ -529,74 +270,21 @@
       <is-autoscroll-to-source value="true" />
     </todo-panel>
   </component>
-  <component name="ToolWindowManager">
-    <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
-    <editor active="true" />
-    <layout>
-      <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49756098" visible="true" weight="0.2872483" />
-      <window_info id="Structure" order="1" sideWeight="0.502439" side_tool="true" weight="0.25637585" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49932885" weight="0.80311614" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.49433428" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3286119" />
-      <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.3286119" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50067115" side_tool="true" weight="0.55807364" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.21246459" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Database" order="4" weight="0.3295302" />
-      <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Capture Analysis" order="6" />
-      <window_info anchor="right" id="Palette&#9;" order="7" />
-      <window_info anchor="right" id="Maven" order="8" weight="0.3295302" />
-    </layout>
-    <layout-to-restore>
-      <window_info active="true" content_ui="combo" id="Project" order="0" sideWeight="0.49756098" visible="true" weight="0.28322148" />
-      <window_info id="Structure" order="1" sideWeight="0.502439" side_tool="true" weight="0.25637585" />
-      <window_info id="Image Layers" order="2" />
-      <window_info id="Designer" order="3" />
-      <window_info id="UI Designer" order="4" />
-      <window_info id="Capture Tool" order="5" />
-      <window_info id="Favorites" order="6" side_tool="true" />
-      <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" weight="0.3286119" />
-      <window_info anchor="bottom" id="Run" order="2" sideWeight="0.49932885" weight="0.57648724" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.5609065" />
-      <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
-      <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
-      <window_info anchor="bottom" id="TODO" order="6" weight="0.3286119" />
-      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Version Control" order="8" weight="0.3286119" />
-      <window_info anchor="bottom" id="Database Changes" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" weight="0.3286119" />
-      <window_info anchor="bottom" id="Event Log" order="11" sideWeight="0.50067115" side_tool="true" weight="0.55807364" />
-      <window_info anchor="bottom" id="Messages" order="12" weight="0.64730877" />
-      <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
-      <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
-      <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
-      <window_info anchor="right" id="Palette" order="3" />
-      <window_info anchor="right" id="Database" order="4" weight="0.3295302" />
-      <window_info anchor="right" id="Theme Preview" order="5" />
-      <window_info anchor="right" id="Capture Analysis" order="6" />
-      <window_info anchor="right" id="Palette&#9;" order="7" />
-      <window_info anchor="right" id="Maven" order="8" weight="0.3295302" />
-    </layout-to-restore>
-  </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="COLUMN_ORDER" />
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Split to 2 modules (Ui and Engine)" />
@@ -610,371 +298,12 @@
     <watches-manager>
       <configuration name="Application">
         <watch expression="SHA_ONE.value" />
+        <watch expression="commits" />
+        <watch expression="((HashMap)values).entrySet().toArray()[6]" custom="java.util.HashMap" />
+        <watch expression="((HashMap)values).entrySet().toArray()[3]" custom="java.util.HashMap" />
+        <watch expression="magitRepository" />
       </configuration>
     </watches-manager>
-  </component>
-  <component name="editorHistoryManager">
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/lang/Throwable.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="227">
-          <caret line="375" column="18" selection-start-line="375" selection-start-column="18" selection-end-line="375" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Languages/src/languages/language_en_US.properties" />
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/eFileTypes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="12" selection-start-line="2" selection-start-column="12" selection-end-line="2" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/external/commons-io-2.6.jar!/org/apache/commons/io/Charsets.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="52" selection-start-line="52" selection-end-line="52" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/external/commons-io-2.6.jar!/org/apache/commons/io/FileUtils.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="100">
-          <caret line="1027" selection-start-line="1027" selection-end-line="1027" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/util/Objects.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="22">
-          <caret line="202" column="18" selection-start-line="202" selection-start-column="18" selection-end-line="202" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/util/HashMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="1476" selection-start-line="1476" selection-end-line="1476" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/test.java" />
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/exceptions/ExceptionLang.java" />
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/util/Comparator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-113">
-          <caret line="472" column="47" lean-forward="true" selection-start-line="472" selection-start-column="47" selection-end-line="472" selection-end-column="47" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="199">
-          <caret line="15" column="42" selection-start-line="15" selection-start-column="27" selection-end-line="15" selection-end-column="42" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/java/util/List.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="176">
-          <caret line="540" column="40" selection-start-line="540" selection-start-column="15" selection-end-line="540" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/ObjectFactory.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="476">
-          <caret line="33" column="37" selection-start-line="33" selection-start-column="37" selection-end-line="33" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="102">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/javax/xml/bind/helpers/AbstractUnmarshallerImpl.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="95">
-          <caret line="199" selection-start-line="199" selection-end-line="199" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_201/src.zip!/javax/xml/bind/Unmarshaller.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="453" column="18" selection-start-line="453" selection-start-column="18" selection-end-line="453" selection-end-column="18" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/external/commons-io-2.6.jar!/org/apache/commons/io/FilenameUtils.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="129">
-          <caret line="374" selection-start-line="374" selection-end-line="374" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/external/commons-codec-1.12.jar!/org/apache/commons/codec/binary/StringUtils.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="75" selection-start-line="75" selection-end-line="75" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="324">
-          <caret line="32" column="30" selection-start-line="32" selection-start-column="30" selection-end-line="32" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitBranches.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="61" selection-start-line="61" selection-end-line="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/MainMenu.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="159">
-          <caret line="13" selection-start-line="13" selection-end-line="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Branch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-614">
-          <caret line="54" column="16" selection-start-line="54" selection-start-column="16" selection-end-line="54" selection-end-column="16" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/utils/MapKeys.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="110">
-          <caret line="22" selection-start-line="22" selection-end-line="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="jar://$PROJECT_DIR$/external/commons-codec-1.12.jar!/org/apache/commons/codec/digest/DigestUtils.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="104">
-          <caret line="192" selection-start-line="192" selection-end-line="192" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/utils/FileManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="40" column="50" selection-start-line="40" selection-start-column="50" selection-end-line="40" selection-end-column="50" />
-          <folding>
-            <element signature="method#readFile#0;class#FileManager#0" />
-            <element signature="method#unZipFile#0;class#FileManager#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/exceptions/RepositoryException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" selection-start-line="10" selection-end-line="10" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/exceptions/MyFileException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="34">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/UIEngine.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="420">
-          <caret line="63" column="11" selection-start-line="63" selection-start-column="4" selection-end-line="63" selection-end-column="11" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/exceptions/MyXMLException.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="17" column="37" selection-start-line="17" selection-start-column="37" selection-end-line="17" selection-end-column="37" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitSingleBranch.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="231" selection-start-line="231" selection-end-line="231" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitBlobs.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="252">
-          <caret line="74" selection-start-line="74" selection-end-line="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitCommits.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="74" selection-start-line="74" selection-end-line="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/PrecedingCommits.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="118">
-          <caret line="120" selection-start-line="120" selection-end-line="120" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitFolders.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="244">
-          <caret line="74" selection-start-line="74" selection-end-line="74" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/RootFolder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="126">
-          <caret line="51" selection-start-line="51" selection-end-line="51" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitRepository.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="78">
-          <caret line="90" selection-start-line="90" selection-end-line="90" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitSingleFolder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="184" selection-start-line="184" selection-end-line="184" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/Item.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="85" selection-start-line="85" selection-end-line="85" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitBlob.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="164" selection-start-line="164" selection-end-line="164" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/BasicFile.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="30" selection-start-line="30" selection-end-line="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/BlobMap.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="256">
-          <caret line="106" selection-start-line="106" selection-end-line="106" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Blob.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="120">
-          <caret line="124" selection-start-line="124" selection-end-line="124" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/xml/basic/MagitSingleCommit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="103">
-          <caret line="99" selection-start-line="99" selection-end-line="99" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Languages/Languages.iml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Commit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="423">
-          <caret line="87" column="68" selection-start-line="87" selection-start-column="68" selection-end-line="87" selection-end-column="68" />
-          <folding>
-            <element signature="method#Commit#1;class#Commit#0" />
-            <element signature="method#Commit#2;class#Commit#0" />
-            <element signature="method#addPrevCommit#0;class#Commit#0" />
-            <element signature="method#getComment#0;class#Commit#0" />
-            <element signature="method#loadDataFromFile#0;class#Commit#0" />
-            <element signature="method#getPrevCommit#0;class#Commit#0" />
-            <element signature="method#toString#0;class#Commit#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Folder.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="287">
-          <caret line="114" column="13" selection-start-line="114" selection-start-column="13" selection-end-line="114" selection-end-column="13" />
-          <folding>
-            <element signature="method#parseByID#0;class#Folder#0" />
-            <element signature="method#getBlobs#0;class#Folder#0" />
-            <element signature="method#findBlobById#0;class#Folder#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Languages/src/languages/LangEN.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="30">
-          <caret line="9" column="99" selection-start-line="9" selection-start-column="99" selection-end-line="9" selection-end-column="99" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodesXML.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="24" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Repository.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="93" column="64" selection-start-line="93" selection-start-column="64" selection-end-line="93" selection-end-column="64" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Engine/src/magit/Magit.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="352">
-          <caret line="268" lean-forward="true" selection-start-line="268" selection-end-line="268" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Ui/src/magit/ui/eMenuItem.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="251">
-          <caret line="43" column="66" lean-forward="true" selection-start-line="43" selection-start-column="66" selection-end-line="43" selection-end-column="66" />
-          <folding>
-            <element signature="method#eMenuItem#0;class#eMenuItem#0" />
-            <element signature="method#isAllow#0;class#eMenuItem#0" />
-            <element signature="method#getName#0;class#eMenuItem#0" />
-            <element signature="method#getItem#0;class#eMenuItem#0" />
-            <element signature="method#getItem#1;class#eMenuItem#0" />
-            <element signature="method#printAndAskFromString#0;class#eMenuItem#0" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
   </component>
   <component name="masterDetails">
     <states>

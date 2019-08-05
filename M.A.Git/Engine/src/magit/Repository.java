@@ -72,6 +72,10 @@ public class Repository {
             throws IOException, MyXMLException, RepositoryException, MyFileException {
         if(new File(xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER).exists()) {
             throw new MyXMLException(eErrorCodesXML.ALREADY_EXIST_FOLDER,xmlMagit.getLocation());
+        } else if (new File(xmlMagit.getLocation()).exists()) {
+            File target = new File(xmlMagit.getLocation());
+            if(target.listFiles() != null && target.listFiles().length > 0)
+                throw new MyXMLException(eErrorCodesXML.TARGET_FOLDER_NOT_EMPTY,xmlMagit.getLocation());
         }
         boolean hasHead = false;
         Repository repository = new Repository(xmlMagit.getLocation());
@@ -199,6 +203,7 @@ public class Repository {
                 Folder folder = (Folder) blob;
                 if (!newFiles.containsKey(folder)) {
                     addAllSubFilesToDeleteList(folder, deletedList);
+                    deletedList.add(blob);
                 } else {
                     Folder newFolder = (Folder) newFiles.get(folder);
                     scanForDeletedFiles(newFolder.getBlobMap().getMap(), folder.getBlobMap().getMap(), deletedList);
@@ -266,7 +271,7 @@ public class Repository {
                 List<String> commitFile = Files.readAllLines(Paths.get(branchesPath + File.separator + activeBranch.get(0)));
                 if (commitFile.size() == 1) {
                     String commit_sha = commitFile.get(0);
-                    if (commit_sha != null)
+                    if (!commit_sha.equals(Settings.EMPTY_COMMIT))
                         commit = new Commit(commitFile.get(0), objectPath.toString());
                     else
                         commit = null;
@@ -392,7 +397,11 @@ public class Repository {
                 if (!file.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
                     List<String> commit = Files.readAllLines(file.toPath());
                     Branch branch = new Branch(file.getName());
-                    branch.setCommit(new Commit(commit.get(0), objectPath.toString()), branchesPath.toString());
+                    if(!commit.get(0).equals(Settings.EMPTY_COMMIT)) {
+                        branch.setCommit(new Commit(commit.get(0), objectPath.toString()), branchesPath.toString());
+                    } else {
+                        branch.setCommit(null,branchesPath.toString());
+                    }
                     branches.add(branch);
                 } else {
                     headBranch = file;
