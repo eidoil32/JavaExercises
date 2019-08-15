@@ -70,12 +70,12 @@ public class Repository {
 
     public static Repository XML_RepositoryFactory(MagitRepository xmlMagit)
             throws IOException, MyXMLException, RepositoryException, MyFileException {
-        if(new File(xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER).exists()) {
-            throw new MyXMLException(eErrorCodesXML.ALREADY_EXIST_FOLDER,xmlMagit.getLocation());
+        if (new File(xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER).exists()) {
+            throw new MyXMLException(eErrorCodesXML.ALREADY_EXIST_FOLDER, xmlMagit.getLocation());
         } else if (new File(xmlMagit.getLocation()).exists()) {
             File target = new File(xmlMagit.getLocation());
-            if(target.listFiles() != null && target.listFiles().length > 0)
-                throw new MyXMLException(eErrorCodesXML.TARGET_FOLDER_NOT_EMPTY,xmlMagit.getLocation());
+            if (target.listFiles() != null && target.listFiles().length > 0)
+                throw new MyXMLException(eErrorCodesXML.TARGET_FOLDER_NOT_EMPTY, xmlMagit.getLocation());
         }
         boolean hasHead = false;
         Repository repository = new Repository(xmlMagit.getLocation());
@@ -110,8 +110,8 @@ public class Repository {
             }
         }
 
-        if(!hasHead) {
-            throw new MyXMLException(eErrorCodesXML.HEAD_POINT_TO_NONSEXIST_BRANCH,headName);
+        if (!hasHead) {
+            throw new MyXMLException(eErrorCodesXML.HEAD_POINT_TO_NONSEXIST_BRANCH, headName);
         }
 
         return repository;
@@ -397,10 +397,10 @@ public class Repository {
                 if (!file.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
                     List<String> commit = Files.readAllLines(file.toPath());
                     Branch branch = new Branch(file.getName());
-                    if(!commit.get(0).equals(Settings.EMPTY_COMMIT)) {
+                    if (!commit.get(0).equals(Settings.EMPTY_COMMIT)) {
                         branch.setCommit(new Commit(commit.get(0), objectPath.toString()), branchesPath.toString());
                     } else {
-                        branch.setCommit(null,branchesPath.toString());
+                        branch.setCommit(null, branchesPath.toString());
                     }
                     branches.add(branch);
                 } else {
@@ -459,7 +459,6 @@ public class Repository {
     public Path getBranchesPath() {
         return branchesPath;
     }
-
 
     public Commit getLastCommit() {
         return lastCommit;

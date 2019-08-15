@@ -19,9 +19,18 @@ public class Settings {
             MENU_ITEM_SHOW_ALL_HISTORY = 4,
             MENU_ITEM_CHANGE_REPO = 3,
             MENU_ITEM_NAME_UPDATE = 2,
+            MAGIT_UI_MIN_HEIGHT = 600,
+            MAGIT_UI_MIN_WIDTH = 900,
+            MAGIT_UI_INTRO_MIN_WIDTH = 600,
+            MAGIT_UI_DIALOG_BOX_WIDTH = 250,
+            MAGIT_UI_DIALOG_BOX_HEIGHT = 125,
+            MAGIT_UI_INTRO_MIN_HEIGHT = 400,
             MENU_ITEM_OPEN_RESOURCE = 1;
     public static int MENU_SIZE = MENU_ITEM_EXIT;
     public static final String
+            FXML_APPLICATION = "resource/magit.fxml",
+            FXML_DIALOG_BOX = "resource/dialogBox.fxml",
+            FXML_INTRO_WINDOW = "resource/magit_intro.fxml",
             ROOT_SUB_FOLDERS = "ROOT_SUB_FOLDERS",
             XML_EXTENSION = "xml",
             DOT_XML = "." + XML_EXTENSION,

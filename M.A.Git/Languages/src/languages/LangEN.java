@@ -46,8 +46,11 @@ public class LangEN {
             ERROR_CREATE_COMMIT_FILE = "Error while create commit file, please check folder permissions.",
             YOU_WANT_TO_ADD = "you want to add",
             REPOSITORY_NAME = "Repository name: ",
+            FORBIDDEN_HEAD_NAME = "Forbidden branch name! you can call your branch 'head' or any variation of that.",
             REPOSITORY_PATH = ",            Repository path: ",
-            PLEASE_ENTER_REPOSITORY_NAME = "Please enter name for your repository: ",
+            DISMISS_BTN = "Close",
+            ERROR_MAGIT_TITLE = "M.A.Git-Error",
+            PLEASE_ENTER_REPOSITORY_NAME = "Please enter name" + System.lineSeparator() + "for your repository: ",
             LOAD_REPOSITORY_SUCCESS = "Loading '%s' repository success!",
             NO_COMMIT_HISTORY = "Nothing to show, no commit data in this repository.",
             READING_FROM_FILE_FAILED = "Reading from file %s failed!",
@@ -91,6 +94,9 @@ public class LangEN {
             MENU_OPTION_SHOW_ACTIVE_BRANCH_HISTORY = "Show all commits",
             MENU_OPTION_CREATE_NEW_REPO = "Create new repository",
             MENU_OPTION_EXIT = "Exit",
+            XML_FILE_REQUEST = "XML File (*.xml)",
+            BUTTON_YES = "Yes",
+    BUTTON_NO = "No",
             LOAD_REPOSITORY_FAILED_NOT_EXIST_MAGIT = "Sorry but the path you entered not including magit repository," + System.lineSeparator() + "please enter valid repository path.",
             MENU_CHOICE_WRONG = "You choose wrong number, please try again.",
             END_PROGRAM_MESSAGE = "Thank you for using M.A.GIT, hope to see you again.",
@@ -142,5 +148,6 @@ public class LangEN {
             THERE_IS_OPENED_ISSUES = "Cannot checkout because there files that not saved (do commit first and try again)",
             PARSE_BLOB_TO_FOLDER_FAILED = "FATAL ERROR: while parsing blob to folder failed (maybe corrupted file)",
             LOAD_REPOSITORY_FROM_XML_SUCCESSED = "Loading xml file finish successfully!",
-            SCAN_FOLDER_FAILED = "We sorry, but we can't scan the folder you give us.\nPlease try again.";
+            SCAN_FOLDER_FAILED = "We sorry, but we can't scan the folder you give us.\nPlease try again.",
+            MAGIT_WINDOW_TITLE = "M.A.Git - JavaFX Application";
 }

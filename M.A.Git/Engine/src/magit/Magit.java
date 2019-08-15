@@ -264,8 +264,15 @@ public class Magit {
     }
 
     public void deleteOldMagitFolder(String path) {
-        deleteOldFiles(path + File.separator + Settings.MAGIT_FOLDER);
-        new File(path + File.separator + Settings.MAGIT_FOLDER).delete();
+        File[] listOfWC = new File(path).listFiles();
+        if(listOfWC.length != 0) {
+            for (File file : listOfWC) {
+                deleteOldFiles(file.getPath());
+                file.delete();
+            }
+        }
+/*        deleteOldFiles(path + File.separator + Settings.MAGIT_FOLDER);
+        new File(path + File.separator + Settings.MAGIT_FOLDER).delete();*/
     }
 
     public void basicCheckXML(MagitRepository magitRepository) throws MyXMLException {
@@ -344,9 +351,14 @@ public class Magit {
                 Commit realCommit = branch.getCommit();
                 tempBranch.setName(branch.getName());
                 MagitSingleBranch.PointedCommit pointedCommit = new MagitSingleBranch.PointedCommit();
-                myCommits.put(realCommit, counterCommits.number);
-                commits.addAll(realCommit.convertToXMLCommit(currentRepository, currentRepository.loadDataFromCommit(realCommit), values));
-                pointedCommit.setId(counterCommits.toString());
+                if (realCommit != null) {
+                    myCommits.put(realCommit, counterCommits.number);
+                    commits.addAll(realCommit.convertToXMLCommit(currentRepository, currentRepository.loadDataFromCommit(realCommit), values));
+                    int temp = counterCommits.number;
+                    pointedCommit.setId(Integer.toString(temp - 1));
+                } else {
+                    pointedCommit.setId(Settings.EMPTY_STRING);
+                }
                 tempBranch.setPointedCommit(pointedCommit);
                 branches.add(tempBranch);
             }
@@ -386,7 +398,7 @@ public class Magit {
             folder.setId(entry.getValue().toString());
             folder.setName(tempFolder.getName());
             folder.setLastUpdater(tempFolder.getEditorName());
-            folder.setItems(getItemsOfFolder(tempFolder,myFolders,myBlobs));
+            folder.setItems(getItemsOfFolder(tempFolder, myFolders, myBlobs));
             folder.setLastUpdateDate(new SimpleDateFormat(Settings.DATE_FORMAT).format(tempFolder.getDate()));
             folder.setIsRoot(tempFolder.getRootFolder() == null);
             folders.getMagitSingleFolder().add(folder);
@@ -398,9 +410,9 @@ public class Magit {
     private MagitSingleFolder.Items getItemsOfFolder(Folder tempFolder, Map<WarpBasicFile, Integer> myFolders, Map<WarpBasicFile, Integer> myBlobs) {
         MagitSingleFolder.Items listOfItems = new MagitSingleFolder.Items();
 
-        for (Map.Entry<BasicFile,Blob> entry : tempFolder.getBlobMap().getMap().entrySet()) {
+        for (Map.Entry<BasicFile, Blob> entry : tempFolder.getBlobMap().getMap().entrySet()) {
             Item temp = new Item();
-            if(entry.getValue().getType() == eFileTypes.FILE) {
+            if (entry.getValue().getType() == eFileTypes.FILE) {
                 temp.setId(myBlobs.get(new WarpBasicFile(entry.getValue())).toString());
                 temp.setType(Settings.XML_ITEM_FILE_TYPE);
             } else {
@@ -432,6 +444,9 @@ public class Magit {
 
     public boolean tryCreateNewBranch(String branchName) throws RepositoryException, IOException {
         File newBranch = new File(currentRepository.getBranchesPath() + File.separator + branchName);
+        if (branchName.toLowerCase().equals(Settings.MAGIT_BRANCH_HEAD)) {
+            throw new RepositoryException(eErrorCodes.FORBIDDED_HEAD_NAME);
+        }
         if (newBranch.exists()) {
             throw new RepositoryException(eErrorCodes.BRANCH_ALREADY_EXIST);
         } else {
@@ -499,6 +514,12 @@ public class Magit {
             return true;
         }
         return false;
+    }
+
+    public void createNewRepository(String newValue, File selectedDirectory) throws IOException, RepositoryException {
+        rootFolder = selectedDirectory.toPath();
+        checkCleanDir(rootFolder.toString());
+        currentRepository = new Repository(rootFolder, currentUser, newValue);
     }
 
     public void exportFile(MagitRepository magitRepository, String pathToXML) throws JAXBException, IOException {

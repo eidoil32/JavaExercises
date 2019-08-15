@@ -13,6 +13,7 @@ import xml.basic.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -61,7 +62,7 @@ public class Commit {
     }
 
     public Commit XML_Parser(MagitRepository xmlMagit, MagitSingleCommit commit, Folder rootFolder)
-            throws MyXMLException, MyFileException {
+            throws MyXMLException, MyFileException, IOException {
         Commit temp = new Commit();
 
         temp.creator = commit.getAuthor();
@@ -86,13 +87,36 @@ public class Commit {
                 for (PrecedingCommits.PrecedingCommit precedingCommit : prevCommits) {
                     MagitSingleCommit tempCommit = XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), precedingCommit.getId());
                     MagitSingleFolder tempFolder = Folder.findRootFolder(xmlMagit.getMagitFolders().getMagitSingleFolder(), tempCommit.getRootFolder().getId());
-                    addPrevCommit(XML_Parser(xmlMagit, tempCommit, Folder.XML_Parser(tempFolder, xmlMagit, null, xmlMagit.getLocation())));
+                    temp.addPrevCommit(XML_Parser(xmlMagit, tempCommit, Folder.XML_Parser(tempFolder, xmlMagit, null, xmlMagit.getLocation())));
                 }
             }
         }
         temp.calcContent();
         temp.SHA_ONE = DigestUtils.sha1Hex(temp.content);
+        createCommitFile(temp,xmlMagit.getLocation());
         return temp;
+    }
+
+    private void createCommitFile(Commit temp, String location) throws IOException {
+        File commit = new File(
+                location + File.separator +
+                        Settings.MAGIT_FOLDER + File.separator +
+                        Settings.OBJECT_FOLDER + File.separator +
+                        temp.getSHA_ONE());
+
+        commit.createNewFile();
+        temp.calcContent();
+        PrintWriter writer = new PrintWriter(commit);
+        writer.print(temp.getContent());
+        writer.close();
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public String getRootFolderSHA_ONE() {
+        return rootFolderSHA_ONE;
     }
 
     private void addPrevCommit(Commit commit) {
@@ -253,8 +277,10 @@ public class Commit {
 
         singleCommit.setRootFolder(folder);
         Map<WarpBasicFile, Integer> myFolders = (Map<WarpBasicFile, Integer>) values.get(Settings.KEY_ALL_FOLDERS);
-        myFolders.put(new WarpBasicFile(temp), counterFolders.number);
-        counterFolders.inc();
+        if(!myFolders.containsKey(new WarpBasicFile(temp))) {
+            myFolders.put(new WarpBasicFile(temp), counterFolders.number);
+            counterFolders.inc();
+        }
 
         getListOfItems(rootBlob, values);
         commits.add(singleCommit);

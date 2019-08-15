@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Class-Path: ./lib/commons-codec-1.12.jar ./lib/commons-collections4-4.3.jar ./lib/commons-io-2.6.jar ./lib/Engine.jar ./lib/Miscellaneous.jar ./Languages/Languages.jar
+Class-Path: ./commons-codec-1.12.jar ./commons-collections4-4.3.jar ./commons-io-2.6.jar ./Engine.jar ./Miscellaneous.jar ../Languages/Languages.jar
 Main-Class: magit.ui.Main
 

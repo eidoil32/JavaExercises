@@ -181,6 +181,8 @@ public enum eMenuItem {
             } catch (RepositoryException e) {
                 if (e.getCode() == eErrorCodes.THERE_IS_OPENED_ISSUES) {
                     return String.format(LangEN.BRANCH_CREATED_BUT_WITHOUT_CHECKOUT, newBranchName);
+                } else if (e.getCode() == eErrorCodes.FORBIDDED_HEAD_NAME) {
+                    return e.getCode().getMessage();
                 }
                 return String.format(LangEN.CREATE_BRANCH_FILE_FAILED, newBranchName) + e.getCode().getMessage();
             } catch (IOException e) {
