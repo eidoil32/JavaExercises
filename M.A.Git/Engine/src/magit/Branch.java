@@ -2,7 +2,6 @@ package magit;
 
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
-import languages.LangEN;
 import settings.Settings;
 import xml.basic.MagitSingleBranch;
 
@@ -10,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 public class Branch {
     private String name, SHA_ONE;
@@ -97,13 +97,21 @@ public class Branch {
 
     @Override
     public String toString() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String consoleToString() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(LangEN.BRANCH_NAME).append(name).append(System.lineSeparator());
+        stringBuilder.append(Settings.language.getString("BRANCH_NAME_HINT")).append(name).append(System.lineSeparator());
         if(commit != null) {
-            stringBuilder.append(LangEN.BRANCH_LAST_COMMIT_SHA).append(commit.getSHA_ONE()).append(System.lineSeparator());
-            stringBuilder.append(LangEN.BRANCH_LAST_COMMIT_COMMENT).append(commit.getComment()).append(System.lineSeparator());
+            stringBuilder.append(Settings.language.getString("BRANCH_LAST_COMMIT_SHA")).append(commit.getSHA_ONE()).append(System.lineSeparator());
+            stringBuilder.append(Settings.language.getString("BRANCH_LAST_COMMIT_COMMENT")).append(commit.getComment()).append(System.lineSeparator());
         } else {
-            stringBuilder.append(LangEN.BRANCH_NONE_POINT_COMMIT).append(System.lineSeparator());
+            stringBuilder.append(Settings.language.getString("BRANCH_NONE_POINT_COMMIT")).append(System.lineSeparator());
         }
         return stringBuilder.toString();
     }
@@ -118,5 +126,13 @@ public class Branch {
 
     public Commit getCommit() {
         return commit;
+    }
+
+    public List<Commit> getAllCommits() {
+        return commit.getChainOfCommits();
+    }
+
+    public boolean isHead() {
+        return name.equals(Settings.MAGIT_BRANCH_HEAD);
     }
 }

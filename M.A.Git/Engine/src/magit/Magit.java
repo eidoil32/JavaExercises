@@ -2,7 +2,6 @@ package magit;
 
 
 import exceptions.*;
-import languages.LangEN;
 import settings.Settings;
 import utils.MapKeys;
 import utils.WarpBasicFile;
@@ -19,6 +18,7 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -29,7 +29,7 @@ public class Magit {
     private Repository currentRepository;
 
     public Magit() {
-        this.currentUser = LangEN.USER_ADMINISTRATOR;
+        this.currentUser = Settings.language.getString("USER_ADMINISTRATOR");
         this.currentBranch = null;
         this.rootFolder = null;
         this.currentRepository = null;
@@ -265,7 +265,7 @@ public class Magit {
 
     public void deleteOldMagitFolder(String path) {
         File[] listOfWC = new File(path).listFiles();
-        if(listOfWC.length != 0) {
+        if (listOfWC.length != 0) {
             for (File file : listOfWC) {
                 deleteOldFiles(file.getPath());
                 file.delete();
@@ -445,7 +445,7 @@ public class Magit {
     public boolean tryCreateNewBranch(String branchName) throws RepositoryException, IOException {
         File newBranch = new File(currentRepository.getBranchesPath() + File.separator + branchName);
         if (branchName.toLowerCase().equals(Settings.MAGIT_BRANCH_HEAD)) {
-            throw new RepositoryException(eErrorCodes.FORBIDDED_HEAD_NAME);
+            throw new RepositoryException(eErrorCodes.FORBIDDEN_HEAD_NAME);
         }
         if (newBranch.exists()) {
             throw new RepositoryException(eErrorCodes.BRANCH_ALREADY_EXIST);
@@ -469,7 +469,7 @@ public class Magit {
             for (Branch branch : branches) {
                 if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
                     if (branch.equals(currentBranch))
-                        stringBuilder.append(LangEN.HEAD_ACTIVE_BRANCH_SIGN);
+                        stringBuilder.append(Settings.language.getString("HEAD_ACTIVE_BRANCH_SIGN"));
                     stringBuilder.append(branch).append(System.lineSeparator());
                 }
             }
@@ -479,28 +479,33 @@ public class Magit {
         }
     }
 
-    public String showCurrentStatus() throws RepositoryException, IOException, MyFileException {
+    public Map<MapKeys,List<String>> showCurrentStatus() throws RepositoryException, IOException, MyFileException {
+        Map<MapKeys,List<String>> data = new HashMap<>();
+
+        List<String> newItems = new LinkedList<>();
+        List<String> deletedItems = new LinkedList<>();
+        List<String> editedItems = new LinkedList<>();
+
+        data.put(MapKeys.LIST_NEW, newItems);
+        data.put(MapKeys.LIST_DELETED, deletedItems);
+        data.put(MapKeys.LIST_CHANGED, editedItems);
 
         Map<MapKeys, List<BasicFile>> fileLists = currentRepository.scanRepository(currentUser);
 
         if (fileLists == null) {
             throw new RepositoryException(eErrorCodes.NOTHING_TO_SEE);
         } else {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(LangEN.REPOSITORY_NAME).append(currentRepository.getName())
-                    .append(LangEN.REPOSITORY_PATH).append(currentRepository.getMagitPath()).append(System.lineSeparator());
             for (Map.Entry<MapKeys, List<BasicFile>> entry : fileLists.entrySet()) {
                 List<BasicFile> temp = entry.getValue();
                 if (temp.size() > 0) {
-                    stringBuilder.append(entry.getKey()).append(System.lineSeparator());
+                    List<String> correctList = data.get(entry.getKey());
                     for (BasicFile file : temp) {
-                        stringBuilder.append(file.shortPath()).append(System.lineSeparator());
+                        correctList.add(file.getType() + " " + file.shortPath());
                     }
-                    stringBuilder.append(Settings.SHOW_STATUS_SEPARATOR).append(System.lineSeparator());
                 }
             }
 
-            return stringBuilder.toString();
+            return data;
         }
     }
 
@@ -510,16 +515,17 @@ public class Magit {
             currentRepository = new Repository(Paths.get(path), true, currentUser);
             rootFolder = Paths.get(path);
             currentBranch = currentRepository.getActiveBranch();
-            currentUser = LangEN.USER_ADMINISTRATOR;
+            currentUser = Settings.language.getString("USER_ADMINISTRATOR");
             return true;
         }
         return false;
     }
 
     public void createNewRepository(String newValue, File selectedDirectory) throws IOException, RepositoryException {
-        rootFolder = selectedDirectory.toPath();
+        this.rootFolder = selectedDirectory.toPath();
         checkCleanDir(rootFolder.toString());
-        currentRepository = new Repository(rootFolder, currentUser, newValue);
+        this.currentRepository = new Repository(rootFolder, currentUser, newValue);
+        this.currentBranch = currentRepository.getActiveBranch();
     }
 
     public void exportFile(MagitRepository magitRepository, String pathToXML) throws JAXBException, IOException {
@@ -529,5 +535,18 @@ public class Magit {
         jaxbMarshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         jaxbMarshaller.marshal(magitRepository, os);
         os.close();
+    }
+
+    public Commit getCommitData(String sha_one) throws IOException {
+        if(sha_one.length() != Settings.SBA_ONE_CORRECT_LENGTH) {
+            return null;
+        } else {
+            File commit = new File(currentRepository.getObjectPath() + File.separator + sha_one);
+            if(commit.exists()) {
+                return new Commit(sha_one,currentRepository.getObjectPath().toString());
+            } else {
+                return null;
+            }
+        }
     }
 }

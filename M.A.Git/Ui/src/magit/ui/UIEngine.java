@@ -3,7 +3,6 @@ package magit.ui;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
-import languages.LangEN;
 import magit.Magit;
 import settings.Settings;
 
@@ -30,11 +29,11 @@ public class UIEngine {
                 MainMenu.showMenu(currentUser);
             } while (executeCommand(MainMenu.getChoice(), currentUser));
         } catch (IOException e) {
-            System.out.println(LangEN.COMMAND_FAILED + e.getMessage());
+            System.out.println(Settings.language.getString("COMMAND_FAILED") + e.getMessage());
             start();
         }
 
-        System.out.println(LangEN.END_PROGRAM_MESSAGE);
+        System.out.println(Settings.language.getString("END_PROGRAM_MESSAGE"));
     }
 
     private boolean executeCommand(eMenuItem menuItem, String currentUser) throws IOException {
@@ -46,7 +45,7 @@ public class UIEngine {
                 else
                     return false;
             } else {
-                System.out.println(LangEN.NO_ACTIVE_REPOSITORY);
+                System.out.println(Settings.language.getString("NO_ACTIVE_REPOSITORY"));
             }
         } catch (RepositoryException e) {
             if (e.getCode() == eErrorCodes.DO_CHECKOUT) {
@@ -62,8 +61,8 @@ public class UIEngine {
     }
 
     private boolean tryAgain(eMenuItem menuItem, String currentUser, String message) throws IOException {
-        System.out.println(String.format("%s%s", LangEN.ERROR_REPOSITORY, message));
-        System.out.println(LangEN.ERROR_REPOSITORY);
+        System.out.println(String.format("%s%s", Settings.language.getString("ERROR_REPOSITORY"), message));
+        System.out.println(Settings.language.getString("ERROR_REPOSITORY"));
         String userChoice = new Scanner(System.in).nextLine();
         if (userChoice.equals("Y") || userChoice.toLowerCase().equals("yes"))
             return executeCommand(menuItem, currentUser);

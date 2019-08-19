@@ -1,7 +1,6 @@
 package magit;
 
 import exceptions.*;
-import languages.LangEN;
 import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
 import utils.FileManager;
@@ -36,6 +35,10 @@ public class Commit {
         this.prevCommit = null;
     }
 
+    public String getCreator() {
+        return creator;
+    }
+
     public Commit(Commit commit) {
         this.prevCommit = commit;
         if (commit != null) {
@@ -49,10 +52,8 @@ public class Commit {
         this.prevCommitSHA_ONE = commitContent.get(1);
         this.comment = commitContent.get(2);
         this.creator = commitContent.get(4);
-        String dateInString = new SimpleDateFormat(Settings.DATE_FORMAT).format(new Date());
-        SimpleDateFormat formatter = new SimpleDateFormat(Settings.DATE_FORMAT);
         try {
-            this.date = formatter.parse(dateInString);
+            this.date = new SimpleDateFormat(Settings.DATE_FORMAT).parse(commitContent.get(3));
         } catch (ParseException e) {
             this.date = new Date();
         }
@@ -93,7 +94,7 @@ public class Commit {
         }
         temp.calcContent();
         temp.SHA_ONE = DigestUtils.sha1Hex(temp.content);
-        createCommitFile(temp,xmlMagit.getLocation());
+        createCommitFile(temp, xmlMagit.getLocation());
         return temp;
     }
 
@@ -148,24 +149,27 @@ public class Commit {
 
     public void createCommitFile(Repository currentRepository, Map<MapKeys, List<BasicFile>> listMap, String currentUser, String comment)
             throws IOException, MyFileException, RepositoryException {
+        if(listMap != null) {
+            this.date = new Date();
+            this.creator = currentUser;
+            this.comment = comment;
+            createNewAndEditedFiles(listMap, currentRepository);
+            this.rootFolderSHA_ONE = currentRepository.getRootFolder().getSHA_ONE();
+            currentRepository.setSHA_ONE(this.rootFolderSHA_ONE);
+            if (listMap == null)
+                throw new RepositoryException(eErrorCodes.NOTHING_NEW);
 
-        this.date = new Date();
-        this.creator = currentUser;
-        this.comment = comment;
-        createNewAndEditedFiles(listMap, currentRepository);
-        this.rootFolderSHA_ONE = currentRepository.getRootFolder().getSHA_ONE();
-        currentRepository.setSHA_ONE(this.rootFolderSHA_ONE);
-        if (listMap == null)
+            calcContent();
+            this.SHA_ONE = DigestUtils.sha1Hex(this.content);
+
+            File commit = new File(currentRepository.getObjectPath().toString() + File.separator + this.SHA_ONE);
+            commit.createNewFile();
+            FileWriter fileWriter = new FileWriter(commit);
+            fileWriter.write(this.content);
+            fileWriter.close();
+        } else {
             throw new RepositoryException(eErrorCodes.NOTHING_NEW);
-
-        calcContent();
-        this.SHA_ONE = DigestUtils.sha1Hex(this.content);
-
-        File commit = new File(currentRepository.getObjectPath().toString() + File.separator + this.SHA_ONE);
-        commit.createNewFile();
-        FileWriter fileWriter = new FileWriter(commit);
-        fileWriter.write(this.content);
-        fileWriter.close();
+        }
     }
 
     private void calcContent() {
@@ -230,10 +234,10 @@ public class Commit {
 
     @Override
     public String toString() {
-        return LangEN.COMMIT_SHA_ONE + SHA_ONE + System.lineSeparator()
-                + LangEN.COMMIT_COMMENT + comment + System.lineSeparator()
-                + LangEN.COMMIT_DATE + date + System.lineSeparator()
-                + LangEN.COMMIT_CREATOR + creator + System.lineSeparator();
+        return Settings.language.getString("COMMIT_SHA_ONE") + SHA_ONE + System.lineSeparator()
+                + Settings.language.getString("COMMIT_COMMENT") + comment + System.lineSeparator()
+                + Settings.language.getString("COMMIT_DATE") + date + System.lineSeparator()
+                + Settings.language.getString("COMMIT_CREATOR") + creator + System.lineSeparator();
     }
 
     public List<MagitSingleCommit> convertToXMLCommit(Repository instance, BlobMap rootBlob, Map<String, Object> values) throws RepositoryException, IOException, MyFileException {
@@ -277,7 +281,7 @@ public class Commit {
 
         singleCommit.setRootFolder(folder);
         Map<WarpBasicFile, Integer> myFolders = (Map<WarpBasicFile, Integer>) values.get(Settings.KEY_ALL_FOLDERS);
-        if(!myFolders.containsKey(new WarpBasicFile(temp))) {
+        if (!myFolders.containsKey(new WarpBasicFile(temp))) {
             myFolders.put(new WarpBasicFile(temp), counterFolders.number);
             counterFolders.inc();
         }
@@ -308,5 +312,31 @@ public class Commit {
                 getListOfItems(((Folder) entry.getValue()).getBlobMap(), values);
             }
         }
+    }
+
+    public List<Commit> getChainOfCommits() {
+        List<Commit> commitList = new LinkedList<>();
+        if (prevCommit != null) {
+            commitList.addAll(prevCommit.getChainOfCommits());
+        }
+        commitList.add(this);
+        return commitList;
+    }
+
+    public Date getDate() {
+        return date;
+    }
+
+    @Override
+    public int hashCode() {
+        return SHA_ONE.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Commit) {
+            return SHA_ONE.equals(((Commit) obj).getSHA_ONE());
+        }
+        return false;
     }
 }

@@ -1,7 +1,6 @@
 package magit;
 
 import exceptions.*;
-import languages.LangEN;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
@@ -92,7 +91,7 @@ public class Repository {
             Folder rootFolder;
             if (commitID.equals(Settings.EMPTY_STRING)) {
                 temp = new Branch(branch.getName(), null, repository.branchesPath.toString());
-                rootFolder = new Folder(Paths.get(xmlMagit.getLocation()), LangEN.USER_ADMINISTRATOR);
+                rootFolder = new Folder(Paths.get(xmlMagit.getLocation()), Settings.language.getString("USER_ADMINISTRATOR"));
             } else {
                 MagitSingleCommit pointedMagitCommit = Commit.XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), commitID);
                 MagitSingleFolder pointedRootFolder = Folder.findRootFolder(folders, pointedMagitCommit.getRootFolder().getId());
@@ -397,10 +396,14 @@ public class Repository {
                 if (!file.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
                     List<String> commit = Files.readAllLines(file.toPath());
                     Branch branch = new Branch(file.getName());
-                    if (!commit.get(0).equals(Settings.EMPTY_COMMIT)) {
-                        branch.setCommit(new Commit(commit.get(0), objectPath.toString()), branchesPath.toString());
+                    if (commit.size() != 0) {
+                        if (!commit.get(0).equals(Settings.EMPTY_COMMIT)) {
+                            branch.setCommit(new Commit(commit.get(0), objectPath.toString()), branchesPath.toString());
+                        } else {
+                            branch.setCommit(null, branchesPath.toString());
+                        }
                     } else {
-                        branch.setCommit(null, branchesPath.toString());
+                        branch.setCommit(null,branchesPath.toString());
                     }
                     branches.add(branch);
                 } else {
@@ -496,5 +499,25 @@ public class Repository {
         writer.print(name);
         writer.close();
         this.name = name;
+    }
+
+    public Map<String, Object> getAllCommits() {
+        Map<String, Object> objectMap = new HashMap<>();
+        List<Commit> commitList = new LinkedList<>();
+        Map<Commit, Branch> headCommits = new HashMap<>();
+
+        for (Branch branch : this.branches) {
+            if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
+                if (branch.getCommit() != null) {
+                    headCommits.put(branch.getCommit(), branch);
+                    commitList.addAll(branch.getAllCommits());
+                }
+            }
+        }
+
+        objectMap.put(Settings.KEY_COMMIT_BRANCH_LIST, headCommits);
+        objectMap.put(Settings.KEY_COMMIT_LIST, commitList);
+
+        return objectMap;
     }
 }

@@ -1,6 +1,7 @@
 package settings;
 
 import java.io.File;
+import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class Settings {
@@ -25,18 +26,39 @@ public class Settings {
             MAGIT_UI_DIALOG_BOX_WIDTH = 250,
             MAGIT_UI_DIALOG_BOX_HEIGHT = 125,
             MAGIT_UI_INTRO_MIN_HEIGHT = 400,
+            MAGIT_UI_SETTINGS_MIN_WIDTH = 600,
+            MAGIT_UI_SETTINGS_MIN_HEIGHT = 250,
+            SBA_ONE_CORRECT_LENGTH = 40,
+            MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
+            MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
+            MIN_COMMENT_SUBSTRING = 0,
+            MAX_COMMENT_SUBSTRING = 30,
+            MAX_SHA_ONE_TABLE_LENGTH = 20,
             MENU_ITEM_OPEN_RESOURCE = 1;
     public static int MENU_SIZE = MENU_ITEM_EXIT;
     public static final String
-            FXML_APPLICATION = "resource/magit.fxml",
-            FXML_DIALOG_BOX = "resource/dialogBox.fxml",
-            FXML_INTRO_WINDOW = "resource/magit_intro.fxml",
+            THEME_BLACK = "black",
+            THEME_WHITE = "white",
+            LANG_ENG = "english",
+            LANG_HEB = "hebrew",
+            RESOURCE_FILE = "languages.lang",
+            CANCEL_BTN_CLICKED_STRING = "cancel",
+            JAVAFX_NEWLINE_TEXTAREA = "\n",
+            FXML_SETTINGS_WINDOW = "/magit/resource/settings.fxml",
+            FXML_APPLICATION = "/magit/resource/magit.fxml",
+            FXML_SMART_POPUP_BOX = "/magit/resource/smart_popup.fxml",
+            FXML_DIALOG_BOX = "/magit/resource/dialogBox.fxml",
+            FXML_INTRO_WINDOW = "/magit/resource/magit_intro.fxml",
+            FXML_BRANCH_MANAGER = "/magit/resource/branchManager.fxml",
             ROOT_SUB_FOLDERS = "ROOT_SUB_FOLDERS",
             XML_EXTENSION = "xml",
+            XML_FILE_REQUEST_TYPE = "*." + XML_EXTENSION,
             DOT_XML = "." + XML_EXTENSION,
             ROOT_SUB_FILES = "ROOT_SUB_FILES",
             KEY_ALL_FOLDERS = "ALL_FOLDER",
             KEY_ALL_FILES = "ALL_FILES",
+            KEY_COMMIT_BRANCH_LIST = "KEY_COMMIT_BRANCH_LIST",
+            KEY_COMMIT_LIST = "KEY_COMMIT_LIST",
             KEY_COUNTER_COMMIT = "KEY_COUNTER_COMMIT",
             KEY_ALL_COMMITS = "KEY_ALL_COMMITS",
             KEY_COUNTER_FILES = "KEY_COUNTER_FILES",
@@ -68,4 +90,5 @@ public class Settings {
             BRANCHES_FOLDER = "branches",
             TEMP_FOLDER_NAME = "temp.magit",
             TEMP_UNZIP_FOLDER = "unZipTemp";
+    public static final ResourceBundle language = ResourceBundle.getBundle(RESOURCE_FILE);
 }

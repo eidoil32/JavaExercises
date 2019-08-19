@@ -1,12 +1,12 @@
 package utils;
 
-import languages.LangEN;
 import magit.BasicFile;
 import magit.BlobMap;
 import magit.Folder;
+import settings.Settings;
 
 public enum MapKeys {
-    LIST_DELETED {
+    LIST_DELETED(0) {
         @Override
         public void execute(BlobMap map, BasicFile file, Folder root) {
             map.remove(file);
@@ -14,9 +14,9 @@ public enum MapKeys {
 
         @Override
         public String toString() {
-            return LangEN.SHOW_STATUS_DELETED;
+            return Settings.language.getString("SHOW_STATUS_DELETED");
         }
-    }, LIST_NEW {
+    }, LIST_NEW(1) {
         @Override
         public void execute(BlobMap map, BasicFile file, Folder root) {
             map.addNew(file,root);
@@ -24,9 +24,9 @@ public enum MapKeys {
 
         @Override
         public String toString() {
-            return LangEN.SHOW_STATUS_NEW;
+            return Settings.language.getString("SHOW_STATUS_NEW");
         }
-    }, LIST_CHANGED {
+    }, LIST_CHANGED(1) {
         @Override
         public void execute(BlobMap map, BasicFile file, Folder root) {
             map.replace(file,root);
@@ -34,9 +34,19 @@ public enum MapKeys {
 
         @Override
         public String toString() {
-            return LangEN.SHOW_STATUS_EDITED;
+            return Settings.language.getString("SHOW_STATUS_EDITED");
         }
     };
+
+    private int place;
+
+    MapKeys(int place) {
+        this.place = place;
+    }
+
+    public int getPlace() {
+        return place;
+    }
 
     public abstract void execute(BlobMap map, BasicFile file, Folder root);
 }

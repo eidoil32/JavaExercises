@@ -4,7 +4,6 @@ import exceptions.MyFileException;
 import exceptions.MyXMLException;
 import exceptions.eErrorCodes;
 import exceptions.eErrorCodesXML;
-import languages.LangEN;
 import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
 import utils.FileManager;
@@ -151,10 +150,10 @@ public class Blob extends BasicFile {
 
     @Override
     public String toString() {
-        return LangEN.FULL_PATH + fullPathName + System.lineSeparator()
-                + LangEN.BASIC_FILE_TYPE + type + System.lineSeparator()
-                + LangEN.BASIC_FILE_SHA_ONE + SHA_ONE + System.lineSeparator()
-                + LangEN.BASIC_FILE_EDITOR + editorName + System.lineSeparator()
-                + LangEN.BASIC_FILE_DATE + date + System.lineSeparator();
+        return Settings.language.getString("FULL_PATH") + fullPathName + System.lineSeparator()
+                + Settings.language.getString("BASIC_FILE_TYPE") + type + System.lineSeparator()
+                + Settings.language.getString("BASIC_FILE_SHA_ONE") + SHA_ONE + System.lineSeparator()
+                + Settings.language.getString("BASIC_FILE_EDITOR") + editorName + System.lineSeparator()
+                + Settings.language.getString("BASIC_FILE_DATE") + date + System.lineSeparator();
     }
 }

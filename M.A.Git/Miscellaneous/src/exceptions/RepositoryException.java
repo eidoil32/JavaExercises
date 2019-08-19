@@ -3,7 +3,7 @@ package exceptions;
 public class RepositoryException extends Exception {
     private eErrorCodes code;
     public RepositoryException(eErrorCodes code) {
-        super();
+        super(code.getMessage());
         this.code = code;
     }
 
