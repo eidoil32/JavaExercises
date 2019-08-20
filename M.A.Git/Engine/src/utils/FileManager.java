@@ -6,7 +6,6 @@ import magit.BasicFile;
 import magit.Blob;
 import magit.Folder;
 import magit.eFileTypes;
-import org.apache.commons.io.FileUtils;
 import settings.Settings;
 import xml.basic.MagitRepository;
 
@@ -22,7 +21,19 @@ import java.util.zip.ZipOutputStream;
 
 public class FileManager {
     public static String readFile(Path filePath) throws IOException {
-        return FileUtils.readFileToString(new File(filePath.toUri()), Settings.FILE_ENCODING);
+        BufferedReader reader = new BufferedReader(new FileReader(filePath.toString()));
+        StringBuilder content = new StringBuilder();
+        String line = reader.readLine();
+        while (line != null) {
+            content.append(line);
+            line = reader.readLine();
+            if(line != null) {
+                content.append(System.lineSeparator());
+            }
+        }
+        reader.close();
+        //return FileUtils.readFileToString(new File(filePath.toUri()), Settings.FILE_ENCODING);
+        return content.toString();
     }
 
     public static void zipFile(BasicFile file, Path pathToObject) throws MyFileException {

@@ -23,7 +23,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import magit.*;
 import magit.utils.MergeProperty;
-import magit.utils.MyBooleanProperty;
 import magit.utils.SmartListener;
 import magit.utils.Utilities;
 import settings.Settings;
@@ -517,7 +516,7 @@ public class Controller {
         this.languageProperty = languageProperty;
     }
 
-    public void mergeWindow(MergeProperty mergeProperty, Map<eUserMergeChoice, Blob> duplicate, MyBooleanProperty booleanProperty) {
+    public void mergeWindow(MergeProperty mergeProperty, Map<eUserMergeChoice, Blob> duplicate, MergeProperty booleanProperty) {
         Stage stage = new Stage();
         Pane root;
         try {
@@ -534,7 +533,7 @@ public class Controller {
             mergeWindowController.setFileText(files);
             mergeWindowController.setMergeProperty(mergeProperty);
             mergeWindowController.setStage(stage);
-            mergeWindowController.setBooleanProperty(booleanProperty);
+            mergeWindowController.setConflictFinishProperty(booleanProperty);
             stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
             stage.setMinHeight(Settings.MAGIT_UI_MERGE_WINDOW_HEIGHT);
             stage.setMinWidth(Settings.MAGIT_UI_MERGE_WINDOW_WIDTH);

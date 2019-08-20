@@ -11,14 +11,12 @@ import xml.basic.MagitBlob;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Objects;
 
 public class Blob extends BasicFile {
     protected String content;
@@ -66,7 +64,7 @@ public class Blob extends BasicFile {
             blob.setDate(new Date());
         }
 
-        blob.setContent(Files.readAllLines(Objects.requireNonNull(file).toPath()));
+        blob.setContent(FileManager.readFile(file.toPath()));
         blob.setSHA_ONE(row[1]);
         blob.setFilePath(Paths.get(rootFolder.getFilePath() + File.separator + row[0]));
         blob.setName(row[0]);

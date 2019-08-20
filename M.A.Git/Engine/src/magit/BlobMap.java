@@ -14,8 +14,9 @@ public class BlobMap {
     private Map<BasicFile, Blob> map;
 
     public BlobMap(Map<BasicFile, Blob> fileBlobMap) {
-        if (fileBlobMap != null)
+        if (fileBlobMap != null) {
             this.map = fileBlobMap;
+        }
         else
             this.map = new HashMap<>();
     }

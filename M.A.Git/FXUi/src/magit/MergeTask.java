@@ -4,10 +4,10 @@ import controller.Controller;
 import controller.IntroController;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
+import exceptions.eErrorCodes;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import magit.utils.MergeProperty;
-import magit.utils.MyBooleanProperty;
 import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
 import utils.eUserMergeChoice;
@@ -21,8 +21,7 @@ public class MergeTask extends Task<Void> {
     private Magit model;
     private Branch target;
     private Controller mainController;
-    private MergeProperty mergeProperty = new MergeProperty();
-    private MyBooleanProperty booleanProperty = new MyBooleanProperty();
+    private MergeProperty mergeProperty = new MergeProperty(), conflictFinishProperty = new MergeProperty();
     private Map<String, BlobMap> changes;
     private BlobMap userApprove;
 
@@ -54,15 +53,16 @@ public class MergeTask extends Task<Void> {
                 }
             }));
 
-            booleanProperty.addListener(observable -> {
-                if (booleanProperty.get()) {
+            conflictFinishProperty.addListener(observable -> {
+                if (conflictFinishProperty.get() == changes.get(Settings.KEY_CHANGE_MAP).getMap().size()) {
                     updateProgress(2, 3);
                     updateMessage(Settings.language.getString("START_MARGIN"));
 
                     model.merge(changes, target, ancestor, userApprove);
+
                     updateProgress(3, 3);
                     updateMessage(Settings.language.getString("MERGE_COMPLETED_SUCCESSFULLY"));
-                } else {
+                } else if (conflictFinishProperty.isInError()) {
                     updateProgress(3, 3);
                     updateMessage(Settings.language.getString("MARGE_CANCELED"));
                 }
@@ -79,7 +79,8 @@ public class MergeTask extends Task<Void> {
         BlobMap finalMap = new BlobMap(new HashMap<>());
         for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
             if (this.isCancelled()) {
-                booleanProperty.set(false);
+                conflictFinishProperty.setError(eErrorCodes.MARGE_CANCELED);
+                conflictFinishProperty.set(-1);
             }
             if (entry.getValue().getType() == eFileTypes.FILE) {
                 Map<eUserMergeChoice, Blob> duplicate = blobMap.getDuplicate(entry.getValue(), changes);
@@ -98,11 +99,10 @@ public class MergeTask extends Task<Void> {
                         }
                     }
                 }));
-                Platform.runLater(() -> mainController.mergeWindow(mergeProperty, duplicate,booleanProperty));
+                Platform.runLater(() -> mainController.mergeWindow(mergeProperty, duplicate,conflictFinishProperty));
             }
         }
 
-        booleanProperty.set(true);
         return finalMap;
     }
 }

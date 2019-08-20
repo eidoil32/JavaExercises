@@ -642,11 +642,26 @@ public class Magit {
         return blobMapList;
     }
 
-    public void merge(Map<String, BlobMap> changes, Branch target, Commit ancestor, BlobMap userApprove) {
-        Commit commit = new Commit();
+    public void merge(Map<String, BlobMap> changes, Branch target, Commit ancestor, BlobMap userApprove)
+            throws IOException, MyFileException, RepositoryException {
 
-        BlobMap take = changes.get(Settings.KEY_EASY_TAKE_MAP);
-        List<Blob> sortedFiles = take.toList();
+        BlobMap fileTree = buildFromTwoBlobMaps(changes.get(Settings.KEY_EASY_TAKE_MAP),userApprove,changes.get(Settings.KEY_FOLDER_ONLY_MAP));
+        currentRepository.getRootFolder().setBlobMap(fileTree);
+
+        deleteOldFiles(rootFolder.toString());
+        layoutRepositoryByRootFolder(fileTree.getMap());
+        commitMagit(currentUser,Settings.language.getString("MERGE_COMMIT_COMMENT"));
+
+    }
+
+    private BlobMap buildFromTwoBlobMaps(BlobMap takeOnly, BlobMap userApprove, BlobMap foldersMap) {
+        BlobMap fileTree = new BlobMap(new HashMap<>());
+
+        for (Map.Entry<BasicFile,Blob> entry : takeOnly.getMap().entrySet()) {
+
+        }
+
+        return fileTree;
     }
 
 }
