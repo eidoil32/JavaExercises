@@ -1,10 +1,7 @@
 package magit.ui;
 
 import exceptions.*;
-import magit.Branch;
-import magit.Commit;
-import magit.Magit;
-import magit.Repository;
+import magit.*;
 import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
 import utils.FileManager;
@@ -314,6 +311,26 @@ public enum eMenuItem {
                 return Settings.language.getString("UNKNOWN_FATAL_ERROR") + e.getErrorCode() +
                         Settings.language.getString("EXPORT_TO_XML_FAILED") + System.lineSeparator();
             }
+        }
+    },
+
+    TEST("test",15,false) {
+        @Override
+        public String executeCommand(String currentUser, Magit magit) throws RepositoryException, IOException, MyFileException {
+            Branch first = magit.getCurrentBranch();
+            Branch second = magit.findBranch(new Scanner(System.in).nextLine());
+
+            Commit found = magit.getAncestorCommit(second);
+
+            BlobMap ancestorFileTree = magit.getCurrentRepository().loadDataFromCommit(found),
+                    firstFileTree = magit.getCurrentRepository().loadDataFromCommit(first.getCommit()),
+                    secondFileTree = magit.getCurrentRepository().loadDataFromCommit(second.getCommit());
+
+            System.out.println(ancestorFileTree);
+            System.out.println(firstFileTree);
+            System.out.println(secondFileTree);
+
+            return "";
         }
     },
 

@@ -1,6 +1,7 @@
 package settings;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
@@ -31,6 +32,10 @@ public class Settings {
             SBA_ONE_CORRECT_LENGTH = 40,
             MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
             MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
+            MAGIT_UI_SELECT_POPUP_WIDTH = 400,
+            MAGIT_UI_SELECT_POPUP_HEIGHT = 200,
+            MAGIT_UI_MERGE_WINDOW_HEIGHT = 700,
+            MAGIT_UI_MERGE_WINDOW_WIDTH = 800,
             MIN_COMMENT_SUBSTRING = 0,
             MAX_COMMENT_SUBSTRING = 30,
             MAX_SHA_ONE_TABLE_LENGTH = 20,
@@ -41,15 +46,19 @@ public class Settings {
             THEME_WHITE = "white",
             LANG_ENG = "english",
             LANG_HEB = "hebrew",
+            HEBREW_CODE = "he_IL",
+            ENGLISH_CODE = "",
             RESOURCE_FILE = "languages.lang",
             CANCEL_BTN_CLICKED_STRING = "cancel",
             JAVAFX_NEWLINE_TEXTAREA = "\n",
+            FXML_SELECT_POPUP = "/magit/resource/select_popup.fxml",
             FXML_SETTINGS_WINDOW = "/magit/resource/settings.fxml",
             FXML_APPLICATION = "/magit/resource/magit.fxml",
             FXML_SMART_POPUP_BOX = "/magit/resource/smart_popup.fxml",
             FXML_DIALOG_BOX = "/magit/resource/dialogBox.fxml",
             FXML_INTRO_WINDOW = "/magit/resource/magit_intro.fxml",
             FXML_BRANCH_MANAGER = "/magit/resource/branchManager.fxml",
+            FXML_MERGE_WINDOW = "/magit/resource/mergeWindow.fxml",
             ROOT_SUB_FOLDERS = "ROOT_SUB_FOLDERS",
             XML_EXTENSION = "xml",
             XML_FILE_REQUEST_TYPE = "*." + XML_EXTENSION,
@@ -64,6 +73,12 @@ public class Settings {
             KEY_COUNTER_FILES = "KEY_COUNTER_FILES",
             KEY_COUNTER_FOLDERS = "KEY_COUNTER_FOLDERS",
             KEY_ROOT_FOLDER_PATH = "KEY_ROOT_FOLDER_PATH",
+            KEY_CHANGE_MAP = "KEY_CHANGE_MAP",
+            KEY_ANCESTOR_MAP = "KEY_ANCESTOR_MAP",
+            KEY_ACTIVE_MAP = "KEY_ACTIVE_MAP",
+            KEY_TARGET_MAP = "KEY_TARGET_MAP",
+            KEY_FINAL_MAP = "KEY_FINAL_MAP",
+            KEY_EASY_TAKE_MAP = "KEY_EASY_TAKE_MAP",
             XML_LOAD_PACKAGE = "xml.basic",
             MAGIT_BRANCH_HEAD = "head",
             MAGIT_FOLDER = ".magit",
@@ -90,5 +105,6 @@ public class Settings {
             BRANCHES_FOLDER = "branches",
             TEMP_FOLDER_NAME = "temp.magit",
             TEMP_UNZIP_FOLDER = "unZipTemp";
-    public static final ResourceBundle language = ResourceBundle.getBundle(RESOURCE_FILE);
+    public static String currentLanguage = ENGLISH_CODE, currentTheme = THEME_WHITE;
+    public static ResourceBundle language = ResourceBundle.getBundle(RESOURCE_FILE, new UTF8Control(new Locale(currentLanguage)));
 }

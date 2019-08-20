@@ -1,9 +1,13 @@
 package magit;
 
 import settings.Settings;
+import utils.WarpBasicFile;
+import utils.eUserMergeChoice;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 public class BlobMap {
@@ -38,7 +42,7 @@ public class BlobMap {
     }
 
     public void addToMap(Blob blob) {
-        map.put(blob,blob);
+        map.put(blob, blob);
     }
 
     public void remove(BasicFile file) {
@@ -52,24 +56,21 @@ public class BlobMap {
         }
     }
 
-    public boolean replace(BasicFile file, Folder root)
-    {
-        if(file.getRootFolder().equals(root)) {
+    public boolean replace(BasicFile file, Folder root) {
+        if (file.getRootFolder().equals(root)) {
             map.remove(file);
             map.put(file, (Blob) file);
             return true;
-        }
-        else {
+        } else {
             for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
                 if (entry.getValue().getType() == eFileTypes.FOLDER) {
                     Folder myRoot = (Folder) entry.getValue();
-                    boolean result = myRoot.getBlobMap().replace(file,myRoot);
-                    if(myRoot.getRootFolder().equals(root) && result)
-                    {
-                        Folder temp = (Folder)map.get(myRoot);
+                    boolean result = myRoot.getBlobMap().replace(file, myRoot);
+                    if (myRoot.getRootFolder().equals(root) && result) {
+                        Folder temp = (Folder) map.get(myRoot);
                         BlobMap tempBlob = temp.getBlobMap();
                         map.remove(myRoot);
-                        map.put(myRoot,myRoot);
+                        map.put(myRoot, myRoot);
                         myRoot.setBlobMap(tempBlob);
                     }
                 }
@@ -79,12 +80,12 @@ public class BlobMap {
     }
 
     public void addNew(BasicFile file, Folder root) {
-        if(file.getRootFolder().equals(root))
-            map.put(file,(Blob)file);
+        if (file.getRootFolder().equals(root))
+            map.put(file, (Blob) file);
         else {
             for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
                 if (entry.getValue().getType() == eFileTypes.FOLDER) {
-                    ((Folder) entry.getValue()).getBlobMap().addNew(file,(Folder) entry.getValue());
+                    ((Folder) entry.getValue()).getBlobMap().addNew(file, (Folder) entry.getValue());
                 }
             }
         }
@@ -105,5 +106,76 @@ public class BlobMap {
         }
 
         return stringBuilder.toString();
+    }
+
+    public Map<BasicFile, Blob> getAllFiles() {
+        Map<BasicFile, Blob> allFiles = new HashMap<>();
+        for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+            if (entry.getValue().getType() == eFileTypes.FILE) {
+                Blob blob = entry.getValue();
+                allFiles.put(blob, blob);
+            } else {
+                allFiles.putAll(((Folder)entry.getKey()).getBlobMap().getAllFiles());
+                allFiles.put(entry.getValue(), entry.getValue());
+            }
+        }
+
+        return allFiles;
+    }
+
+    public boolean contain(Blob value, boolean isInRootFolder, WarpBasicFile pointer) {
+        if (isInRootFolder) {
+            pointer.setFile(map.get(value));
+            return pointer.getFile() != null;
+        }
+
+        for (Map.Entry<BasicFile, Blob> entryFolder : map.entrySet()) {
+            if (entryFolder.getValue().getType() == eFileTypes.FOLDER) {
+                if(((Folder)entryFolder.getValue()).getBlobMap().contain(value,false,pointer)) {
+                    return pointer.getFile() != null;
+                }
+            } else {
+                this.contain(value,true,pointer);
+            }
+        }
+
+        return pointer.getFile() != null;
+    }
+
+    public Map<eUserMergeChoice, Blob> getDuplicate(Blob value, Map<String, BlobMap> changes) {
+        WarpBasicFile pointerAncestor = new WarpBasicFile(null),
+                pointerActive = new WarpBasicFile(null),
+                pointerTarget = new WarpBasicFile(null);
+
+        BlobMap ancestorFileTree = changes.get(Settings.KEY_ANCESTOR_MAP),
+                activeFileTree = changes.get(Settings.KEY_ACTIVE_MAP),
+                targetFileTree = changes.get(Settings.KEY_TARGET_MAP);
+
+        ancestorFileTree.contain(value, value.getRootFolder().getRootFolder() == null, pointerAncestor);
+        activeFileTree.contain(value, value.getRootFolder().getRootFolder() == null, pointerActive);
+        targetFileTree.contain(value, value.getRootFolder().getRootFolder() == null, pointerTarget);
+
+        Map<eUserMergeChoice, Blob> map = new HashMap<>();
+        map.put(eUserMergeChoice.ACTIVE,pointerActive.getFile());
+        map.put(eUserMergeChoice.ANCESTOR,pointerAncestor.getFile());
+        map.put(eUserMergeChoice.TARGET,pointerTarget.getFile());
+
+        return map;
+    }
+
+    public List<Blob> toList() {
+        List<Blob> blobList = new LinkedList<>();
+
+        for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+            blobList.add(entry.getValue());
+        }
+
+        return blobList;
+    }
+
+    public void merge(BlobMap blobMap) {
+        for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
+            map.put(entry.getValue(),entry.getValue());
+        }
     }
 }

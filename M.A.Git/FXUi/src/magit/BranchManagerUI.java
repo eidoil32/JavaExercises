@@ -7,7 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import magit.utils.Utilities;
 import settings.Settings;
 
 import java.io.IOException;
@@ -31,7 +30,7 @@ public class BranchManagerUI {
         // load main fxml
         URL mainFXML = IntroUI.class.getResource(Settings.FXML_BRANCH_MANAGER);
         loader.setLocation(mainFXML);
-        loader.setResources(Utilities.getLanguagesBundle());
+        loader.setResources(Settings.language);
         Pane root = loader.load();
         BranchManagerController controller = loader.getController();
         controller.setModel(model);

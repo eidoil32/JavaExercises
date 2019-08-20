@@ -520,4 +520,7 @@ public class Repository {
 
         return objectMap;
     }
+
+    public void updateRootFolderFiles(Map<String, BlobMap> changes, BlobMap userApprove) {
+    }
 }

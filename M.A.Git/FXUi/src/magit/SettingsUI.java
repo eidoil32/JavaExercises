@@ -2,12 +2,14 @@ package magit;
 
 import controller.Controller;
 import controller.SettingsController;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.StringProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import magit.utils.Utilities;
 import settings.Settings;
 
 import java.io.IOException;
@@ -18,11 +20,15 @@ public class SettingsUI {
     private Magit model;
     private Stage primaryStage;
     private Controller mainController;
+    private BooleanProperty languageProperty;
+    private StringProperty currentState;
 
-    public SettingsUI(Stage primaryStage, Magit model, Controller mainController) throws IOException {
+    public SettingsUI(Stage primaryStage, Magit model, Controller mainController, ObservableValue ... values) throws IOException {
         this.model = model;
         this.primaryStage = primaryStage;
         this.mainController = mainController;
+        this.languageProperty = (BooleanProperty)values[0];
+        this.currentState = (StringProperty)values[1];
         start();
     }
 
@@ -32,7 +38,7 @@ public class SettingsUI {
         // load main fxml
         URL mainFXML = IntroUI.class.getResource(Settings.FXML_SETTINGS_WINDOW);
         loader.setLocation(mainFXML);
-        loader.setResources(Utilities.getLanguagesBundle());
+        loader.setResources(Settings.language);
 
         BorderPane root = loader.load();
         SettingsController controller = loader.getController();
@@ -40,9 +46,9 @@ public class SettingsUI {
         controller.setMainController(mainController);
         Scene scene = new Scene(root, Settings.MAGIT_UI_SETTINGS_MIN_WIDTH, Settings.MAGIT_UI_SETTINGS_MIN_HEIGHT);
         Stage stage = new Stage();
-        stage.setOnHiding(event -> {
-            // change language or style
-        });
+        controller.setStage(stage);
+        controller.setLanguageProperty(languageProperty);
+        controller.setCurrentState(currentState);
         stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
         stage.setScene(scene);
         stage.setMinWidth(Settings.MAGIT_UI_SETTINGS_MIN_WIDTH);

@@ -3,6 +3,7 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    MARGE_CANCELED(Settings.language.getString("MARGE_CANCELED")),
     REPOSITORY_FOLDER_SCAN_FAILED(Settings.language.getString("SCAN_FOLDER_FAILED")),
     CREATE_MAGIT_FOLDER_FAILED(Settings.language.getString("CREATE_MAGIT_FOLDER_FAILED")),
     CREATE_ZIP_FILE_FAILED(Settings.language.getString("CREATE_ZIP_FILE_FAILED")),

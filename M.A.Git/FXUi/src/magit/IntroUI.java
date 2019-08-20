@@ -8,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import magit.utils.Utilities;
 import settings.Settings;
 
 import java.io.IOException;
@@ -26,7 +25,7 @@ public class IntroUI extends Application {
         URL mainFXML = IntroUI.class.getResource(Settings.FXML_INTRO_WINDOW);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(mainFXML);
-        loader.setResources(Utilities.getLanguagesBundle());
+        loader.setResources(Settings.language);
         Pane root = loader.load();
 
         Magit model = new Magit();

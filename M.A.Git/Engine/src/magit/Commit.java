@@ -16,7 +16,6 @@ import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -29,7 +28,6 @@ public class Commit {
     private String comment, creator, content;
     private Date date;
     private Commit prevCommit, anotherPrevCommit;
-
 
     public Commit() {
         this.prevCommit = null;
@@ -50,7 +48,7 @@ public class Commit {
         List<String> commitContent = Files.readAllLines(Paths.get(pathToObject + File.separator + SHA_ONE));
         this.SHA_ONE = SHA_ONE;
         this.prevCommitSHA_ONE = commitContent.get(1);
-        this.comment = commitContent.get(2);
+        this.anotherPrevCommitSHA_ONE = commitContent.get(2);
         this.creator = commitContent.get(4);
         try {
             this.date = new SimpleDateFormat(Settings.DATE_FORMAT).parse(commitContent.get(3));
@@ -60,6 +58,12 @@ public class Commit {
         if (!this.prevCommitSHA_ONE.equals(Settings.EMPTY_COMMIT)) {
             this.prevCommit = new Commit(this.prevCommitSHA_ONE, pathToObject);
         }
+        if (!this.anotherPrevCommitSHA_ONE.equals(Settings.EMPTY_COMMIT)) {
+            this.anotherPrevCommit = new Commit(this.anotherPrevCommitSHA_ONE, pathToObject);
+        }
+
+
+        this.comment = getCommentFromFile(commitContent);
     }
 
     public Commit XML_Parser(MagitRepository xmlMagit, MagitSingleCommit commit, Folder rootFolder)
@@ -149,7 +153,7 @@ public class Commit {
 
     public void createCommitFile(Repository currentRepository, Map<MapKeys, List<BasicFile>> listMap, String currentUser, String comment)
             throws IOException, MyFileException, RepositoryException {
-        if(listMap != null) {
+        if (listMap != null) {
             this.date = new Date();
             this.creator = currentUser;
             this.comment = comment;
@@ -173,12 +177,12 @@ public class Commit {
     }
 
     private void calcContent() {
-        this.content =
-                this.rootFolderSHA_ONE + System.lineSeparator() + // repository sha-1
-                        this.prevCommitSHA_ONE + System.lineSeparator() + //last commit sha-1
-                        this.comment + System.lineSeparator() +
-                        new SimpleDateFormat(Settings.DATE_FORMAT).format(this.date) + System.lineSeparator() +
-                        this.creator + System.lineSeparator();
+        this.content = this.rootFolderSHA_ONE + System.lineSeparator() + // repository sha-1
+                this.prevCommitSHA_ONE + System.lineSeparator() + //last commit sha-1
+                this.anotherPrevCommitSHA_ONE + System.lineSeparator() +
+                new SimpleDateFormat(Settings.DATE_FORMAT).format(this.date) + System.lineSeparator() +
+                this.creator + System.lineSeparator() +
+                this.comment;
     }
 
     private void createNewAndEditedFiles(Map<MapKeys, List<BasicFile>> listMap, Repository currentRepository) throws MyFileException {
@@ -202,30 +206,45 @@ public class Commit {
     }
 
     public void loadDataFromFile(Path objectPath, String commit_sha) throws IOException, RepositoryException {
-        String prevCommit_sha;
-
         List<String> commitFile = Files.readAllLines(Paths.get(objectPath + File.separator + commit_sha));
 
-        prevCommit_sha = commitFile.get(1);
-        if (!prevCommit_sha.equals(Settings.EMPTY_COMMIT)) {
-            this.prevCommit = new Commit(commitFile.get(1), objectPath.toString());
-            this.prevCommit.loadDataFromFile(objectPath, prevCommit_sha);
-        } else {
-            this.prevCommit = null;
-            this.prevCommitSHA_ONE = Settings.EMPTY_COMMIT;
-        }
-        this.comment = commitFile.get(2);
-        //this.SHA_ONE = commitFile.get(0);
+        this.prevCommitSHA_ONE = calcPervsCommit(this.prevCommit,commitFile.get(1),objectPath);
+        this.anotherPrevCommitSHA_ONE = calcPervsCommit(this.anotherPrevCommit,commitFile.get(2),objectPath);
+
         this.SHA_ONE = commit_sha;
         this.rootFolderSHA_ONE = commitFile.get(0);
-        // TODO:: check who effects changing SHA_ONE to RootFolderSHA_ONE
-        DateFormat df = new SimpleDateFormat(Settings.DATE_FORMAT);
+
         try {
-            this.date = df.parse(commitFile.get(3));
+            this.date = new SimpleDateFormat(Settings.DATE_FORMAT).parse(commitFile.get(3));
         } catch (ParseException e) {
             throw new RepositoryException(eErrorCodes.WRONG_DATE_FORM);
         }
+
         this.creator = commitFile.get(4);
+        this.comment = getCommentFromFile(commitFile);
+    }
+
+    private String calcPervsCommit(Commit commit, String sha_one, Path objectPath) throws IOException, RepositoryException {
+        if (!sha_one.equals(Settings.EMPTY_COMMIT)) {
+            commit = new Commit(sha_one, objectPath.toString());
+            commit.loadDataFromFile(objectPath, sha_one);
+            return sha_one;
+        } else {
+            commit = null;
+            return Settings.EMPTY_COMMIT;
+        }
+    }
+
+    private String getCommentFromFile(List<String> commitFile) {
+        StringBuilder comment = new StringBuilder();
+        for (int i = 5; i < commitFile.size(); i++) {
+            comment.append(commitFile.get(i));
+            if (i != commitFile.size() - 1) {
+                comment.append(System.lineSeparator());
+            }
+        }
+
+        return comment.toString();
     }
 
     public Commit getPrevCommit() {
@@ -332,9 +351,21 @@ public class Commit {
         return SHA_ONE.hashCode();
     }
 
+    public String getPrevCommitSHA_ONE() {
+        return prevCommitSHA_ONE;
+    }
+
+    public String getAnotherPrevCommitSHA_ONE() {
+        return anotherPrevCommitSHA_ONE;
+    }
+
+    public Commit getAnotherPrevCommit() {
+        return anotherPrevCommit;
+    }
+
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof Commit) {
+        if (obj instanceof Commit) {
             return SHA_ONE.equals(((Commit) obj).getSHA_ONE());
         }
         return false;

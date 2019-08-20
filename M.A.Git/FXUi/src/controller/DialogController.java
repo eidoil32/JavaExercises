@@ -4,9 +4,10 @@ import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import settings.Settings;
 
@@ -16,7 +17,7 @@ public class DialogController {
     @FXML
     private Button buttonOK, ButtonClick;
     @FXML
-    private Label textLabel;
+    private TextFlow textLabel;
     @FXML
     private TextField textField;
 
@@ -42,7 +43,7 @@ public class DialogController {
 
     public void setQuestion(String question) {
         this.question = question;
-        textLabel.setText(question);
+        textLabel.getChildren().add(new Text(question));
     }
 
     @FXML

@@ -1,4 +1,4 @@
-package magit.utils;
+package settings;
 
 import java.io.IOException;
 import java.io.InputStream;

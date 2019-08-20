@@ -20,7 +20,6 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import javafx.stage.StageStyle;
 import magit.IntroUI;
 import magit.Magit;
 import magit.Repository;
@@ -56,7 +55,7 @@ public class IntroController {
         Scene scene = ((Node) event.getSource()).getScene();
         File selectedDirectory = Utilities.choiceFolderDialog(scene);
         if (selectedDirectory != null) {
-            createNewRepository(selectedDirectory,model,isRepositoryExists);
+            createNewRepository(selectedDirectory, model, isRepositoryExists);
         }
     }
 
@@ -67,7 +66,7 @@ public class IntroController {
             } catch (IOException | RepositoryException e) {
                 showAlert(e.getMessage());
             }
-        }, selectedDirectory,model,isRepositoryExists);
+        }, selectedDirectory, model, isRepositoryExists);
     }
 
     private static void ShowSimpleDialog(ILoader command, File target, Magit model, BooleanProperty isRepositoryExists) {
@@ -78,7 +77,7 @@ public class IntroController {
             FXMLLoader loader = new FXMLLoader();
             URL mainFXML = IntroUI.class.getResource(Settings.FXML_DIALOG_BOX);
             loader.setLocation(mainFXML);
-            loader.setResources(Utilities.getLanguagesBundle());
+            loader.setResources(Settings.language);
             root = loader.load();
             repositoryName.addListener((observable, oldValue, newValue) -> {
                 command.execute(newValue, target, model);
@@ -88,8 +87,9 @@ public class IntroController {
             DialogController dialogController = loader.getController();
             dialogController.setQuestion(Settings.language.getString("PLEASE_ENTER_REPOSITORY_NAME"));
             dialogController.setProperty(repositoryName);
-            stage.initStyle(StageStyle.TRANSPARENT);
             stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
+            stage.setMinWidth(Settings.MAGIT_UI_DIALOG_BOX_WIDTH + 50);
+            stage.setMinHeight(Settings.MAGIT_UI_DIALOG_BOX_HEIGHT + 50);
             stage.setScene(new Scene(root, Settings.MAGIT_UI_DIALOG_BOX_WIDTH, Settings.MAGIT_UI_DIALOG_BOX_HEIGHT));
             stage.show();
         } catch (IOException e) {
@@ -103,7 +103,8 @@ public class IntroController {
         alert.setContentText(errorMessage);
         ButtonType dismissButton = new ButtonType(Settings.language.getString("DISMISS_BTN"), ButtonBar.ButtonData.YES);
         alert.getButtonTypes().setAll(dismissButton);
-        alert.showAndWait().ifPresent(type -> { });
+        alert.showAndWait().ifPresent(type -> {
+        });
     }
 
     public static void showAlert(String errorMessage) {
@@ -125,7 +126,7 @@ public class IntroController {
             protected Void call() {
                 try {
                     if (model.changeRepo(selectedFolder.toString())) {
-                        Platform.runLater(() ->isRepositoryExists.setValue(true));
+                        Platform.runLater(() -> isRepositoryExists.setValue(true));
                     } else {
                         Platform.runLater(() -> showAlert(Settings.language.getString("LOAD_REPOSITORY_FAILED_NOT_EXIST_MAGIT")));
                     }

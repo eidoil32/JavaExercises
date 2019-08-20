@@ -6,6 +6,7 @@ import javafx.scene.control.ButtonType;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import settings.Settings;
+import settings.UTF8Control;
 
 import java.io.File;
 import java.util.LinkedList;

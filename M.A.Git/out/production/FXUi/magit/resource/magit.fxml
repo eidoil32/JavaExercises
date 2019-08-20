@@ -99,6 +99,11 @@
                            </padding>
                         </Separator>
                         <Button fx:id="commitBtn" mnemonicParsing="false" onAction="#onCommitButtonClick" text="%FX_COMMIT" />
+                        <Button fx:id="mergeBtn" mnemonicParsing="false" onAction="#onMergeButton_Click" text="%FX_MARGE_BUTTON">
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Button>
                      </children>
                   </HBox>
                </top>
@@ -306,11 +311,20 @@
                                     <Separator maxHeight="30.0" minHeight="30.0" orientation="VERTICAL" prefHeight="30.0" />
                                     <AnchorPane prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS">
                                        <children>
-                                          <Label fx:id="currentUser" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Current user: Admintrator" AnchorPane.rightAnchor="0.0">
-                                             <padding>
-                                                <Insets right="5.0" />
-                                             </padding>
-                                          </Label>
+                                          <HBox alignment="CENTER_RIGHT" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                                             <children>
+                                                <Label text="%FX_CURRENT_USER_PREFIX">
+                                                   <HBox.margin>
+                                                      <Insets right="3.0" />
+                                                   </HBox.margin>
+                                                </Label>
+                                                <Label fx:id="currentUser" maxHeight="30.0" minHeight="30.0" prefHeight="30.0" text="Adminstrator">
+                                                   <padding>
+                                                      <Insets right="5.0" />
+                                                   </padding>
+                                                </Label>
+                                             </children>
+                                          </HBox>
                                        </children>
                                     </AnchorPane>
                                  </children>

@@ -30,6 +30,10 @@ public class SmartPopUpController {
         ((Node)event.getSource()).getScene().getWindow().hide();
     }
 
+    public void setTitle(String title) {
+        this.labelTxt.setText(title);
+    }
+
     @FXML
     private void onConfirmButton_Click(ActionEvent event) {
         String comment = textArea.getText().replace(Settings.JAVAFX_NEWLINE_TEXTAREA,System.lineSeparator());

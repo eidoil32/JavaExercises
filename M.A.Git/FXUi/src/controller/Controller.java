@@ -22,9 +22,13 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import magit.*;
+import magit.utils.MergeProperty;
+import magit.utils.MyBooleanProperty;
+import magit.utils.SmartListener;
 import magit.utils.Utilities;
 import settings.Settings;
 import utils.MapKeys;
+import utils.eUserMergeChoice;
 import xml.basic.MagitRepository;
 
 import javax.xml.bind.JAXBException;
@@ -48,7 +52,7 @@ public class Controller {
     @FXML
     private MenuButton repositoryListMenuBtn, branchListMenuBtn;
     @FXML
-    private Button commitBtn, scanRepositoryBtn;
+    private Button commitBtn, scanRepositoryBtn, mergeBtn;
     @FXML
     private TableView<List<String>> commitTable;
     @FXML
@@ -65,15 +69,15 @@ public class Controller {
 
     private Magit model;
     private StringProperty stringProperty_CurrentUser, stringProperty_CurrentState;
-    private BooleanProperty isRepositoryExists = new SimpleBooleanProperty();
+    private BooleanProperty isRepositoryExists = new SimpleBooleanProperty(), languageProperty;
     private Stage primaryStage;
     private boolean isAnimationTurnOn = false;
 
     public void setStringProperty_CurrentUser(StringProperty currentUser) {
         this.stringProperty_CurrentUser = currentUser;
-
+        currentUser.setValue(currentUser.getValue());
         stringProperty_CurrentUser.addListener((observable, oldValue, newValue) -> {
-            this.currentUser.setText(Settings.language.getString("MAGIT_CURRENT_USER_LABEL") + ": " + newValue);
+            this.currentUser.setText(newValue);
         });
     }
 
@@ -98,6 +102,63 @@ public class Controller {
                 }).start();
             }
         }));
+    }
+
+    @FXML
+    private void onMergeButton_Click(ActionEvent event) {
+        BooleanProperty flag = new SimpleBooleanProperty();
+        SmartListener branch = new SmartListener() {
+            private Branch branch;
+
+            @Override
+            public Object getItem() {
+                return branch;
+            }
+
+            @Override
+            public void setItem(Object item) {
+                this.branch = (Branch) item;
+            }
+        };
+        selectBranch(branch, model.getCurrentRepository().getBranches(), flag);
+        flag.addListener((observable -> {
+            if (branch.getItem() != null) {
+                if (!branch.getItem().equals(model.getCurrentBranch())) {
+                    Task merge = new MergeTask(model, (Branch) branch.getItem(), this);
+                    bindTaskToUIComponents(merge);
+                    new Thread(merge).start();
+                } else {
+                    IntroController.showAlert(Settings.language.getString("CANNOT_MERGE_BRANCH_TO_ITSELF"));
+                }
+            }
+        }));
+    }
+
+    private void selectBranch(SmartListener branch, List<Branch> branches, BooleanProperty flag) {
+        Stage stage = new Stage();
+        Pane root;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            URL mainFXML = Controller.class.getResource(Settings.FXML_SELECT_POPUP);
+            loader.setLocation(mainFXML);
+            loader.setResources(Settings.language);
+            root = loader.load();
+            SelectController selectController = loader.getController();
+            selectController.setQuestion(Settings.language.getString("CHOOSE_BRANCH_TO_MERGE"));
+            selectController.setListener(branch);
+            selectController.setListForChoice(FXCollections.observableList(branches));
+            selectController.setStage(stage);
+            selectController.setFlag(flag);
+            stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
+            stage.setMinHeight(Settings.MAGIT_UI_SELECT_POPUP_HEIGHT + 100);
+            stage.setMinWidth(Settings.MAGIT_UI_SELECT_POPUP_WIDTH + 50);
+            stage.setScene(new Scene(root, Settings.MAGIT_UI_SELECT_POPUP_WIDTH, Settings.MAGIT_UI_SELECT_POPUP_HEIGHT));
+            stage.initOwner(primaryStage);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.show();
+        } catch (IOException e) {
+            IntroController.showAlert(e.getMessage());
+        }
     }
 
     public void setPrimaryStage(Stage stage) {
@@ -131,7 +192,7 @@ public class Controller {
             FXMLLoader loader = new FXMLLoader();
             URL mainFXML = Controller.class.getResource(Settings.FXML_SMART_POPUP_BOX);
             loader.setLocation(mainFXML);
-            loader.setResources(Utilities.getLanguagesBundle());
+            loader.setResources(Settings.language);
             root = loader.load();
             comment.addListener((observable, oldValue, newValue) -> {
                 if (!newValue.equals(Settings.CANCEL_BTN_CLICKED_STRING)) {
@@ -140,7 +201,7 @@ public class Controller {
                         protected Void call() {
                             try {
                                 updateProgress(0, 1);
-                                model.commitMagit(stringProperty_CurrentUser.getValue(), newValue);
+                                model.commitMagit(stringProperty_CurrentUser.get(), newValue);
                                 updateProgress(1, 1);
                                 updateMessage(Settings.language.getString("COMMIT_CREATED_SUCCESSFULLY"));
                                 Platform.runLater(() -> {
@@ -159,8 +220,10 @@ public class Controller {
             });
             SmartPopUpController smartPopUpController = loader.getController();
             smartPopUpController.setStringProperty(comment);
+            smartPopUpController.setTitle(Settings.language.getString("PLEASE_ENTER_YOUR_COMMENT"));
             stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
-            stage.setResizable(false);
+            stage.setMinHeight(Settings.MAGIT_UI_SMART_POPUP_MAX_HEIGHT + 100);
+            stage.setMinWidth(Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH + 50);
             stage.setScene(new Scene(root, Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH, Settings.MAGIT_UI_SMART_POPUP_MAX_HEIGHT));
             stage.initOwner(primaryStage);
             stage.initModality(Modality.WINDOW_MODAL);
@@ -233,8 +296,8 @@ public class Controller {
             @Override
             protected Object call() throws Exception {
                 try {
-                    updateProgress(0,3);
-                    if(target != null) {
+                    updateProgress(0, 3);
+                    if (target != null) {
                         updateMessage(Settings.language.getString("CONVERT_MAGIT_TO_XML"));
                         updateProgress(1, 3);
                         MagitRepository magitRepository = model.convertToXMLScheme();
@@ -244,7 +307,7 @@ public class Controller {
                         updateProgress(3, 3);
                         updateMessage(String.format(Settings.language.getString("EXPORT_TO_XML_SUCCESS"), target.getPath()));
                     } else {
-                        updateProgress(3,3);
+                        updateProgress(3, 3);
                         Platform.runLater(() -> IntroController.showAlert(Settings.language.getString("EXPORT_TO_XML_CANCELED")));
                         updateMessage(Settings.language.getString("EXPORT_TO_XML_FAILED"));
                     }
@@ -275,7 +338,7 @@ public class Controller {
     @FXML
     private void onMenuItem_ThemeManagerClick(ActionEvent event) {
         try {
-            new SettingsUI(primaryStage,model,this);
+            new SettingsUI(primaryStage, model, this, languageProperty, stringProperty_CurrentState);
         } catch (IOException e) {
             IntroController.showAlert(e.getMessage());
         }
@@ -319,7 +382,7 @@ public class Controller {
             FXMLLoader loader = new FXMLLoader();
             URL mainFXML = Controller.class.getResource(Settings.FXML_DIALOG_BOX);
             loader.setLocation(mainFXML);
-            loader.setResources(Utilities.getLanguagesBundle());
+            loader.setResources(Settings.language);
             root = loader.load();
             DialogController dialogController = loader.getController();
             dialogController.setQuestion(question);
@@ -347,7 +410,6 @@ public class Controller {
         currentStatus.addListener((observable, oldValue, newValue) -> {
             this.executeCommandProgress.setText(newValue);
         });
-        this.executeCommandProgress.setText(String.format(Settings.language.getString("LOAD_REPOSITORY_SUCCESS"), model.getCurrentRepository().getName()));
     }
 
     public void updateBranchesSecondRowData() {
@@ -423,7 +485,7 @@ public class Controller {
                 }
             }
         }));
-        showPopup(newBranchName, Settings.language.getString("PLEASE_ENTER_BRANCH_NAME"),Settings.language.getString("BRANCH_NAME_HINT"));
+        showPopup(newBranchName, Settings.language.getString("PLEASE_ENTER_BRANCH_NAME"), Settings.language.getString("BRANCH_NAME_HINT"));
     }
 
     @FXML
@@ -438,14 +500,48 @@ public class Controller {
     private void onMenuItem_CreateNewRepositoryClick(ActionEvent event) {
         File selectedDirectory = Utilities.choiceFolderDialog(primaryStage.getScene());
         if (selectedDirectory != null) {
-            IntroController.createNewRepository(selectedDirectory,model,isRepositoryExists);
+            IntroController.createNewRepository(selectedDirectory, model, isRepositoryExists);
         }
     }
 
     @FXML
     private void onMenuItem_ManageBranches_Click(ActionEvent event) {
         try {
-            new BranchManagerUI(primaryStage,model,this);
+            new BranchManagerUI(primaryStage, model, this);
+        } catch (IOException e) {
+            IntroController.showAlert(e.getMessage());
+        }
+    }
+
+    public void setLanguageProperty(BooleanProperty languageProperty) {
+        this.languageProperty = languageProperty;
+    }
+
+    public void mergeWindow(MergeProperty mergeProperty, Map<eUserMergeChoice, Blob> duplicate, MyBooleanProperty booleanProperty) {
+        Stage stage = new Stage();
+        Pane root;
+        try {
+            FXMLLoader loader = new FXMLLoader();
+            URL mainFXML = Controller.class.getResource(Settings.FXML_MERGE_WINDOW);
+            loader.setLocation(mainFXML);
+            loader.setResources(Settings.language);
+            root = loader.load();
+            MergeWindowController mergeWindowController = loader.getController();
+            List<Blob> files = new ArrayList<>(3);
+            files.add(0, duplicate.get(eUserMergeChoice.ANCESTOR));
+            files.add(1, duplicate.get(eUserMergeChoice.ACTIVE));
+            files.add(2, duplicate.get(eUserMergeChoice.TARGET));
+            mergeWindowController.setFileText(files);
+            mergeWindowController.setMergeProperty(mergeProperty);
+            mergeWindowController.setStage(stage);
+            mergeWindowController.setBooleanProperty(booleanProperty);
+            stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
+            stage.setMinHeight(Settings.MAGIT_UI_MERGE_WINDOW_HEIGHT);
+            stage.setMinWidth(Settings.MAGIT_UI_MERGE_WINDOW_WIDTH);
+            stage.setScene(new Scene(root, Settings.MAGIT_UI_MERGE_WINDOW_WIDTH, Settings.MAGIT_UI_MERGE_WINDOW_HEIGHT));
+            stage.initOwner(primaryStage);
+            stage.initModality(Modality.WINDOW_MODAL);
+            stage.show();
         } catch (IOException e) {
             IntroController.showAlert(e.getMessage());
         }

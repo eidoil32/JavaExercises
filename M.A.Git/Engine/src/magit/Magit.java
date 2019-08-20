@@ -2,10 +2,12 @@ package magit;
 
 
 import exceptions.*;
+import puk.team.course.magit.ancestor.finder.AncestorFinder;
 import settings.Settings;
 import utils.MapKeys;
 import utils.WarpBasicFile;
 import utils.WarpInteger;
+import utils.eConflictChecker;
 import xml.basic.*;
 
 import javax.xml.bind.JAXBContext;
@@ -17,10 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Magit {
     private Path rootFolder;
@@ -479,8 +478,8 @@ public class Magit {
         }
     }
 
-    public Map<MapKeys,List<String>> showCurrentStatus() throws RepositoryException, IOException, MyFileException {
-        Map<MapKeys,List<String>> data = new HashMap<>();
+    public Map<MapKeys, List<String>> showCurrentStatus() throws RepositoryException, IOException, MyFileException {
+        Map<MapKeys, List<String>> data = new HashMap<>();
 
         List<String> newItems = new LinkedList<>();
         List<String> deletedItems = new LinkedList<>();
@@ -538,15 +537,116 @@ public class Magit {
     }
 
     public Commit getCommitData(String sha_one) throws IOException {
-        if(sha_one.length() != Settings.SBA_ONE_CORRECT_LENGTH) {
+        if (sha_one.length() != Settings.SBA_ONE_CORRECT_LENGTH) {
             return null;
         } else {
             File commit = new File(currentRepository.getObjectPath() + File.separator + sha_one);
-            if(commit.exists()) {
-                return new Commit(sha_one,currentRepository.getObjectPath().toString());
+            if (commit.exists()) {
+                return new Commit(sha_one, currentRepository.getObjectPath().toString());
             } else {
                 return null;
             }
         }
     }
+
+    public Commit getAncestorCommit(Branch target) throws IOException {
+        Commit first = currentBranch.getCommit(), second = target.getCommit();
+
+        AncestorFinder finder = new AncestorFinder(sha_one -> {
+            try {
+                Commit found = new Commit(sha_one, currentRepository.getObjectPath().toString());
+                return new MyCommitRepresentative(found);
+            } catch (IOException e) {
+                return null;
+            }
+        });
+
+        String sha_one = finder.traceAncestor(first.getSHA_ONE(), second.getSHA_ONE());
+        return new Commit(sha_one, currentRepository.getObjectPath().toString());
+    }
+
+    public Branch findBranch(String branchName) {
+        return currentRepository.searchBranch(branchName);
+    }
+
+    public Map<String, BlobMap> findChanges(Commit ancestor, Branch target) throws RepositoryException, IOException, MyFileException {
+        Map<String, BlobMap> allFiles = new HashMap<>();
+        BlobMap ancestorFileTree = getCurrentRepository().loadDataFromCommit(ancestor),
+                activeFileTree = getCurrentRepository().loadDataFromCommit(currentBranch.getCommit()),
+                targetFileTree = getCurrentRepository().loadDataFromCommit(target.getCommit());
+
+        BlobMap finalMap = mergeMaps(ancestorFileTree, activeFileTree, targetFileTree);
+        List<BlobMap> blobMapList = calculateChanges(finalMap, ancestorFileTree, activeFileTree, targetFileTree);
+
+        allFiles.put(Settings.KEY_CHANGE_MAP, blobMapList.get(0));
+        allFiles.put(Settings.KEY_ANCESTOR_MAP, ancestorFileTree);
+        allFiles.put(Settings.KEY_ACTIVE_MAP, activeFileTree);
+        allFiles.put(Settings.KEY_TARGET_MAP, targetFileTree);
+        allFiles.put(Settings.KEY_FINAL_MAP, finalMap);
+        allFiles.put(Settings.KEY_EASY_TAKE_MAP, blobMapList.get(1));
+
+        return allFiles;
+    }
+
+    private BlobMap mergeMaps(BlobMap... values) {
+        BlobMap merge = new BlobMap(new HashMap<>());
+
+        for (int i = 0; i < values.length; i++) {
+            BlobMap temp = values[i];
+            if (temp != null) {
+                for (Map.Entry<BasicFile, Blob> entry : temp.getMap().entrySet()) {
+                    Blob tempBlob = entry.getValue();
+                    merge.addToMap(tempBlob);
+                }
+            }
+        }
+
+        return merge;
+    }
+
+    private List<BlobMap> calculateChanges(BlobMap... values) {
+        BlobMap allFiles = values[0], ancestor = values[1], active = values[2], target = values[3];
+        BlobMap files = new BlobMap(new HashMap<>()), easyTake = new BlobMap(new HashMap<>());
+
+        List<BlobMap> blobMapList = new ArrayList<>(2);
+        blobMapList.add(0, files);
+        blobMapList.add(1, easyTake);
+
+        for (Map.Entry<BasicFile, Blob> entry : allFiles.getMap().entrySet()) {
+            Blob blob = entry.getValue();
+            if (blob.getType() == eFileTypes.FOLDER) {
+                List<BlobMap> tempBlobMapList = calculateChanges(((Folder) blob).getBlobMap(), ancestor, active, target);
+                files.merge(tempBlobMapList.get(0));
+                easyTake.merge(tempBlobMapList.get(1));
+            } else {
+                Folder rootFolder = blob.getRootFolder();
+                boolean isInRootFolder = rootFolder.getBlobMap().equals(currentRepository.getRootFolder().getBlobMap());
+                WarpBasicFile pointerAncestor = new WarpBasicFile(null), pointerActive = new WarpBasicFile(null), pointerTarget = new WarpBasicFile(null);
+                boolean check_1 = ancestor.contain(blob, isInRootFolder, pointerAncestor),
+                        check_2 = active.contain(blob, isInRootFolder, pointerActive),
+                        check_3 = target.contain(blob, isInRootFolder, pointerTarget),
+                        check_4 = pointerAncestor.equals(pointerActive),
+                        check_5 = pointerAncestor.equals(pointerTarget),
+                        check_6 = pointerActive.equals(pointerTarget);
+                eConflictChecker condition = eConflictChecker.getItem(check_1, check_2, check_3, check_4, check_5, check_6).get();
+                if (condition.isConflict()) {
+                    if (condition.isSimpleDecision()) {
+                        easyTake.addToMap(blob);
+                    } else {
+                        files.addToMap(blob);
+                    }
+                }
+            }
+        }
+
+        return blobMapList;
+    }
+
+    public void merge(Map<String, BlobMap> changes, Branch target, Commit ancestor, BlobMap userApprove) {
+        Commit commit = new Commit();
+
+        BlobMap take = changes.get(Settings.KEY_EASY_TAKE_MAP);
+        List<Blob> sortedFiles = take.toList();
+    }
+
 }
