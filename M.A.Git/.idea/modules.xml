@@ -7,7 +7,6 @@
       <module fileurl="file://$PROJECT_DIR$/Languages/Languages.iml" filepath="$PROJECT_DIR$/Languages/Languages.iml" />
       <module fileurl="file://$PROJECT_DIR$/M.A.Git.iml" filepath="$PROJECT_DIR$/M.A.Git.iml" />
       <module fileurl="file://$PROJECT_DIR$/Miscellaneous/Miscellaneous.iml" filepath="$PROJECT_DIR$/Miscellaneous/Miscellaneous.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Ui/Ui.iml" filepath="$PROJECT_DIR$/Ui/Ui.iml" />
     </modules>
   </component>
 </project>

@@ -32,7 +32,6 @@ public class FileManager {
             }
         }
         reader.close();
-        //return FileUtils.readFileToString(new File(filePath.toUri()), Settings.FILE_ENCODING);
         return content.toString();
     }
 

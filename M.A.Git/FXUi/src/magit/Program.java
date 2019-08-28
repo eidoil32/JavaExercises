@@ -8,21 +8,19 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import magit.utils.MyScene;
 import settings.Settings;
 
 import java.io.IOException;
 import java.net.URL;
 
-public class IntroUI extends Application {
+public class Program extends Application {
     private BooleanProperty isRepositoryExists = new SimpleBooleanProperty();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-
-        // load language file
-
         // load main fxml
-        URL mainFXML = IntroUI.class.getResource(Settings.FXML_INTRO_WINDOW);
+        URL mainFXML = Program.class.getResource(Settings.FXML_INTRO_WINDOW);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
@@ -34,12 +32,11 @@ public class IntroUI extends Application {
         controller.setModel(model);
         controller.setFinishStart(isRepositoryExists);
 
-        Scene scene = new Scene(root, Settings.MAGIT_UI_INTRO_MIN_WIDTH, Settings.MAGIT_UI_INTRO_MIN_HEIGHT);
-
+        Scene scene = new MyScene(root, Settings.MAGIT_UI_INTRO_MIN_WIDTH, Settings.MAGIT_UI_INTRO_MIN_HEIGHT);
         isRepositoryExists.addListener((observable, oldValue, newValue) -> {
             try {
                 primaryStage.close();
-                new MagitUI(controller.getModel(),primaryStage);
+                new MagitUI(controller.getModel(),primaryStage,controller);
             } catch (IOException e) {
                 IntroController.showAlert(Settings.language.getString("UNKNOWN_FATAL_ERROR") + e.getMessage());
             }
@@ -53,6 +50,7 @@ public class IntroUI extends Application {
     }
 
     public static void main(String[] args) {
+        Settings.setup();
         launch(args);
     }
 

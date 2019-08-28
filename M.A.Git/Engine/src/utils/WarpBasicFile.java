@@ -37,6 +37,11 @@ public class WarpBasicFile {
 
     @Override
     public boolean equals(Object obj) {
-        return SHA_ONE.equals(((WarpBasicFile) obj).getSHA_ONE());
+        return SHA_ONE != null && SHA_ONE.equals(((WarpBasicFile) obj).getSHA_ONE());
+    }
+
+    @Override
+    public String toString() {
+        return file.getName();
     }
 }

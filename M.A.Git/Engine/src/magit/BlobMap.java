@@ -25,6 +25,14 @@ public class BlobMap {
         return map;
     }
 
+    public Blob getRandomBlob() {
+        for (Map.Entry<BasicFile,Blob> blob : map.entrySet()) {
+            return blob.getValue();
+        }
+
+        return null;
+    }
+
     @Override
     public String toString() {
         StringBuilder stringBuilder = new StringBuilder();
@@ -178,5 +186,29 @@ public class BlobMap {
         for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
             map.put(entry.getValue(),entry.getValue());
         }
+    }
+
+    public BlobMap getOnlyFolders() {
+        BlobMap foldersOnly = new BlobMap(null);
+
+        for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+            if(entry.getValue().getType() == eFileTypes.FOLDER) {
+                foldersOnly.addToMap(entry.getValue());
+                foldersOnly.getMap().putAll(((Folder)entry.getValue()).getBlobMap().getOnlyFolders().getMap());
+            }
+        }
+
+        return foldersOnly;
+    }
+
+    public int getSize() {
+        int size = map.size();
+        for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+            if(entry.getValue().getType() == eFileTypes.FOLDER) {
+                size += ((Folder)entry.getValue()).getBlobMap().getSize();
+            }
+        }
+
+        return size;
     }
 }

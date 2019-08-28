@@ -7,6 +7,11 @@ public class RepositoryException extends Exception {
         this.code = code;
     }
 
+    public RepositoryException(eErrorCodes code, String additionalData) {
+        super(String.format(code.getMessage(),additionalData));
+        this.code = code;
+    }
+
     public eErrorCodes getCode() {
         return code;
     }

@@ -3,7 +3,11 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    FAST_FORWARD_MERGE(Settings.language.getString("FAST_FORWARD_MERGE")),
     MARGE_CANCELED(Settings.language.getString("MARGE_CANCELED")),
+    READING_REMOTE_BRANCH_FAILED(Settings.language.getString("READING_REMOTE_BRANCH_FAILED")),
+    SELECTED_TO_DELETE_FILE("SELECTED_TO_DELETE_FILE"),
+    NOT_SHA_ONE(Settings.language.getString("NOT_SHA_ONE")),
     REPOSITORY_FOLDER_SCAN_FAILED(Settings.language.getString("SCAN_FOLDER_FAILED")),
     CREATE_MAGIT_FOLDER_FAILED(Settings.language.getString("CREATE_MAGIT_FOLDER_FAILED")),
     CREATE_ZIP_FILE_FAILED(Settings.language.getString("CREATE_ZIP_FILE_FAILED")),

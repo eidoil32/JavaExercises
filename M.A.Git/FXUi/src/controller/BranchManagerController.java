@@ -1,24 +1,20 @@
 package controller;
 
 import exceptions.RepositoryException;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar;
-import javafx.scene.control.ListView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
 import javafx.util.StringConverter;
 import magit.Branch;
 import magit.Magit;
 import magit.utils.Utilities;
 import settings.Settings;
 
-import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,31 +24,27 @@ public class BranchManagerController {
     private Branch selectedBranch = null;
 
     @FXML
-    private Button btn_addNewBranch, btnDeleteSelected;
+    private GridPane gridPane;
     @FXML
-    private ListView<Branch> branchListView;
+    private ColumnConstraints column_1, column_0;
+    @FXML
+    private Button btn_addNewBranch, btnDeleteSelected, resetBranchButton;
+    @FXML
+    private ListView<Branch> branchListView, remoteBranchListView;
+    @FXML
+    private ScrollPane remoteScrollPane;
+    @FXML
+    private Label remoteLabel, RTBLabel;
 
     @FXML
     public void initialize() {
+        remoteBranchListView.setEditable(true);
         branchListView.setEditable(true);
     }
 
     @FXML
     private void onAddNewBranchButton_Click(ActionEvent event) {
-        StringProperty newBranchName = new SimpleStringProperty();
-        newBranchName.addListener(((observable, oldValue, newValue) -> {
-            if (!newValue.equals(Settings.EMPTY_STRING)) {
-                try {
-                    model.tryCreateNewBranch(newValue);
-                    loadData();
-                    branchListView.refresh();
-                    IntroController.showAlert(String.format(Settings.language.getString("BRANCH_CREATED_SUCCESSFULLY"),newBranchName.getValue()), Alert.AlertType.INFORMATION);
-                } catch (RepositoryException | IOException e) {
-                    IntroController.showAlert(e.getMessage(), Alert.AlertType.ERROR);
-                }
-            }
-        }));
-        mainController.showPopup(newBranchName, Settings.language.getString("PLEASE_ENTER_BRANCH_NAME"),Settings.language.getString("BRANCH_NAME_HINT"));
+        mainController.onCreateNewBranchMenuItem_Click(event);
     }
 
     @FXML
@@ -67,12 +59,14 @@ public class BranchManagerController {
                     try {
                         model.deleteBranch(selectedBranch.getName());
                         branchListView.getItems().remove(selectedBranch);
-                        IntroController.showAlert(Settings.language.getString("BRANCH_DELETE_SUCCESSFULLY"),Alert.AlertType.INFORMATION);
+                        IntroController.showAlert(Settings.language.getString("BRANCH_DELETE_SUCCESSFULLY"), Alert.AlertType.INFORMATION);
                     } catch (RepositoryException e) {
                         IntroController.showAlert(e.getMessage());
                     }
                 }
             });
+            DialogPane dialogPane = alert.getDialogPane();
+            dialogPane.getStylesheets().add(Settings.themeManager.get(Settings.currentTheme));
         }
     }
 
@@ -85,15 +79,44 @@ public class BranchManagerController {
     }
 
     public void loadData() {
+        List<Branch> tempList = model.getCurrentRepository().getRemoteTrackingBranches();
+        boolean deselect = false;
+        if (tempList == null) {
+            hideSecondColumn();
+        } else {
+            updateListViewData(removeHead(tempList), false, branchListView, remoteBranchListView);
+            remoteBranchListView.setEditable(false);
+            deselect = true;
+        }
+
+        updateListViewData(removeHead(model.getCurrentRepository().getActiveBranches()), deselect, remoteBranchListView, branchListView);
+    }
+
+    private void hideSecondColumn() {
+        this.column_0.setMinWidth(0);
+        this.RTBLabel.setVisible(false);
+        this.remoteScrollPane.setVisible(false);
+        this.remoteLabel.setText(Settings.language.getString("FX_BRANCH_MANAGER_TITLE"));
+        this.column_1.setMinWidth(Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH);
+    }
+
+    private List<Branch> removeHead(List<Branch> data) {
         List<Branch> branches = new LinkedList<>();
-        for (Branch branch : model.getCurrentRepository().getBranches()) {
+
+        for (Branch branch : data) {
             if (!branch.isHead()) {
                 branches.add(branch);
             }
         }
-        ObservableList<Branch> allBranches = FXCollections.observableList(branches);
-        branchListView.setItems(allBranches);
-        branchListView.setCellFactory(lv -> {
+
+        return branches;
+    }
+
+    @SafeVarargs
+    private final void updateListViewData(List<Branch> data, boolean isRemoteCannotDelete, ListView<Branch>... listViews) {
+        ObservableList<Branch> allBranches = FXCollections.observableList(data);
+        listViews[0].setItems(allBranches);
+        listViews[0].setCellFactory(lv -> {
             TextFieldListCell<Branch> cell = new TextFieldListCell<>();
             cell.setConverter(new StringConverter<Branch>() {
                 @Override
@@ -110,6 +133,28 @@ public class BranchManagerController {
             });
             return cell;
         });
-        branchListView.setOnMouseClicked(event -> selectedBranch = branchListView.getSelectionModel().getSelectedItem());
+
+        listViews[0].setOnMouseClicked(event -> {
+            listViews[1].getSelectionModel().clearSelection();
+            selectedBranch = null;
+            if (!isRemoteCannotDelete) {
+                selectedBranch = listViews[0].getSelectionModel().getSelectedItem();
+                enableOrDisableButtons(false);
+            } else
+                enableOrDisableButtons(true);
+        });
+    }
+
+    private void enableOrDisableButtons(boolean flag) {
+        this.btnDeleteSelected.setDisable(flag);
+        this.resetBranchButton.setDisable(flag);
+    }
+
+
+    @FXML
+    void onResetBranchButton_Click(ActionEvent event) {
+        if (selectedBranch != null) {
+            mainController.resetBranch(selectedBranch, true);
+        }
     }
 }

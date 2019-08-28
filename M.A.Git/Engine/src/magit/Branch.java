@@ -1,26 +1,45 @@
 package magit;
 
+import exceptions.MyFileException;
+import exceptions.MyXMLException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
 import settings.Settings;
+import xml.basic.MagitRepository;
 import xml.basic.MagitSingleBranch;
+import xml.basic.MagitSingleCommit;
+import xml.basic.MagitSingleFolder;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Branch {
-    private String name, SHA_ONE;
-    private Commit commit;
-    private Branch activeBranch;
+    protected String name, SHA_ONE;
+    protected Commit commit;
+    protected Branch activeBranch, remoteBranch;
 
     public Branch(String name) {
-        this.name = name;
+        if (name.contains(File.separator)) {
+            this.name = new File(name).getName();
+        } else {
+            this.name = name;
+        }
         this.commit = null;
         this.SHA_ONE = null;
         this.activeBranch = null;
+    }
+
+    public Branch(Branch branch) {
+        this.name = branch.getName();
+        this.commit = branch.getCommit();
+        this.SHA_ONE = this.getSHA_ONE();
+        this.activeBranch = this.getActiveBranch();
     }
 
     public Branch(String name, Commit commit, String pathToBranchesFolder) throws IOException, RepositoryException {
@@ -31,7 +50,7 @@ public class Branch {
         File file = new File(pathToBranchesFolder + File.separator + name);
         if (!file.createNewFile()) // branch already exists
         {
-            throw new RepositoryException(eErrorCodes.BRANCH_ALREADY_EXIST);
+            throw new RepositoryException(eErrorCodes.BRANCH_ALREADY_EXIST, name);
         }
     }
 
@@ -44,10 +63,43 @@ public class Branch {
         }
     }
 
-    public static Branch XML_Parser(MagitSingleBranch singleBranch, Commit commit, String pathToBranchesFolder) throws IOException, RepositoryException {
-        Branch temp = new Branch(singleBranch.getName(), commit, pathToBranchesFolder);
-        PrintWriter writer = new PrintWriter(new File(pathToBranchesFolder + File.separator + temp.getName()));
-        writer.print(temp.getSHA_ONE());
+    public static Branch XML_Parser(MagitSingleBranch singleBranch, Repository repository, MagitRepository xmlRepository, String commitID)
+            throws IOException, RepositoryException, MyXMLException, MyFileException {
+        String trackingName = xmlRepository.getMagitRemoteReference().getName();
+
+        if (new File(repository.getBranchesPath() + File.separator + singleBranch.getName()).exists() && singleBranch.isIsRemote()) {
+            return null;
+        }
+
+        if (commitID.equals(Settings.EMPTY_STRING)) {
+            Branch remote = new Branch(singleBranch.getName(), null, repository.getBranchesPath().toString());
+            if (singleBranch.isTracking()) {
+                return new RemoteTrackingBranch(remote, repository.getBranchesPath().toString(), trackingName);
+            } else {
+                return remote;
+            }
+        }
+
+        MagitSingleCommit pointedMagitCommit = Commit.XML_FindMagitCommit(xmlRepository.getMagitCommits().getMagitSingleCommit(), commitID);
+        MagitSingleFolder pointedRootFolder = Folder.findRootFolder(xmlRepository.getMagitFolders().getMagitSingleFolder(), pointedMagitCommit.getRootFolder().getId());
+        Folder rootFolder = Folder.XML_Parser(pointedRootFolder, xmlRepository, null, xmlRepository.getLocation());
+        Commit pointedCommit = new Commit().XML_Parser(xmlRepository, pointedMagitCommit, rootFolder);
+
+        if (singleBranch.getName().equals(xmlRepository.getMagitBranches().getHead())) {
+            repository.setRootFolder(rootFolder);
+        }
+
+        Branch temp = new Branch(singleBranch.getName(), pointedCommit, repository.getBranchesPath().toString());
+        PrintWriter writer = new PrintWriter(new File(repository.getBranchesPath() + File.separator + singleBranch.getName()));
+        writer.write(pointedCommit.getSHA_ONE());
+        if (singleBranch.isTracking()) {
+            temp = new RemoteTrackingBranch(temp, repository.getBranchesPath().toString(), trackingName);
+            writer.write(System.lineSeparator() + Settings.IS_TRACKING_REMOTE_BRANCH);
+            PrintWriter remoteBranchWriter = new PrintWriter(new File(repository.getBranchesPath() + File.separator + singleBranch.getTrackingAfter()));
+            remoteBranchWriter.write(pointedCommit.getSHA_ONE());
+            writer.close();
+        }
+
         writer.close();
         return temp;
     }
@@ -55,15 +107,25 @@ public class Branch {
     public void setCommit(Commit commit, String pathToBranches) throws RepositoryException {
         this.commit = commit;
         if (commit != null) {
+            File file = new File(pathToBranches + File.separator + name);
+            List<String> content = new LinkedList<>();
             PrintWriter writer;
             try {
+                content = Files.readAllLines(file.toPath());
+                content.remove(0);
+                content.add(0, commit.getSHA_ONE());
                 writer = new PrintWriter(pathToBranches + File.separator + name);
+                writer.write(content.get(0));
+                if (content.size() == 2) {
+                    writer.write(System.lineSeparator() + content.get(1));
+                }
+                writer.close();
+                this.SHA_ONE = commit.getSHA_ONE();
             } catch (FileNotFoundException e) {
                 throw new RepositoryException(eErrorCodes.OPEN_BRANCH_FILE_FAILED);
+            } catch (IOException e) {
+                throw new RepositoryException(eErrorCodes.OPEN_FILE_FAILED);
             }
-            writer.print(commit.getSHA_ONE());
-            writer.close();
-            this.SHA_ONE = commit.getSHA_ONE();
         }
     }
 
@@ -107,7 +169,7 @@ public class Branch {
     public String consoleToString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Settings.language.getString("BRANCH_NAME_HINT")).append(name).append(System.lineSeparator());
-        if(commit != null) {
+        if (commit != null) {
             stringBuilder.append(Settings.language.getString("BRANCH_LAST_COMMIT_SHA")).append(commit.getSHA_ONE()).append(System.lineSeparator());
             stringBuilder.append(Settings.language.getString("BRANCH_LAST_COMMIT_COMMENT")).append(commit.getComment()).append(System.lineSeparator());
         } else {
@@ -129,10 +191,43 @@ public class Branch {
     }
 
     public List<Commit> getAllCommits() {
-        return commit.getChainOfCommits();
+        if (commit != null) {
+            return commit.getChainOfCommits();
+        }
+        return new LinkedList<>();
     }
 
     public boolean isHead() {
         return name.equals(Settings.MAGIT_BRANCH_HEAD);
+    }
+
+    public RemoteTrackingBranch createRemoteTrackingBranch(String pathToBranches, String remoteName) throws IOException {
+        return new RemoteTrackingBranch(this, pathToBranches, remoteName);
+    }
+
+    public Branch makeRemote(String repositoryName, Path branchesPath) throws IOException {
+        String newName = repositoryName + File.separator + this.name;
+        File branchFile = new File(branchesPath + File.separator + newName);
+        branchFile.createNewFile();
+        PrintWriter writer = new PrintWriter(branchFile);
+        writer.write(this.SHA_ONE);
+        writer.close();
+
+        Branch branch = new Branch(this);
+        branch.setRemoteBranch(this);
+
+        return branch;
+    }
+
+    private void setRemoteBranch(Branch branch) {
+        this.remoteBranch = branch;
+    }
+
+    public void setActive(Branch branch) {
+        this.activeBranch = branch;
+    }
+
+    public Branch getRemoteBranch() {
+        return remoteBranch;
     }
 }

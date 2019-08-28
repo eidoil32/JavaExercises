@@ -2,6 +2,7 @@ package magit.utils;
 
 import exceptions.eErrorCodes;
 import javafx.beans.property.SimpleIntegerProperty;
+import magit.Blob;
 import utils.eUserMergeChoice;
 
 public class MergeProperty extends SimpleIntegerProperty {
@@ -10,6 +11,7 @@ public class MergeProperty extends SimpleIntegerProperty {
     private String content;
     private eErrorCodes errorCode;
     private boolean isError = false;
+    private Blob file;
 
     @Override
     public void set(int newValue) {
@@ -18,6 +20,10 @@ public class MergeProperty extends SimpleIntegerProperty {
             value.onValueSet(newValue);
             choice = eUserMergeChoice.getItem(newValue).get();
         }
+    }
+
+    public void setBlob(Blob file) {
+        this.file = file;
     }
 
     public void setValueListener(OnSetValueListener valueListener) {

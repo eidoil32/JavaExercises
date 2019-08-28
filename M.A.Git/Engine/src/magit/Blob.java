@@ -2,7 +2,6 @@ package magit;
 
 import exceptions.MyFileException;
 import exceptions.MyXMLException;
-import exceptions.eErrorCodes;
 import exceptions.eErrorCodesXML;
 import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
@@ -32,8 +31,7 @@ public class Blob extends BasicFile {
         this.filePath = filePath;
     }
 
-    public Blob() {
-    }
+    public Blob() { }
 
     public Blob(MagitBlob blob, String pathToFile, Folder rootFolder) {
         try {
@@ -69,9 +67,7 @@ public class Blob extends BasicFile {
         blob.setFilePath(Paths.get(rootFolder.getFilePath() + File.separator + row[0]));
         blob.setName(row[0]);
         blob.setType(eFileTypes.FILE);
-        if (!file.delete()) {
-            throw new MyFileException(eErrorCodes.DELETE_FILE_FAILED, file.getPath());
-        }
+        file.delete();
         return blob;
     }
 

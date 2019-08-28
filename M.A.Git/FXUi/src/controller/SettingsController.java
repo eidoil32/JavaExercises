@@ -16,7 +16,7 @@ public class SettingsController {
     private Controller mainController;
     private Magit model;
     private Stage stage;
-    private BooleanProperty languageProperty;
+    private BooleanProperty languageProperty, themeProperty;
     private StringProperty currentState;
 
     @FXML
@@ -47,6 +47,7 @@ public class SettingsController {
         Settings.currentLanguage = language.equals(Settings.LANG_ENG) ? "" : Settings.HEBREW_CODE;
         Settings.currentTheme = style;
         languageProperty.setValue(true);
+        themeProperty.setValue(true);
         currentState.setValue(Settings.language.getString("LANGUAGE_CHANGES_SUCCESSFULLY"));
         stage.close();
     }
@@ -61,6 +62,10 @@ public class SettingsController {
 
     public void setLanguageProperty(BooleanProperty languageProperty) {
         this.languageProperty = languageProperty;
+    }
+
+    public void setThemeProperty(BooleanProperty themeProperty) {
+        this.themeProperty = themeProperty;
     }
 
     public void setStage(Stage stage) {

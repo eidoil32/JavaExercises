@@ -275,7 +275,7 @@ public enum eMenuItem {
         public String executeCommand(String currentUser, Magit magit) throws RepositoryException, IOException, MyFileException {
             String user_SHA_ONE = printAndAskFromString(String.format(Settings.language.getString("CHOOSE_SHA_ONE_FOR_BRANCH"), magit.getCurrentBranch().getName()));
             try {
-                Commit oldCommit = magit.changeBranchPoint(user_SHA_ONE);
+                Commit oldCommit = magit.changeBranchPoint(magit.getCurrentBranch(), user_SHA_ONE, true);
                 if (oldCommit == null) {
                     return Settings.language.getString("CHANGING_SHA_ONE_SUCCESS");
                 } else {

@@ -6,10 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
+import javafx.scene.control.Label;
 import javafx.stage.Stage;
-import magit.Branch;
 import magit.utils.SmartListener;
 
 public class SelectController {
@@ -17,19 +15,23 @@ public class SelectController {
     private SmartListener listener;
     private BooleanProperty flag;
 
-    @FXML private ChoiceBox<Object> selectChoiceBox;
-    @FXML private Button btnOK, btnCancel;
-    @FXML private TextFlow textLabel;
+    @FXML
+    private ChoiceBox<Object> selectChoiceBox;
+    @FXML
+    private Button btnOK, btnCancel;
+    @FXML
+    private Label textLabel;
 
     @FXML
     private void onButtonCancel_Click(ActionEvent event) {
         listener.setItem(null);
+        stage.close();
     }
 
     @FXML
     private void onButtonOK_Click(ActionEvent event) {
         Object selectedItem = selectChoiceBox.getValue();
-        if(selectedItem != null) {
+        if (selectedItem != null) {
             listener.setItem(selectedItem);
             stage.close();
             flag.setValue(true);
@@ -46,13 +48,12 @@ public class SelectController {
     }
 
     public void setQuestion(String question) {
-        textLabel.getChildren().add(new Text(question));
+        textLabel.setText(question);
     }
 
-    public void setListForChoice(ObservableList<Branch> observableList) {
-        for (Branch branch : observableList) {
-            if(!branch.isHead())
-                selectChoiceBox.getItems().add(branch);
+    public void setListForChoice(ObservableList<Object> observableList) {
+        for (Object object : observableList) {
+            selectChoiceBox.getItems().add(object);
         }
     }
 

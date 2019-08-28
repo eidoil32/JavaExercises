@@ -1,6 +1,7 @@
 package magit;
 
 import controller.Controller;
+import controller.IntroController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import magit.utils.MyBooleanProperty;
+import magit.utils.MyScene;
 import settings.Settings;
 import settings.UTF8Control;
 
@@ -19,11 +21,13 @@ import java.util.ResourceBundle;
 public class MagitUI {
     private Magit model;
     private Stage primaryStage;
-    private MyBooleanProperty languageProperty = new MyBooleanProperty();
+    private MyBooleanProperty languageProperty = new MyBooleanProperty(), themeProperty = new MyBooleanProperty();
+    private IntroController introController;
 
-    public MagitUI(Magit model, Stage primaryStage) throws IOException {
+    public MagitUI(Magit model, Stage primaryStage, IntroController introController) throws IOException {
         this.model = model;
         this.primaryStage = primaryStage;
+        this.introController = introController;
         start();
     }
 
@@ -31,7 +35,7 @@ public class MagitUI {
         FXMLLoader loader = new FXMLLoader();
 
         // load main fxml
-        URL mainFXML = IntroUI.class.getResource(Settings.FXML_APPLICATION);
+        URL mainFXML = Program.class.getResource(Settings.FXML_APPLICATION);
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
         Pane root = loader.load();
@@ -40,6 +44,9 @@ public class MagitUI {
         Controller controller = loader.getController();
         controller.setModel(model);
         StringProperty currentUserName = new SimpleStringProperty(Settings.language.getString("USER_ADMINISTRATOR"));
+        currentUserName.addListener(((observable, oldValue, newValue) -> {
+            model.setCurrentUser(newValue);
+        }));
         controller.setStringProperty_CurrentUser(currentUserName);
         StringProperty currentState = new SimpleStringProperty();
         controller.setStringProperty_CurrentMagitState(currentState);
@@ -48,7 +55,8 @@ public class MagitUI {
         controller.initializeTableViewCommit();
         controller.updateBranchesSecondRowData();
         controller.setLanguageProperty(languageProperty);
-
+        controller.setThemeProperty(themeProperty);
+        controller.setIntroController(introController);
         languageProperty.setValueListener(value -> {
             try {
                 ResourceBundle.clearCache();
@@ -58,13 +66,19 @@ public class MagitUI {
                 System.out.println("error....");
             }
         });
-
+        themeProperty.setValueListener(value -> {
+            try {
+                start();
+            } catch (IOException e) {
+                System.out.println("error....");
+            }
+        });
         // set stage
         primaryStage.setMinWidth(Settings.MAGIT_UI_MIN_WIDTH);
         primaryStage.setMinHeight(Settings.MAGIT_UI_MIN_HEIGHT);
         primaryStage.setResizable(true);
         primaryStage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
-        Scene scene = new Scene(root, Settings.MAGIT_UI_MIN_WIDTH, Settings.MAGIT_UI_INTRO_MIN_HEIGHT);
+        Scene scene = new MyScene(root, Settings.MAGIT_UI_MIN_WIDTH, Settings.MAGIT_UI_INTRO_MIN_HEIGHT);
         primaryStage.setScene(scene);
         primaryStage.show();
     }

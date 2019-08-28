@@ -25,7 +25,6 @@ public class Folder extends Blob {
         setType(eFileTypes.FOLDER);
         // this line is to create the Comparator of BasicFile names :
         blobMap = new BlobMap(new TreeMap<>(Comparator.comparing(BasicFile::getFullPathName)));
-        //TODO:: check if tree map effects on program!
     }
 
     public Folder() {

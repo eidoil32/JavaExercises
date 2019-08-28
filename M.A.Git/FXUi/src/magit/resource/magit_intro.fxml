@@ -3,17 +3,17 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.IntroController">
    <top>
       <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <children>
-            <Label alignment="CENTER" maxHeight="150.0" minHeight="150.0" text="%FX_INTRO_WELCOME" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+            <Label id="welcome-label" alignment="CENTER" maxHeight="150.0" minHeight="150.0" text="%FX_INTRO_WELCOME" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
          </children>
       </AnchorPane>
    </top>
@@ -22,17 +22,22 @@
          <center>
             <VBox BorderPane.alignment="CENTER">
                <children>
-                  <Button fx:id="loadRepositoryBtn" minWidth="200.0" mnemonicParsing="false" onAction="#onLoadRepositoryButtonClick" text="%FX_INTRO_LOAD_OLD_REPOSITORY">
+                  <Button fx:id="loadRepositoryBtn" minWidth="200.0" mnemonicParsing="false" onAction="#onLoadRepositoryButtonClick" styleClass="primaryButton" text="%FX_INTRO_LOAD_OLD_REPOSITORY">
                      <VBox.margin>
                         <Insets bottom="5.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="createNewRepositoryBtn" minWidth="200.0" mnemonicParsing="false" onAction="#onCreateNewRepositoryButtonClick" text="%FX_INTRO_CREATE_NEW_REPOSITORY">
+                  <Button fx:id="createNewRepositoryBtn" minWidth="200.0" mnemonicParsing="false" onAction="#onCreateNewRepositoryButtonClick" styleClass="primaryButton" text="%FX_INTRO_CREATE_NEW_REPOSITORY">
                      <VBox.margin>
                         <Insets bottom="5.0" />
                      </VBox.margin>
                   </Button>
-                  <Button fx:id="loadXMLRepositoryBtn" minWidth="200.0" mnemonicParsing="false" onAction="#onLoadXMLRepositoryButtonClick" text="%FX_INTRO_LOAD_XML_REPOSITORY" />
+                  <Button fx:id="loadXMLRepositoryBtn" minWidth="200.0" mnemonicParsing="false" onAction="#onLoadXMLRepositoryButtonClick" styleClass="primaryButton" text="%FX_INTRO_LOAD_XML_REPOSITORY" />
+                  <ProgressBar fx:id="progressBar" prefWidth="200.0" progress="0.0">
+                     <VBox.margin>
+                        <Insets top="10.0" />
+                     </VBox.margin>
+                  </ProgressBar>
                </children>
             </VBox>
          </center>
@@ -45,7 +50,7 @@
       </BorderPane>
    </center>
    <bottom>
-      <Label text="Ido Hayun - 204062574" BorderPane.alignment="CENTER">
+      <Label id="copyright-label" text="Ido Hayun - 204062574" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets bottom="5.0" />
          </BorderPane.margin>

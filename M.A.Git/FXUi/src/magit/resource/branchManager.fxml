@@ -2,38 +2,71 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="250.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.BranchManagerController">
    <bottom>
-      <HBox alignment="CENTER" prefHeight="50.0" prefWidth="200.0" spacing="30.0">
-         <children>
-            <Button fx:id="btn_addNewBranch" mnemonicParsing="false" onAction="#onAddNewBranchButton_Click" text="%FX_CREATE_NEW_BRANCH" />
-            <Button fx:id="btnDeleteSelected" mnemonicParsing="false" onAction="#onDeleteSelectedBranchButton_Click" text="%FX_BRANCH_MANAGER_DELETE_SELECTED_BRANCH" />
-         </children>
+      <GridPane>
          <BorderPane.margin>
-            <Insets />
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
          </BorderPane.margin>
-      </HBox>
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="190.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="190.0" prefWidth="100.0" />
+            <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="190.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Button fx:id="btn_addNewBranch" mnemonicParsing="false" onAction="#onAddNewBranchButton_Click" styleClass="primaryButton" text="%FX_CREATE_NEW_BRANCH" />
+            <Button fx:id="btnDeleteSelected" mnemonicParsing="false" onAction="#onDeleteSelectedBranchButton_Click" styleClass="primaryButton" text="%FX_BRANCH_MANAGER_DELETE_SELECTED_BRANCH" GridPane.columnIndex="2" />
+            <Button fx:id="resetBranchButton" mnemonicParsing="false" onAction="#onResetBranchButton_Click" styleClass="primaryButton" text="%FX_BRANCH_MANAGER_RESET_BRANCH" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
+         </children>
+      </GridPane>
    </bottom>
    <center>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <GridPane fx:id="gridPane" alignment="CENTER">
+         <columnConstraints>
+            <ColumnConstraints fx:id="column_0" hgrow="SOMETIMES" minWidth="290.0" />
+            <ColumnConstraints fx:id="column_1" hgrow="SOMETIMES" minWidth="290.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+            <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+         </rowConstraints>
          <children>
-            <ScrollPane fitToHeight="true" fitToWidth="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <ScrollPane fx:id="remoteScrollPane" fitToHeight="true" fitToWidth="true" GridPane.rowIndex="1">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="200.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0">
                      <children>
                         <ListView fx:id="branchListView" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
                      </children>
                   </AnchorPane>
               </content>
             </ScrollPane>
+            <ScrollPane fitToHeight="true" fitToWidth="true" GridPane.columnIndex="1" GridPane.rowIndex="1">
+               <content>
+                  <AnchorPane>
+                     <children>
+                        <ListView fx:id="remoteBranchListView" AnchorPane.bottomAnchor="-0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+                     </children>
+                  </AnchorPane>
+               </content>
+            </ScrollPane>
+            <Label fx:id="RTBLabel" text="%FX_BRANCH_MANAGER_RTB" GridPane.halignment="CENTER" />
+            <Label fx:id="remoteLabel" text="%FX_ BRANCH_MANAGER_REMOTE" GridPane.columnIndex="1" GridPane.halignment="CENTER" />
          </children>
-      </AnchorPane>
+         <BorderPane.margin>
+            <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+         </BorderPane.margin>
+      </GridPane>
    </center>
 </BorderPane>

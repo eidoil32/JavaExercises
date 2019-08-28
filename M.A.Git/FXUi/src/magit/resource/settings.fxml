@@ -9,7 +9,6 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-
 <BorderPane minHeight="250.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SettingsController">
    <top>
       <Label alignment="CENTER" text="%FX_MAGIT_SETTINGS" BorderPane.alignment="CENTER">
@@ -66,7 +65,7 @@
       </VBox>
    </center>
    <bottom>
-      <Button fx:id="saveButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSaveButton_Click" prefWidth="100.0" text="%FX_BUTTON_SAVE" BorderPane.alignment="CENTER">
+      <Button fx:id="saveButton" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false" onAction="#onSaveButton_Click" prefWidth="100.0" styleClass="primaryButton" text="%FX_BUTTON_SAVE" BorderPane.alignment="CENTER">
          <BorderPane.margin>
             <Insets />
          </BorderPane.margin>

@@ -1,12 +1,22 @@
 package settings;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class Settings {
+    public static final double
+            COMMIT_CIRCLE_RADIUS = 7,
+            COMMIT_SPACE_BETWEEN_CIRCLES = 20;
     public static final int
+            COMMIT_TREE_START_X = 10,
+            COMMIT_TREE_START_Y = 50,
+            COMMIT_TREE_ADD_TO_X = 25,
+            COMMIT_TREE_ADD_TO_Y = 40,
+            COMMIT_TREE_LINE_TICK = 1,
             MENU_ITEM_EXIT = 15,
             MENU_ITEM_EXPORT_REPO = 14,
             MENU_ITEM_RESET_BRANCH_TO_COMMIT = 13,
@@ -25,19 +35,20 @@ public class Settings {
             MAGIT_UI_MIN_WIDTH = 900,
             MAGIT_UI_INTRO_MIN_WIDTH = 600,
             MAGIT_UI_DIALOG_BOX_WIDTH = 250,
-            MAGIT_UI_DIALOG_BOX_HEIGHT = 125,
+            MAGIT_UI_DIALOG_BOX_HEIGHT = 175,
             MAGIT_UI_INTRO_MIN_HEIGHT = 400,
             MAGIT_UI_SETTINGS_MIN_WIDTH = 600,
             MAGIT_UI_SETTINGS_MIN_HEIGHT = 250,
             SBA_ONE_CORRECT_LENGTH = 40,
             MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
             MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
-            MAGIT_UI_SELECT_POPUP_WIDTH = 400,
-            MAGIT_UI_SELECT_POPUP_HEIGHT = 200,
+            MAGIT_UI_SELECT_POPUP_WIDTH = 250,
+            MAGIT_UI_SELECT_POPUP_HEIGHT = 150,
             MAGIT_UI_MERGE_WINDOW_HEIGHT = 700,
             MAGIT_UI_MERGE_WINDOW_WIDTH = 800,
             MIN_COMMENT_SUBSTRING = 0,
             MAX_COMMENT_SUBSTRING = 30,
+            MINIMUM_DAY_TO_SHOW = 10,
             MAX_SHA_ONE_TABLE_LENGTH = 20,
             MENU_ITEM_OPEN_RESOURCE = 1;
     public static int MENU_SIZE = MENU_ITEM_EXIT;
@@ -59,6 +70,12 @@ public class Settings {
             FXML_INTRO_WINDOW = "/magit/resource/magit_intro.fxml",
             FXML_BRANCH_MANAGER = "/magit/resource/branchManager.fxml",
             FXML_MERGE_WINDOW = "/magit/resource/mergeWindow.fxml",
+            FXML_THEME_WHITE_CSS_FILE = "/magit/theme/white.css",
+            FXML_THEME_BLACK_CSS_FILE = "/magit/theme/black.css",
+            REMOTE_REPOSITORY_FILE_DATA = "remote-repository",
+            IS_TRACKING_REMOTE_BRANCH = "true",
+            FX_DATE_FORMAT = "dd/MM/yyyy",
+            FX_DIFF_SEPARATOR = " | ",
             ROOT_SUB_FOLDERS = "ROOT_SUB_FOLDERS",
             XML_EXTENSION = "xml",
             XML_FILE_REQUEST_TYPE = "*." + XML_EXTENSION,
@@ -108,4 +125,10 @@ public class Settings {
             TEMP_UNZIP_FOLDER = "unZipTemp";
     public static String currentLanguage = ENGLISH_CODE, currentTheme = THEME_WHITE;
     public static ResourceBundle language = ResourceBundle.getBundle(RESOURCE_FILE, new UTF8Control(new Locale(currentLanguage)));
+    public static Map<String,String> themeManager = new HashMap<>();
+    public static float DATE_CALCULATE = 1000*60*60*24;
+    public static void setup() {
+        themeManager.put(THEME_WHITE, FXML_THEME_WHITE_CSS_FILE);
+        themeManager.put(THEME_BLACK, FXML_THEME_BLACK_CSS_FILE);
+    }
 }

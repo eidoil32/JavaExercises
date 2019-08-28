@@ -4,16 +4,12 @@ import controller.Controller;
 import controller.IntroController;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
-import exceptions.eErrorCodes;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import magit.utils.MergeProperty;
-import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
-import utils.eUserMergeChoice;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,86 +19,64 @@ public class MergeTask extends Task<Void> {
     private Controller mainController;
     private MergeProperty mergeProperty = new MergeProperty(), conflictFinishProperty = new MergeProperty();
     private Map<String, BlobMap> changes;
-    private BlobMap userApprove;
+    private BlobMap[] userApprove;
 
     public MergeTask(Magit model, Branch target, Controller mainController) {
         this.model = model;
         this.target = target;
         this.mainController = mainController;
+        this.userApprove = new BlobMap[2];
+        for (int i = 0; i < 2; i++) this.userApprove[i] = new BlobMap(new HashMap<>());
     }
 
     @Override
     protected Void call() {
         try {
-            updateMessage(Settings.language.getString("FINDING_ANCESTOR_COMMIT"));
-            updateProgress(0, 3);
+            updateStatus(Settings.language.getString("FINDING_ANCESTOR_COMMIT"), 0);
             Commit ancestor = model.getAncestorCommit(target);
 
-            updateProgress(1, 3);
-            updateMessage(Settings.language.getString("SEARCH_FOR_DIFFERENCES"));
+            updateStatus(Settings.language.getString("SEARCH_FOR_DIFFERENCES"), 1);
             try {
                 changes = model.findChanges(ancestor, target);
             } catch (RepositoryException | MyFileException e) {
                 Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
             }
 
-            mergeProperty.addListener((observable -> {
-                if (mergeProperty.isInError()) {
-                    Platform.runLater(() -> IntroController.showAlert(mergeProperty.getErrorCode().getMessage()));
-                    this.cancel();
-                }
-            }));
+            conflictFinishProperty.addListener(observable -> finishMerge());
+            Platform.runLater(() -> mainController.mergeWindow(userApprove, changes, conflictFinishProperty));
 
-            conflictFinishProperty.addListener(observable -> {
-                if (conflictFinishProperty.get() == changes.get(Settings.KEY_CHANGE_MAP).getMap().size()) {
-                    updateProgress(2, 3);
-                    updateMessage(Settings.language.getString("START_MARGIN"));
-
-                    model.merge(changes, target, ancestor, userApprove);
-
-                    updateProgress(3, 3);
-                    updateMessage(Settings.language.getString("MERGE_COMPLETED_SUCCESSFULLY"));
-                } else if (conflictFinishProperty.isInError()) {
-                    updateProgress(3, 3);
-                    updateMessage(Settings.language.getString("MARGE_CANCELED"));
-                }
-            });
-
-            userApprove = askUserWhatToTake(changes.get(Settings.KEY_CHANGE_MAP), changes);
         } catch (IOException e) {
             Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
         }
         return null;
     }
 
-    private BlobMap askUserWhatToTake(BlobMap blobMap, Map<String, BlobMap> changes) {
-        BlobMap finalMap = new BlobMap(new HashMap<>());
-        for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
-            if (this.isCancelled()) {
-                conflictFinishProperty.setError(eErrorCodes.MARGE_CANCELED);
-                conflictFinishProperty.set(-1);
-            }
-            if (entry.getValue().getType() == eFileTypes.FILE) {
-                Map<eUserMergeChoice, Blob> duplicate = blobMap.getDuplicate(entry.getValue(), changes);
-                mergeProperty.addListener(((observable, oldValue, newValue) -> {
-                    if (!mergeProperty.isInError()) {
-                        eUserMergeChoice choice = mergeProperty.getChoice();
-                        if (choice != eUserMergeChoice.OTHER) {
-                            finalMap.addToMap(duplicate.get(choice));
-                        } else {
-                            Blob temp = duplicate.get(eUserMergeChoice.ANCESTOR);
-                            temp.setContent(mergeProperty.getContent());
-                            temp.setSHA_ONE(DigestUtils.sha1Hex(temp.getContent()));
-                            temp.setDate(new Date());
-                            temp.setEditorName(model.getCurrentUser());
-                            finalMap.addToMap(temp);
-                        }
-                    }
-                }));
-                Platform.runLater(() -> mainController.mergeWindow(mergeProperty, duplicate,conflictFinishProperty));
-            }
-        }
+    private void finishMerge() {
+        if (conflictFinishProperty.get() != -1) {
+            updateStatus(Settings.language.getString("START_MARGIN"), 2);
 
-        return finalMap;
+            mainController.commitCommentPopup(((observable, oldValue, newValue) -> {
+                try {
+                    model.merge(changes, userApprove, target.getCommit(), newValue);
+                } catch (IOException | MyFileException | RepositoryException e) {
+                    updateStatus(Settings.language.getString("MERGE_FAILED"), 3);
+                    Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+                }
+
+                updateStatus(Settings.language.getString("MERGE_COMPLETED_SUCCESSFULLY"), 3);
+                Platform.runLater(() -> {
+                    mainController.initializeTableViewCommit();
+                    mainController.buildCommitTree();
+                    mainController.updateTree();
+                });
+            }));
+        } else if (conflictFinishProperty.isInError()) {
+            updateStatus(Settings.language.getString("MARGE_CANCELED"), 3);
+        }
+    }
+
+    private void updateStatus(String message, int position) {
+        updateProgress(position, 3);
+        updateMessage(message);
     }
 }

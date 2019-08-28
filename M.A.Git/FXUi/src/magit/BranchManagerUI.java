@@ -7,6 +7,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import magit.utils.MyScene;
 import settings.Settings;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ public class BranchManagerUI {
         FXMLLoader loader = new FXMLLoader();
 
         // load main fxml
-        URL mainFXML = IntroUI.class.getResource(Settings.FXML_BRANCH_MANAGER);
+        URL mainFXML = Program.class.getResource(Settings.FXML_BRANCH_MANAGER);
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
         Pane root = loader.load();
@@ -36,9 +37,11 @@ public class BranchManagerUI {
         controller.setModel(model);
         controller.setMainController(mainController);
         controller.loadData();
-        Scene scene = new Scene(root, Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH, Settings.MAGIT_UI_SMART_POPUP_MAX_HEIGHT);
+        Scene scene = new MyScene(root, Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH, Settings.MAGIT_UI_SMART_POPUP_MAX_HEIGHT);
+        scene.getStylesheets().add(Settings.themeManager.get(Settings.currentTheme));
         Stage stage = new Stage();
-        stage.setResizable(false);
+        stage.setMinHeight(Settings.MAGIT_UI_SMART_POPUP_MAX_HEIGHT + 50);
+        stage.setMinWidth(Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH + 50);
         stage.setOnHiding(event -> {
             mainController.updateBranchesMenuButton();
             mainController.initializeTableViewCommit();

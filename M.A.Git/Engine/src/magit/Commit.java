@@ -2,6 +2,7 @@ package magit;
 
 import exceptions.*;
 import org.apache.commons.codec.digest.DigestUtils;
+import puk.team.course.magit.ancestor.finder.CommitRepresentative;
 import settings.Settings;
 import utils.FileManager;
 import utils.MapKeys;
@@ -23,7 +24,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-public class Commit {
+public class Commit implements CommitRepresentative {
     private String SHA_ONE, prevCommitSHA_ONE, anotherPrevCommitSHA_ONE, rootFolderSHA_ONE;
     private String comment, creator, content;
     private Date date;
@@ -61,7 +62,6 @@ public class Commit {
         if (!this.anotherPrevCommitSHA_ONE.equals(Settings.EMPTY_COMMIT)) {
             this.anotherPrevCommit = new Commit(this.anotherPrevCommitSHA_ONE, pathToObject);
         }
-
 
         this.comment = getCommentFromFile(commitContent);
     }
@@ -124,7 +124,7 @@ public class Commit {
         return rootFolderSHA_ONE;
     }
 
-    private void addPrevCommit(Commit commit) {
+    public void addPrevCommit(Commit commit) {
         if (this.prevCommit != null) {
             if (this.anotherPrevCommit != null) {
                 return;
@@ -335,11 +335,22 @@ public class Commit {
 
     public List<Commit> getChainOfCommits() {
         List<Commit> commitList = new LinkedList<>();
+        commitList.add(this);
         if (prevCommit != null) {
             commitList.addAll(prevCommit.getChainOfCommits());
         }
-        commitList.add(this);
         return commitList;
+    }
+
+    public int namOfPreceding() {
+        if (prevCommit == null) {
+            return 0;
+        } else  {
+            if(anotherPrevCommit == null) {
+                return 1;
+            }
+            return 2;
+        }
     }
 
     public Date getDate() {
@@ -369,5 +380,43 @@ public class Commit {
             return SHA_ONE.equals(((Commit) obj).getSHA_ONE());
         }
         return false;
+    }
+
+    public void createCommitFileWithoutChanges(Repository repository, String currentUser, String comment) throws IOException {
+        this.date = new Date();
+        this.creator = currentUser;
+        this.comment = comment;
+        repository.getRootFolder().calcFolderSHAONE();
+        this.rootFolderSHA_ONE = repository.getRootFolder().getSHA_ONE();
+        repository.setSHA_ONE(this.rootFolderSHA_ONE);
+        calcContent();
+        this.SHA_ONE = DigestUtils.sha1Hex(this.content);
+
+        File commit = new File(repository.getObjectPath().toString() + File.separator + this.SHA_ONE);
+        commit.createNewFile();
+        FileWriter fileWriter = new FileWriter(commit);
+        fileWriter.write(this.content);
+        fileWriter.close();
+    }
+
+    @Override
+    public String getSha1() {
+        return this.SHA_ONE;
+    }
+
+    @Override
+    public String getFirstPrecedingSha1() {
+        if(prevCommit == null) {
+            return Settings.EMPTY_STRING;
+        }
+        return prevCommitSHA_ONE;
+    }
+
+    @Override
+    public String getSecondPrecedingSha1() {
+        if(anotherPrevCommit == null) {
+            return Settings.EMPTY_STRING;
+        }
+        return anotherPrevCommitSHA_ONE;
     }
 }
