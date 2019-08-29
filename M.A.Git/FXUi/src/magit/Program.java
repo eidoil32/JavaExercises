@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import magit.utils.MyScene;
 import settings.Settings;
 
@@ -43,9 +44,11 @@ public class Program extends Application {
         });
 
         // set stage
+        controller.setPrimaryStage(primaryStage);
         primaryStage.setResizable(false);
         primaryStage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
         primaryStage.setScene(scene);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
         primaryStage.show();
     }
 

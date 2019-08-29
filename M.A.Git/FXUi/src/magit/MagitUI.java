@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import magit.utils.MyBooleanProperty;
 import magit.utils.MyScene;
 import settings.Settings;
@@ -51,9 +52,9 @@ public class MagitUI {
         StringProperty currentState = new SimpleStringProperty();
         controller.setStringProperty_CurrentMagitState(currentState);
         currentState.setValue(String.format(Settings.language.getString("LOAD_REPOSITORY_SUCCESS"), model.getCurrentRepository().getName()));
-        controller.setPrimaryStage(primaryStage);
         controller.initializeTableViewCommit();
         controller.updateBranchesSecondRowData();
+        controller.updateRepositoryHistory();
         controller.setLanguageProperty(languageProperty);
         controller.setThemeProperty(themeProperty);
         controller.setIntroController(introController);
@@ -74,12 +75,16 @@ public class MagitUI {
             }
         });
         // set stage
-        primaryStage.setMinWidth(Settings.MAGIT_UI_MIN_WIDTH);
-        primaryStage.setMinHeight(Settings.MAGIT_UI_MIN_HEIGHT);
-        primaryStage.setResizable(true);
-        primaryStage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
+        Stage stage = new Stage();
+        primaryStage.hide();
+        controller.setPrimaryStage(stage);
+        stage.setMinWidth(Settings.MAGIT_UI_MIN_WIDTH);
+        stage.setMinHeight(Settings.MAGIT_UI_MIN_HEIGHT);
+        stage.setResizable(true);
+        stage.initStyle(StageStyle.DECORATED);
+        stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
         Scene scene = new MyScene(root, Settings.MAGIT_UI_MIN_WIDTH, Settings.MAGIT_UI_INTRO_MIN_HEIGHT);
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        stage.setScene(scene);
+        stage.show();
     }
 }

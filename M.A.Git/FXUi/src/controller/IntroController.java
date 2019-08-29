@@ -16,10 +16,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import magit.Program;
 import magit.Magit;
+import magit.Program;
 import magit.Repository;
 import magit.utils.MyScene;
 import magit.utils.Utilities;
@@ -40,8 +42,15 @@ public class IntroController {
     private Button loadRepositoryBtn, createNewRepositoryBtn, loadXMLRepositoryBtn;
     @FXML
     private ProgressBar progressBar;
+    @FXML
+    private ImageView closeButton;
+    @FXML
+    private AnchorPane topBar;
+
     private Magit model;
     private BooleanProperty isRepositoryExists, loadXMLBooleanProperty = new SimpleBooleanProperty();
+    private Stage primaryStage;
+    private double mouseXCords, mouseYCords;
 
     public void setModel(Magit model) {
         this.model = model;
@@ -49,6 +58,27 @@ public class IntroController {
 
     public Magit getModel() {
         return model;
+    }
+
+    @FXML
+    public void initialize() {
+        closeButton.setOnMouseClicked((event -> {
+            primaryStage.close();
+        }));
+
+        topBar.setOnMouseDragged((event -> {
+            primaryStage.setX(event.getScreenX() - mouseXCords);
+            primaryStage.setY(event.getScreenY() - mouseYCords);
+        }));
+
+        topBar.setOnMouseClicked((event -> {
+            this.mouseXCords = event.getSceneX();
+            this.mouseYCords = event.getSceneY();
+        }));
+    }
+
+    public void setPrimaryStage(Stage primaryStage) {
+        this.primaryStage = primaryStage;
     }
 
     @FXML

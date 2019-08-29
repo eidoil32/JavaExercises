@@ -23,6 +23,7 @@ public class Branch {
     protected String name, SHA_ONE;
     protected Commit commit;
     protected Branch activeBranch, remoteBranch;
+    private boolean isRemote; // if true cannot work on this branch
 
     public Branch(String name) {
         if (name.contains(File.separator)) {
@@ -48,10 +49,7 @@ public class Branch {
         this.activeBranch = null;
         this.SHA_ONE = commit == null ? null : commit.getSHA_ONE();
         File file = new File(pathToBranchesFolder + File.separator + name);
-        if (!file.createNewFile()) // branch already exists
-        {
-            throw new RepositoryException(eErrorCodes.BRANCH_ALREADY_EXIST, name);
-        }
+        file.createNewFile();
     }
 
     public Branch(boolean isHead, Branch activeBranch) {
@@ -63,13 +61,17 @@ public class Branch {
         }
     }
 
+    public Branch(File file, String pathToObject) throws IOException {
+        this.name = file.getName();
+        this.commit = new Commit(Files.readAllLines(file.toPath()).get(0), pathToObject);
+        this.SHA_ONE = commit.getSHA_ONE();
+        this.activeBranch = null;
+        this.isRemote = true;
+    }
+
     public static Branch XML_Parser(MagitSingleBranch singleBranch, Repository repository, MagitRepository xmlRepository, String commitID)
             throws IOException, RepositoryException, MyXMLException, MyFileException {
-        String trackingName = xmlRepository.getMagitRemoteReference().getName();
-
-        if (new File(repository.getBranchesPath() + File.separator + singleBranch.getName()).exists() && singleBranch.isIsRemote()) {
-            return null;
-        }
+        String trackingName = xmlRepository.getMagitRemoteReference() != null ? xmlRepository.getMagitRemoteReference().getName() : null;
 
         if (commitID.equals(Settings.EMPTY_STRING)) {
             Branch remote = new Branch(singleBranch.getName(), null, repository.getBranchesPath().toString());
@@ -97,8 +99,10 @@ public class Branch {
             writer.write(System.lineSeparator() + Settings.IS_TRACKING_REMOTE_BRANCH);
             PrintWriter remoteBranchWriter = new PrintWriter(new File(repository.getBranchesPath() + File.separator + singleBranch.getTrackingAfter()));
             remoteBranchWriter.write(pointedCommit.getSHA_ONE());
-            writer.close();
+            remoteBranchWriter.close();
         }
+
+        temp.setRemote(singleBranch.isIsRemote());
 
         writer.close();
         return temp;
@@ -215,8 +219,12 @@ public class Branch {
 
         Branch branch = new Branch(this);
         branch.setRemoteBranch(this);
-
+        branch.setRemote(true);
         return branch;
+    }
+
+    public void setRemote(boolean remote) {
+        isRemote = remote;
     }
 
     private void setRemoteBranch(Branch branch) {
@@ -229,5 +237,9 @@ public class Branch {
 
     public Branch getRemoteBranch() {
         return remoteBranch;
+    }
+
+    public boolean isIsRemote() {
+        return isRemote;
     }
 }

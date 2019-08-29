@@ -46,19 +46,27 @@ public class Magit {
         return remoteRepository;
     }
 
-    public void setRemoteRepository(Magit remoteRepository) throws IOException {
+    private void setRemoteRepository(Magit remoteRepository) throws IOException {
         this.remoteRepository = remoteRepository;
-        File remoteRepositoryData = new File(currentRepository.getMagitPath().toString() + File.separator + Settings.REMOTE_REPOSITORY_FILE_DATA);
+        createRemoteRepositoryFile(
+                remoteRepository.getRootFolder().toString(),
+                remoteRepository.getCurrentRepository().getName(),
+                currentRepository.getMagitPath().toString());
+    }
+
+    public static void createRemoteRepositoryFile(String path, String name, String currentPath) throws IOException {
+        File remoteRepositoryData = new File(currentPath + File.separator + Settings.REMOTE_REPOSITORY_FILE_DATA);
 
         if (!remoteRepositoryData.exists()) {
             remoteRepositoryData.createNewFile();
         }
 
         PrintWriter writer = new PrintWriter(remoteRepositoryData);
-        writer.write(remoteRepository.getRootFolder().toString());
-        writer.write(System.lineSeparator() + remoteRepository.getCurrentRepository().getName());
+        writer.write(path);
+        writer.write(System.lineSeparator() + name);
         writer.close();
     }
+
 
     public Branch getCurrentBranch() {
         return currentBranch;
@@ -786,7 +794,8 @@ public class Magit {
     }
 
     public void tryCreateNewRemoteTrackingBranch(String newBranchName, Branch oldBranch) throws RepositoryException, IOException {
-        throw new RepositoryException(eErrorCodes.NOTHING_NEW);
+        Branch branch = new RemoteTrackingBranch(oldBranch, currentRepository.getBranchesPath().toString(), remoteRepository.getCurrentRepository().getName());
+        currentRepository.addBranch(branch);
     }
 
     public void addNewBranchToLocal(String name, RemoteTrackingBranch remoteTrackingBranch) throws IOException {
@@ -808,23 +817,53 @@ public class Magit {
         FileUtils.copyDirectory(magitPath, destPath);
         Magit remote = new Magit();
         remote.changeRepo(destPath.getPath());
-        new File(remote.getCurrentRepository().getBranchesPath() + File.separator + this.currentRepository.getName()).mkdir();
+        File branchesFolder = new File(remote.getCurrentRepository().getBranchesPath().toString());
+        File remoteFolder = new File(branchesFolder.getPath() + File.separator + this.currentRepository.getName());
+        File[] branchesFiles = branchesFolder.listFiles();
+        for (File file : branchesFiles != null ? branchesFiles : new File[0]) {
+            file.delete();
+        }
+        remoteFolder.mkdir();
         remote.setRemoteRepository(this);
         remote.cloneFrom(this);
-
 
         return remote;
     }
 
     private void cloneFrom(Magit magit) throws IOException {
-        List<Branch> branches = new LinkedList<>();
+        List<Branch> remoteBranches = new LinkedList<>();
         List<Branch> remoteTrackingBranches = new LinkedList<>();
-        for (Branch branch : this.getCurrentRepository().getActiveBranches()) {
-            remoteTrackingBranches.add(branch.createRemoteTrackingBranch(this.getCurrentRepository().getBranchesPath().toString(), this.remoteRepository.getCurrentRepository().getName()));
-            branches.add(branch.makeRemote(magit.getCurrentRepository().getName(), this.getCurrentRepository().getBranchesPath()));
+        Branch branch = magit.getCurrentRepository().getActiveBranch();
+        remoteTrackingBranches.add(
+                branch.createRemoteTrackingBranch(
+                        this.getCurrentRepository().getBranchesPath().toString(),
+                        this.remoteRepository.getCurrentRepository().getName()));
+
+        for (Branch b : magit.getCurrentRepository().getActiveBranches()) {
+            if (!b.isHead()) {
+                remoteBranches.add(new Branch(b.makeRemote(magit.getCurrentRepository().getName(), this.getCurrentRepository().getBranchesPath())));
+            }
         }
 
-        this.getCurrentRepository().updateBranchesList(branches);
+        this.getCurrentRepository().updateRemoteBranchesList(remoteBranches);
         this.getCurrentRepository().updateRemoteTrackingBranchList(remoteTrackingBranches);
+    }
+
+    private void fetch(Magit remoteRepository) throws IOException {
+        File objectFolder = new File(remoteRepository.getCurrentRepository().getObjectPath().toString()),
+                branchesFolder = new File(remoteRepository.getCurrentRepository().getBranchesPath().toString()),
+                myObjectFolder = new File(currentRepository.getObjectPath().toString()),
+                myRemoteBranchesFolder = new File(currentRepository.getBranchesPath() + File.separator + remoteRepository.getCurrentRepository().getName());
+
+        FileUtils.copyDirectory(myObjectFolder, objectFolder);
+        File[] branchesFiles = branchesFolder.listFiles();
+
+        if (branchesFiles != null) {
+            for (File branch : branchesFiles) {
+                if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
+                    FileUtils.copyFileToDirectory(myRemoteBranchesFolder, branch);
+                }
+            }
+        }
     }
 }

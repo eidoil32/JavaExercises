@@ -297,9 +297,7 @@ public class Controller {
         }
 
         nodeList.addAll(wireUpAllNodes(commitNodeMap, branches));
-
         return nodeList;
-
     }
 
     private List<Node> wireUpAllNodes(Map<Commit, Point> commitNodeMap, List<Branch> branches) {
@@ -338,7 +336,10 @@ public class Controller {
     private Circle createCircle(Point coordinates, Commit data, Map<Commit, Branch> pointedBranches) {
         Circle circle = new Circle(coordinates.getX(), coordinates.getY(), Settings.COMMIT_CIRCLE_RADIUS);
         circle.setOnMouseClicked(event -> Platform.runLater(() -> updateCommitDiffAndFileTree(data)));
-        circle.setOnMouseEntered(event -> circle.setFill(Paint.valueOf("#FF4242")));
+        circle.setOnMouseEntered(event -> {
+            ((Circle)event.getSource()).toFront();
+            circle.setFill(Paint.valueOf("#FF4242"));
+        });
         circle.setOnMouseExited(event -> circle.setFill(Paint.valueOf("#000000")));
         if (pointedBranches.containsKey(data)) {
             circle.setStrokeWidth(2);
@@ -391,6 +392,7 @@ public class Controller {
     private Line createLine(Point src, Point dest) {
         Line line = new Line(src.x, src.y, dest.x, dest.y);
         line.setStrokeWidth(Settings.COMMIT_TREE_LINE_TICK);
+        line.setOpacity(0.2);
         return line;
     }
 
@@ -409,24 +411,12 @@ public class Controller {
         checkOpenIssues.addListener(((o, oldValue, newValue) -> {
             if (newValue) {
                 BooleanProperty flag = new SimpleBooleanProperty();
-                SmartListener branch = new SmartListener() {
-                    private Branch branch;
-
-                    @Override
-                    public Object getItem() {
-                        return branch;
-                    }
-
-                    @Override
-                    public void setItem(Object item) {
-                        this.branch = (Branch) item;
-                    }
-                };
+                SmartListener<Branch> branch = new SmartListener<>();
                 selectBranch(branch, model.getCurrentRepository().getActiveBranches(), flag);
                 flag.addListener((observable -> {
                     if (branch.getItem() != null) {
                         if (!branch.getItem().equals(model.getCurrentBranch())) {
-                            Task merge = new MergeTask(model, (Branch) branch.getItem(), this);
+                            Task merge = new MergeTask(model, branch.getItem(), this);
                             bindTaskToUIComponents(merge);
                             new Thread(merge).start();
                         } else {
@@ -891,23 +881,11 @@ public class Controller {
                 newBranchName.addListener((ob, oldValue, newValue) -> {
                     if (!newValue.equals(Settings.EMPTY_STRING)) {
                         MyBooleanProperty booleanProperty1 = new MyBooleanProperty();
-                        SmartListener branch = new SmartListener() {
-                            private Branch branch;
-
-                            @Override
-                            public Object getItem() {
-                                return branch;
-                            }
-
-                            @Override
-                            public void setItem(Object item) {
-                                this.branch = (Branch) item;
-                            }
-                        };
-                        Platform.runLater(() -> selectBranch(branch, model.getCurrentRepository().getActiveBranches(), booleanProperty1));
+                        SmartListener<Branch> branch = new SmartListener<>();
+                        Platform.runLater(() -> selectBranch(branch, model.getCurrentRepository().getRemoteBranches(), booleanProperty1));
                         booleanProperty1.addListener((observable1 -> {
                             try {
-                                model.tryCreateNewRemoteTrackingBranch(newValue, (Branch) branch.getItem());
+                                model.tryCreateNewRemoteTrackingBranch(newValue, branch.getItem());
                                 updateBranchesMenuButton();
                             } catch (RepositoryException | IOException e) {
                                 IntroController.showAlert(e.getMessage());
@@ -1063,5 +1041,17 @@ public class Controller {
 
     public void setThemeProperty(MyBooleanProperty themeProperty) {
         this.themeProperty = themeProperty;
+    }
+
+    public void updateRepositoryHistory() {
+        if (model.getRemoteRepository() != null) {
+            String name = model.getRemoteRepository().getCurrentRepository().getName() +
+                    " (" + model.getRemoteRepository().getRootFolder().toString() + ")";
+            if (name.length() > Settings.FX_MAX_NAME_OF_REMOTE_REPOSITORY) {
+                name = name.substring(0,Settings.FX_MAX_NAME_OF_REMOTE_REPOSITORY);
+            }
+            MenuItem remoteRepository = new MenuItem(name);
+            this.repositoryListMenuBtn.getItems().add(0,remoteRepository);
+        }
     }
 }

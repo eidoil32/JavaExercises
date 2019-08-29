@@ -3,6 +3,7 @@ package magit;
 import settings.Settings;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -17,13 +18,21 @@ public class RemoteTrackingBranch extends Branch {
 
         if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
             File file = new File(pathToBranches + File.separator + branch.getName());
-            List<String> content = Files.readAllLines(file.toPath());
-            if (content.size() == 1) {
-                PrintWriter branchFile = new PrintWriter(file);
-                branchFile.write(branch.getSHA_ONE());
-                branchFile.write(System.lineSeparator() + Settings.IS_TRACKING_REMOTE_BRANCH);
-                branchFile.close();
+            if (file.exists()) {
+                List<String> content = Files.readAllLines(file.toPath());
+                if (content.size() == 1) {
+                    WriteToBranchFile(branch, file);
+                }
+            } else {
+                WriteToBranchFile(branch, file);
             }
         }
+    }
+
+    private void WriteToBranchFile(Branch branch, File file) throws FileNotFoundException {
+        PrintWriter branchFile = new PrintWriter(file);
+        branchFile.write(branch.getSHA_ONE());
+        branchFile.write(System.lineSeparator() + Settings.IS_TRACKING_REMOTE_BRANCH);
+        branchFile.close();
     }
 }

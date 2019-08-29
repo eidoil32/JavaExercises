@@ -1,6 +1,7 @@
 package magit;
 
 import exceptions.*;
+import org.apache.commons.collections4.ListUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
@@ -19,7 +20,7 @@ public class Repository {
     private Path currentPath, magitPath, objectPath, branchesPath, repoNamePath;
     private Folder rootFolder;
     private Commit lastCommit;
-    private List<Branch> branches, remoteTrackingBranches;
+    private List<Branch> branches, remoteTrackingBranches, remoteBranches;
     private String name, SHA_ONE;
 
     public Repository(Path repositoryPath, String currentUser, String name) throws RepositoryException, IOException { // set clean repository
@@ -42,7 +43,12 @@ public class Repository {
         if (isOld) {
             this.currentPath = repositoryPath;
             initialisePaths();
-            this.branches = loadBranches(trackingName != null ? branchesPath + File.separator + trackingName : branchesPath.toString());
+            if (trackingName != null) {
+                this.remoteTrackingBranches = loadBranches(branchesPath.toString());
+                this.remoteBranches = loadBranchesWithoutHead(branchesPath + File.separator + trackingName);
+            } else {
+                this.branches = loadBranches(branchesPath.toString());
+            }
             this.rootFolder = new Folder(repositoryPath, currentUser);
             this.name = loadFromRepositoryFile();
             this.lastCommit = loadFromHEAD(branchesPath);
@@ -50,12 +56,29 @@ public class Repository {
         }
     }
 
+    private List<Branch> loadBranchesWithoutHead(String pathToFolder) throws RepositoryException, IOException {
+        List<Branch> branches = new LinkedList<>();
+
+        File folder = new File(pathToFolder);
+        if (folder.isDirectory()) {
+            File[] files = folder.listFiles();
+            assert files != null;
+            for (File file : files) {
+                branches.add(new Branch(file, objectPath.toString()));
+            }
+        } else {
+            throw new RepositoryException(eErrorCodes.BRANCH_FOLDER_WRONG);
+        }
+
+        return branches;
+    }
+
     public Repository(Path repoNamePath, String currentUser, String trackingName, boolean... values) throws IOException, RepositoryException {
         this(repoNamePath, values[0], currentUser, trackingName);
 
-        if (values[1]) {
+ /*       if (values[1]) {
             this.remoteTrackingBranches = loadTrackingBranches(branchesPath.toString());
-        }
+        }*/
 
     }
 
@@ -99,6 +122,7 @@ public class Repository {
 
     public static Repository XML_RepositoryFactory(MagitRepository xmlMagit)
             throws IOException, MyXMLException, RepositoryException, MyFileException {
+
         if (new File(xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER).exists()) {
             throw new MyXMLException(eErrorCodesXML.ALREADY_EXIST_FOLDER, xmlMagit.getLocation());
         } else if (new File(xmlMagit.getLocation()).exists()) {
@@ -106,6 +130,7 @@ public class Repository {
             if (Files.list(target.toPath()).findFirst().isPresent())
                 throw new MyXMLException(eErrorCodesXML.TARGET_FOLDER_NOT_EMPTY, xmlMagit.getLocation());
         }
+
         Repository repository = new Repository(xmlMagit.getLocation());
         repository.setName(xmlMagit.getName());
         boolean remoteFlag = false;
@@ -113,10 +138,11 @@ public class Repository {
 
         MagitRepository.MagitRemoteReference remoteReference = xmlMagit.getMagitRemoteReference();
         String remoteRepositoryName = null;
-        if (remoteReference != null) {
+        if (remoteReference != null && remoteReference.getName() != null && remoteReference.getLocation() != null) {
             remoteFlag = true;
             remoteRepositoryName = remoteReference.getName();
             new File(repository.getBranchesPath() + File.separator + remoteRepositoryName).mkdir();
+            Magit.createRemoteRepositoryFile(remoteReference.getLocation(), remoteReference.getName(), repository.getMagitPath().toString());
         }
 
         List<MagitSingleBranch> branches = xmlMagit.getMagitBranches().getMagitSingleBranch();
@@ -130,10 +156,12 @@ public class Repository {
                     if (remoteFlag) {
                         tempHead = new RemoteTrackingBranch(new Branch(true, temp), repository.getBranchesPath().toString(), remoteRepositoryName);
                         tempHead.setActive(temp);
-                        repository.addBranch(tempHead);
-                        repository.updateHeadFile(branch.getName());
-                        repository.lastCommit = temp.getCommit();
+                    } else {
+                        tempHead = new Branch(true, temp);
                     }
+                    repository.addBranch(tempHead);
+                    repository.updateHeadFile(branch.getName());
+                    repository.lastCommit = temp.getCommit();
                 }
                 repository.addBranch(temp);
             }
@@ -484,16 +512,28 @@ public class Repository {
                 remoteTrackingBranches = new LinkedList<>();
             }
             remoteTrackingBranches.add(branch);
-            branches.add(branch.getRemoteBranch());
         } else {
-            branches.add(branch);
+            if (branch.isIsRemote()) {
+                if (remoteBranches == null) {
+                    remoteBranches = new LinkedList<>();
+                }
+                remoteBranches.add(branch);
+            } else {
+                branches.add(branch);
+            }
         }
     }
 
     public Branch searchBranch(String branchName) {
         Branch temp = new Branch(branchName);
+
+        List<Branch> branches = getActiveBranches();
         int index = branches.indexOf(temp);
-        return (index != -1) ? branches.get(index) : null;
+        if (index != -1) {
+            return branches.get(index);
+        } else {
+            return null;
+        }
     }
 
     public void calcSHA_ONE() {
@@ -555,7 +595,7 @@ public class Repository {
         List<Commit> commitList = new LinkedList<>();
         Map<Commit, Branch> headCommits = new HashMap<>();
 
-        for (Branch branch : this.branches) {
+        for (Branch branch : getActiveBranches()) {
             if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
                 if (branch.getCommit() != null) {
                     headCommits.put(branch.getCommit(), branch);
@@ -588,8 +628,38 @@ public class Repository {
 
     public List<Branch> getActiveBranches() {
         if (remoteTrackingBranches != null) {
-            return remoteTrackingBranches;
+            if (branches != null)
+                return ListUtils.union(remoteTrackingBranches, branches);
+            else
+                return remoteTrackingBranches;
         }
         return branches;
+    }
+
+    public void createHeadFileAfterClone() throws FileNotFoundException {
+        Branch head = findHead(remoteTrackingBranches);
+        if (head != null) {
+            File headFile = new File(branchesPath + File.separator + Settings.MAGIT_BRANCH_HEAD);
+            PrintWriter writer = new PrintWriter(headFile);
+            writer.write(head.getActiveBranch().getName());
+            writer.close();
+        }
+    }
+
+    private Branch findHead(List<Branch> branches) {
+        for (Branch branch : branches) {
+            if (branch.isHead()) {
+                return branch;
+            }
+        }
+        return null;
+    }
+
+    public void updateRemoteBranchesList(List<Branch> branches) {
+        this.remoteBranches = branches;
+    }
+
+    public List<Branch> getRemoteBranches() {
+        return remoteBranches;
     }
 }

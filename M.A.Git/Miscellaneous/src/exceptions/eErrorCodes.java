@@ -3,6 +3,7 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    BRANCH_FOLDER_WRONG(Settings.language.getString("BRANCH_FOLDER_WRONG")),
     FAST_FORWARD_MERGE(Settings.language.getString("FAST_FORWARD_MERGE")),
     MARGE_CANCELED(Settings.language.getString("MARGE_CANCELED")),
     READING_REMOTE_BRANCH_FAILED(Settings.language.getString("READING_REMOTE_BRANCH_FAILED")),

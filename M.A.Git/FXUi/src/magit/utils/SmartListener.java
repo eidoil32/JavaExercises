@@ -1,6 +1,13 @@
 package magit.utils;
 
-public interface SmartListener {
-    Object getItem();
-    void setItem(Object item);
+public class SmartListener<T> {
+    private T item;
+
+    public T getItem() {
+        return item;
+    }
+
+    public void setItem(T item) {
+        this.item = item;
+    }
 }

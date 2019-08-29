@@ -1,7 +1,5 @@
 package magit.ui;
 
-import exceptions.*;
-import magit.*;
 import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
 import utils.FileManager;
@@ -14,7 +12,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
-import java.util.*;
 
 public enum eMenuItem {
     OPEN_RESOURCE(Settings.language.getString("MENU_OPTION_OPEN_RESOURCE"), Settings.MENU_ITEM_OPEN_RESOURCE, true) {

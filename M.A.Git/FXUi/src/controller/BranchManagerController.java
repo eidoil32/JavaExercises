@@ -79,25 +79,29 @@ public class BranchManagerController {
     }
 
     public void loadData() {
-        List<Branch> tempList = model.getCurrentRepository().getRemoteTrackingBranches();
+        List<Branch> tempList = model.getCurrentRepository().getActiveBranches(), branches;
         boolean deselect = false;
-        if (tempList == null) {
+        if (model.getRemoteRepository() == null) {
             hideSecondColumn();
+            branches = tempList;
         } else {
             updateListViewData(removeHead(tempList), false, branchListView, remoteBranchListView);
+            branches = model.getCurrentRepository().getRemoteBranches();
             remoteBranchListView.setEditable(false);
             deselect = true;
         }
 
-        updateListViewData(removeHead(model.getCurrentRepository().getActiveBranches()), deselect, remoteBranchListView, branchListView);
+        updateListViewData(removeHead(branches), deselect, remoteBranchListView, branchListView);
     }
 
     private void hideSecondColumn() {
         this.column_0.setMinWidth(0);
+        this.column_0.setMaxWidth(0);
         this.RTBLabel.setVisible(false);
         this.remoteScrollPane.setVisible(false);
         this.remoteLabel.setText(Settings.language.getString("FX_BRANCH_MANAGER_TITLE"));
         this.column_1.setMinWidth(Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH);
+        this.column_1.setFillWidth(true);
     }
 
     private List<Branch> removeHead(List<Branch> data) {

@@ -49,6 +49,7 @@ public class Settings {
             MIN_COMMENT_SUBSTRING = 0,
             MAX_COMMENT_SUBSTRING = 30,
             MINIMUM_DAY_TO_SHOW = 10,
+            FX_MAX_NAME_OF_REMOTE_REPOSITORY = 15,
             MAX_SHA_ONE_TABLE_LENGTH = 20,
             MENU_ITEM_OPEN_RESOURCE = 1;
     public static int MENU_SIZE = MENU_ITEM_EXIT;
