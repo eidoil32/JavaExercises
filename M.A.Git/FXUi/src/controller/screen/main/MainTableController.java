@@ -18,7 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class MainTableController implements IController {
+public class MainTableController {
     private Magit model;
     private MainController mainController;
     private TableColumn<List<String>, Date> dateCommitTableColumn;

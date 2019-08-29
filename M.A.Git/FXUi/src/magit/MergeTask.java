@@ -66,7 +66,7 @@ public class MergeTask extends Task<Void> {
                 updateStatus(Settings.language.getString("MERGE_COMPLETED_SUCCESSFULLY"), 3);
                 Platform.runLater(() -> {
                     mainController.getMainTableController().initializeTableViewCommit();
-                    mainController.buildCommitTree();
+                    mainController.getTreeController().buildCommitTree();
                     mainController.updateTree();
                 });
             }));

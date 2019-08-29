@@ -46,7 +46,7 @@ public class BranchManagerController {
 
     @FXML
     private void onAddNewBranchButton_Click(ActionEvent event) {
-        mainController.onCreateNewBranchMenuItem_Click(event);
+        mainController.onCreateNewBranchMenuItem_Click();
     }
 
     @FXML

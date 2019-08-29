@@ -12,6 +12,9 @@ public class Settings {
             COMMIT_CIRCLE_RADIUS = 7,
             COMMIT_SPACE_BETWEEN_CIRCLES = 20;
     public static final int
+            FX_NEW_TAB_KEY = 0,
+            FX_EDIT_TAB_KEY = 1,
+            FX_DELETED_TAB_KEY = 2,
             COMMIT_TREE_START_X = 10,
             COMMIT_TREE_START_Y = 50,
             COMMIT_TREE_ADD_TO_X = 25,
