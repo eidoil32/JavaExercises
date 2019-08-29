@@ -5,6 +5,7 @@ Part of Java Course in MTA
 Testing reflection abillities of Java.
 
 # M.A.Git
+![Screenshot](LOGO.jpg)
 A console application for manage repository, like Git.
 In M.A.Git user can:
 1. create new repository
