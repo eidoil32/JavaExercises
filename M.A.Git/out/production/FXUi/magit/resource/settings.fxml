@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane minHeight="250.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SettingsController">
+<BorderPane minHeight="250.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.screen.popups.SettingsController">
    <top>
       <Label alignment="CENTER" text="%FX_MAGIT_SETTINGS" BorderPane.alignment="CENTER">
          <BorderPane.margin>

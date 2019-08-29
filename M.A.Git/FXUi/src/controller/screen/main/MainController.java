@@ -1,10 +1,18 @@
-package controller;
+package controller.screen.main;
 
+import controller.screen.intro.IntroController;
+import controller.screen.popups.DialogController;
+import controller.screen.popups.MergeWindowController;
+import controller.screen.popups.SelectController;
+import controller.screen.popups.SmartPopUpController;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
 import javafx.application.Platform;
-import javafx.beans.property.*;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -52,14 +60,12 @@ import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.*;
 
 //TODO:: split controller to parts
 
-public class Controller {
+public class MainController {
     @FXML
     private ProgressBar executeCommandProgressBar;
     @FXML
@@ -109,6 +115,10 @@ public class Controller {
     private Stage primaryStage;
     private boolean isAnimationTurnOn = false;
     private MyBooleanProperty updateCommitTree = new MyBooleanProperty();
+    private CommitsDetailsController commitsDetailsController;
+    private MainTableController mainTableController;
+    private OpenedChangesController openedChangesController;
+    private TreeController treeController;
 
     public void setStringProperty_CurrentUser(StringProperty currentUser) {
         this.stringProperty_CurrentUser = currentUser;
@@ -120,56 +130,6 @@ public class Controller {
 
     @FXML
     public void initialize() {
-        this.branchCommitTableColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().get(0)));
-        this.branchCommitTableColumn.setCellFactory(object -> new TableCell<List<String>, String>() {
-            @Override
-            protected void updateItem(String item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(Settings.EMPTY_STRING);
-                } else {
-                    if (!item.equals(Settings.EMPTY_STRING)) {
-                        this.setId("commit-table-branch-name-column");
-                    } else {
-                        this.setId("");
-                    }
-                    setText(item);
-                }
-            }
-        });
-        this.commentCommitTableColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().get(1)));
-        this.dateCommitTableColumn.setCellValueFactory(param -> {
-            try {
-                return new ReadOnlyObjectWrapper<>(new SimpleDateFormat(Settings.DATE_FORMAT).parse(param.getValue().get(2)));
-            } catch (ParseException e) {
-                Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
-                return new ReadOnlyObjectWrapper<>(new Date());
-            }
-        });
-        this.dateCommitTableColumn.setCellFactory(object -> new TableCell<List<String>, Date>() {
-            @Override
-            protected void updateItem(Date item, boolean empty) {
-                super.updateItem(item, empty);
-                if (empty) {
-                    setText(null);
-                } else {
-                    long difference = new Date().getTime() - item.getTime();
-                    float daysBetween = (difference / (Settings.DATE_CALCULATE));
-                    if ((int) daysBetween == 0) {
-                        setText(Settings.language.getString("FX_COMMIT_TABLE_TODAY"));
-                    } else if (daysBetween < Settings.MINIMUM_DAY_TO_SHOW) {
-                        setText(String.format(Settings.language.getString("FX_COMMIT_TABLE_X_DAYS_BEFORE"), daysBetween));
-                    } else {
-                        setText(new SimpleDateFormat(Settings.FX_DATE_FORMAT).format(item));
-                    }
-                }
-            }
-        });
-        this.shaoneCommitTableColumn.setCellValueFactory(param -> new
-
-                ReadOnlyStringWrapper(param.getValue().
-
-                get(3)));
         this.commitTable.getSelectionModel().
                 selectedItemProperty().
                 addListener(((observable, oldValue, newValue) ->
@@ -194,9 +154,7 @@ public class Controller {
                         new Thread(task).start();
                     }
                 }));
-        updateCommitTree.addListener((observable ->
-
-        {
+        updateCommitTree.addListener((observable -> {
             if (mainBoard.getRight() != null) {
                 mainBoard.setRight(commitTreePane);
             }
@@ -337,7 +295,7 @@ public class Controller {
         Circle circle = new Circle(coordinates.getX(), coordinates.getY(), Settings.COMMIT_CIRCLE_RADIUS);
         circle.setOnMouseClicked(event -> Platform.runLater(() -> updateCommitDiffAndFileTree(data)));
         circle.setOnMouseEntered(event -> {
-            ((Circle)event.getSource()).toFront();
+            ((Circle) event.getSource()).toFront();
             circle.setFill(Paint.valueOf("#FF4242"));
         });
         circle.setOnMouseExited(event -> circle.setFill(Paint.valueOf("#000000")));
@@ -445,7 +403,7 @@ public class Controller {
         Pane root;
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = Controller.class.getResource(Settings.FXML_SELECT_POPUP);
+            URL mainFXML = MainController.class.getResource(Settings.FXML_SELECT_POPUP);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -527,13 +485,13 @@ public class Controller {
                             updateProgress(1, 1);
                             updateMessage(Settings.language.getString("COMMIT_CREATED_SUCCESSFULLY"));
                             Platform.runLater(() -> {
-                                initializeTableViewCommit(); //need to change to add only new line instead refresh all table!
+                                mainTableController.initializeTableViewCommit(); // todo: add bind
                                 cleanListViews();
                                 commitTreePane = buildCommitTree();
                                 updateTree();
                             });
                         } catch (IOException | MyFileException | RepositoryException e) {
-                            IntroController.showAlert(e.getMessage());
+                            Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
                         }
                         return null;
                     }
@@ -550,7 +508,7 @@ public class Controller {
         Pane root;
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = Controller.class.getResource(Settings.FXML_SMART_POPUP_BOX);
+            URL mainFXML = MainController.class.getResource(Settings.FXML_SMART_POPUP_BOX);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -582,31 +540,7 @@ public class Controller {
         this.executeCommandProgressBar.progressProperty().bind(task.progressProperty());
     }
 
-    public void initializeTableViewCommit() {
-        Map<String, Object> results = model.getCurrentRepository().getAllCommits();
-        List<Commit> commitList = new LinkedList<>(new HashSet<>((List<Commit>) results.get(Settings.KEY_COMMIT_LIST)));
-        Map<Commit, Branch> headCommits = (Map<Commit, Branch>) results.get(Settings.KEY_COMMIT_BRANCH_LIST);
 
-        final ObservableList<List<String>> data = FXCollections.observableArrayList();
-
-        for (Commit commit : commitList) {
-            List<String> unit = new ArrayList<>();
-            if (headCommits.containsKey(commit)) {
-                unit.add(headCommits.get(commit).getName());
-            } else {
-                unit.add(Settings.EMPTY_STRING);
-            }
-            String temp = commit.getComment();
-            unit.add(temp.substring(Settings.MIN_COMMENT_SUBSTRING, Math.min(temp.length(), Settings.MAX_COMMENT_SUBSTRING)));
-            unit.add(new SimpleDateFormat(Settings.DATE_FORMAT).format(commit.getDate()));
-            unit.add(commit.getSHA_ONE());
-            data.add(unit);
-        }
-        dateCommitTableColumn.setSortType(TableColumn.SortType.DESCENDING);
-        commitTable.setItems(data);
-        commitTable.getSortOrder().add(dateCommitTableColumn);
-        commitTable.sort();
-    }
 
     @FXML
     private void onMenuItem_AboutClick(ActionEvent event) {
@@ -670,7 +604,7 @@ public class Controller {
         File target = Utilities.fileChooser(Settings.language.getString("XML_FILE_REQUEST"), Settings.XML_FILE_REQUEST_TYPE, primaryStage.getScene());
         if (target != null) {
             introController.loadXMLFromFile(target, executeCommandProgressBar, (name, target1, magit) -> Platform.runLater(() -> {
-                initializeTableViewCommit();
+                mainTableController.initializeTableViewCommit(); //todo: add bind
                 updateBranchesMenuButton();
                 commitTreePane = buildCommitTree();
             }));
@@ -762,7 +696,7 @@ public class Controller {
         Pane root;
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = Controller.class.getResource(Settings.FXML_DIALOG_BOX);
+            URL mainFXML = MainController.class.getResource(Settings.FXML_DIALOG_BOX);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -789,6 +723,12 @@ public class Controller {
     public void setModel(Magit model) {
         this.model = model;
         commitTreePane = buildCommitTree();
+        commitsDetailsController = new CommitsDetailsController(model, this);
+        mainTableController = new MainTableController(
+                this,
+                dateCommitTableColumn, branchCommitTableColumn, commentCommitTableColumn, shaoneCommitTableColumn);
+        openedChangesController = new OpenedChangesController(model, this);
+        treeController = new TreeController(model, this);
     }
 
     public void setStringProperty_CurrentMagitState(StringProperty currentStatus) {
@@ -932,7 +872,7 @@ public class Controller {
         Pane root;
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = Controller.class.getResource(Settings.FXML_MERGE_WINDOW);
+            URL mainFXML = MainController.class.getResource(Settings.FXML_MERGE_WINDOW);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -989,7 +929,7 @@ public class Controller {
             try {
                 model.changeBranchPoint(branch, newValue, doCheckout);
                 Platform.runLater(() -> {
-                    initializeTableViewCommit();
+                    mainTableController.initializeTableViewCommit(); //todo: add bind
                     updateTree();
                 });
             } catch (RepositoryException | IOException | MyFileException e) {
@@ -1008,12 +948,16 @@ public class Controller {
 
     @FXML
     private void onMenuItemFetch_Clicked(ActionEvent event) {
-
+        Task fetchTask = new FetchTask(model);
+        bindTaskToUIComponents(fetchTask);
+        new Thread(fetchTask).start();
     }
 
     @FXML
     private void onMenuItemPull_Clicked(ActionEvent event) {
-
+        Task pullTask = new PullTask(model);
+        bindTaskToUIComponents(pullTask);
+        new Thread(pullTask).start();
     }
 
     @FXML
@@ -1048,10 +992,22 @@ public class Controller {
             String name = model.getRemoteRepository().getCurrentRepository().getName() +
                     " (" + model.getRemoteRepository().getRootFolder().toString() + ")";
             if (name.length() > Settings.FX_MAX_NAME_OF_REMOTE_REPOSITORY) {
-                name = name.substring(0,Settings.FX_MAX_NAME_OF_REMOTE_REPOSITORY);
+                name = name.substring(0, Settings.FX_MAX_NAME_OF_REMOTE_REPOSITORY);
             }
             MenuItem remoteRepository = new MenuItem(name);
-            this.repositoryListMenuBtn.getItems().add(0,remoteRepository);
+            this.repositoryListMenuBtn.getItems().add(0, remoteRepository);
         }
+    }
+
+    public Magit getModel() {
+        return model;
+    }
+
+    public TableView<List<String>> getTableView() {
+        return commitTable;
+    }
+
+    public MainTableController getMainTableController() {
+        return mainTableController;
     }
 }

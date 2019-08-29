@@ -1,6 +1,7 @@
 package utils;
 
 import exceptions.MyFileException;
+import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
 import magit.BasicFile;
 import magit.Blob;
@@ -13,8 +14,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -27,7 +29,7 @@ public class FileManager {
         while (line != null) {
             content.append(line);
             line = reader.readLine();
-            if(line != null) {
+            if (line != null) {
                 content.append(System.lineSeparator());
             }
         }
@@ -44,7 +46,7 @@ public class FileManager {
         if (file.getType() == eFileTypes.FOLDER) {
             File folderTXT = new File(pathToObject.toString() + File.separator + Settings.TEMP_FOLDER_NAME);
             try {
-                Folder temp = (Folder)file;
+                Folder temp = (Folder) file;
                 folderTXT.createNewFile();
                 PrintWriter writer = new PrintWriter(folderTXT.getPath());
                 temp.setContent(temp.getBlobMap().toString());
@@ -62,7 +64,7 @@ public class FileManager {
                 try {
                     tempFile.createNewFile();
                     PrintWriter writer = new PrintWriter(tempFile);
-                    writer.print(((Blob)file).getContent());
+                    writer.print(((Blob) file).getContent());
                     writer.close();
                 } catch (IOException e) {
                     throw new MyFileException(eErrorCodes.OPEN_FILE_FAILED, pathToObject.toString() + File.separator + ((Blob) file).getSHA_ONE());
@@ -110,7 +112,7 @@ public class FileManager {
         }
         if (file.getType() == eFileTypes.FOLDER)
             fileToZip.delete();
-        if(tempFileExist) {
+        if (tempFileExist) {
             tempFile.delete();
         }
     }
@@ -173,5 +175,31 @@ public class FileManager {
         }
 
         return stringBuilder.toString();
+    }
+
+    public static Set<File> getAllFilesFromFolderSHA(String rootFolderSHA_one, String pathToObjectFolder) throws RepositoryException {
+        Set<File> files = new LinkedHashSet<>();
+
+        File rootFolder = new File(pathToObjectFolder + File.separator + rootFolderSHA_one);
+        files.add(rootFolder);
+
+        File rootFolderContent = unZipFile(rootFolder, pathToObjectFolder + File.separator + Settings.TEMP_UNZIP_FOLDER);
+        try {
+            List<String> content = Files.readAllLines(rootFolderContent.toPath());
+            for (String string : content) {
+                if (string.length() > 0) {
+                    String[] parts = string.split(Settings.FOLDER_DELIMITER);
+                    if (parts[2].equals(Settings.FOLDER_TYPE_IN_FOLDER_TABLE)) {
+                        files.addAll(getAllFilesFromFolderSHA(parts[1], pathToObjectFolder));
+                    } else {
+                        files.add(new File(pathToObjectFolder + File.separator + parts[1]));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new RepositoryException(eErrorCodes.FAILED_RECOVER_FOLDER_CONTENT);
+        }
+
+        return files;
     }
 }

@@ -1,6 +1,6 @@
 package magit;
 
-import controller.IntroController;
+import controller.screen.intro.IntroController;
 import exceptions.RepositoryException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;

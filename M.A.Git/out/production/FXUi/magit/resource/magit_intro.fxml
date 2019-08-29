@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.VBox?>
 
 
-<StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.IntroController">
+<StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.screen.intro.IntroController">
    <children>
       <ImageView pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_CENTER">
          <image>

@@ -3,6 +3,9 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    REMOTE_BRANCH_NOT_FOUND(Settings.language.getString("REMOTE_BRANCH_NOT_FOUND")),
+    COPY_FILE_FROM_REMOTE_TO_LOCAL_FAILED(Settings.language.getString("COPY_FILE_FROM_REMOTE_TO_LOCAL_FAILED")),
+    FAILED_RECOVER_FOLDER_CONTENT(Settings.language.getString("FAILED_RECOVER_FOLDER_CONTENT")),
     BRANCH_FOLDER_WRONG(Settings.language.getString("BRANCH_FOLDER_WRONG")),
     FAST_FORWARD_MERGE(Settings.language.getString("FAST_FORWARD_MERGE")),
     MARGE_CANCELED(Settings.language.getString("MARGE_CANCELED")),

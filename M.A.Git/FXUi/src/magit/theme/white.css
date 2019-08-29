@@ -125,8 +125,6 @@
 .list-view {
     -fx-border-color: #395cab;
     -fx-border-radius: 5px;
-    -fx-start-margin: 5px;
-    -fx-background-color: transparent;
 }
 .list-view:focused {
     -fx-background-color: -fx-box-border,-fx-box-border,white;

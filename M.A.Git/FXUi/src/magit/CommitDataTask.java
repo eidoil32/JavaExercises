@@ -1,6 +1,6 @@
 package magit;
 
-import controller.Controller;
+import controller.screen.main.MainController;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.TreeItem;
@@ -13,9 +13,9 @@ public class CommitDataTask extends Task<Void> {
     private int work = 0, size;
     private Magit model;
     private Commit current, prev, anotherPrev;
-    private Controller mainController;
+    private MainController mainController;
 
-    public CommitDataTask(Magit model, Controller mainController, Commit current) {
+    public CommitDataTask(Magit model, MainController mainController, Commit current) {
         this.model = model;
         this.mainController = mainController;
         this.current = current;

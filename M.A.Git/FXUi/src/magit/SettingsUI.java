@@ -1,7 +1,7 @@
 package magit;
 
-import controller.Controller;
-import controller.SettingsController;
+import controller.screen.main.MainController;
+import controller.screen.popups.SettingsController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ObservableValue;
@@ -20,11 +20,11 @@ public class SettingsUI {
 
     private Magit model;
     private Stage primaryStage;
-    private Controller mainController;
+    private MainController mainController;
     private BooleanProperty languageProperty, themeProperty;
     private StringProperty currentState;
 
-    public SettingsUI(Stage primaryStage, Magit model, Controller mainController, ObservableValue ... values) throws IOException {
+    public SettingsUI(Stage primaryStage, Magit model, MainController mainController, ObservableValue ... values) throws IOException {
         this.model = model;
         this.primaryStage = primaryStage;
         this.mainController = mainController;

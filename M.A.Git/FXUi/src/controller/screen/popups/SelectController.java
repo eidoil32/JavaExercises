@@ -1,4 +1,4 @@
-package controller;
+package controller.screen.popups;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.collections.ObservableList;

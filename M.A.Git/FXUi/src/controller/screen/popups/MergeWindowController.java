@@ -1,4 +1,4 @@
-package controller;
+package controller.screen.popups;
 
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;

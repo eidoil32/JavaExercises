@@ -1,7 +1,7 @@
 package magit;
 
-import controller.Controller;
-import controller.IntroController;
+import controller.screen.main.MainController;
+import controller.screen.intro.IntroController;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import javafx.application.Platform;
@@ -16,12 +16,12 @@ import java.util.Map;
 public class MergeTask extends Task<Void> {
     private Magit model;
     private Branch target;
-    private Controller mainController;
+    private MainController mainController;
     private MergeProperty mergeProperty = new MergeProperty(), conflictFinishProperty = new MergeProperty();
     private Map<String, BlobMap> changes;
     private BlobMap[] userApprove;
 
-    public MergeTask(Magit model, Branch target, Controller mainController) {
+    public MergeTask(Magit model, Branch target, MainController mainController) {
         this.model = model;
         this.target = target;
         this.mainController = mainController;
@@ -65,7 +65,7 @@ public class MergeTask extends Task<Void> {
 
                 updateStatus(Settings.language.getString("MERGE_COMPLETED_SUCCESSFULLY"), 3);
                 Platform.runLater(() -> {
-                    mainController.initializeTableViewCommit();
+                    mainController.getMainTableController().initializeTableViewCommit();
                     mainController.buildCommitTree();
                     mainController.updateTree();
                 });

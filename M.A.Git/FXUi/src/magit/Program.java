@@ -1,6 +1,6 @@
 package magit;
 
-import controller.IntroController;
+import controller.screen.intro.IntroController;
 import javafx.application.Application;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

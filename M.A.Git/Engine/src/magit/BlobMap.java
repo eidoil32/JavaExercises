@@ -16,8 +16,7 @@ public class BlobMap {
     public BlobMap(Map<BasicFile, Blob> fileBlobMap) {
         if (fileBlobMap != null) {
             this.map = fileBlobMap;
-        }
-        else
+        } else
             this.map = new HashMap<>();
     }
 
@@ -26,7 +25,7 @@ public class BlobMap {
     }
 
     public Blob getRandomBlob() {
-        for (Map.Entry<BasicFile,Blob> blob : map.entrySet()) {
+        for (Map.Entry<BasicFile, Blob> blob : map.entrySet()) {
             return blob.getValue();
         }
 
@@ -81,6 +80,7 @@ public class BlobMap {
                         map.remove(myRoot);
                         map.put(myRoot, myRoot);
                         myRoot.setBlobMap(tempBlob);
+                        return true;
                     }
                 }
             }
@@ -124,7 +124,7 @@ public class BlobMap {
                 Blob blob = entry.getValue();
                 allFiles.put(blob, blob);
             } else {
-                allFiles.putAll(((Folder)entry.getKey()).getBlobMap().getAllFiles());
+                allFiles.putAll(((Folder) entry.getKey()).getBlobMap().getAllFiles());
                 allFiles.put(entry.getValue(), entry.getValue());
             }
         }
@@ -140,11 +140,11 @@ public class BlobMap {
 
         for (Map.Entry<BasicFile, Blob> entryFolder : map.entrySet()) {
             if (entryFolder.getValue().getType() == eFileTypes.FOLDER) {
-                if(((Folder)entryFolder.getValue()).getBlobMap().contain(value,false,pointer)) {
+                if (((Folder) entryFolder.getValue()).getBlobMap().contain(value, false, pointer)) {
                     return pointer.getFile() != null;
                 }
             } else {
-                this.contain(value,true,pointer);
+                this.contain(value, true, pointer);
             }
         }
 
@@ -165,9 +165,9 @@ public class BlobMap {
         targetFileTree.contain(value, value.getRootFolder().getRootFolder() == null, pointerTarget);
 
         Map<eUserMergeChoice, Blob> map = new HashMap<>();
-        map.put(eUserMergeChoice.ACTIVE,pointerActive.getFile());
-        map.put(eUserMergeChoice.ANCESTOR,pointerAncestor.getFile());
-        map.put(eUserMergeChoice.TARGET,pointerTarget.getFile());
+        map.put(eUserMergeChoice.ACTIVE, pointerActive.getFile());
+        map.put(eUserMergeChoice.ANCESTOR, pointerAncestor.getFile());
+        map.put(eUserMergeChoice.TARGET, pointerTarget.getFile());
 
         return map;
     }
@@ -184,7 +184,7 @@ public class BlobMap {
 
     public void merge(BlobMap blobMap) {
         for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
-            map.put(entry.getValue(),entry.getValue());
+            map.put(entry.getValue(), entry.getValue());
         }
     }
 
@@ -192,9 +192,9 @@ public class BlobMap {
         BlobMap foldersOnly = new BlobMap(null);
 
         for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
-            if(entry.getValue().getType() == eFileTypes.FOLDER) {
+            if (entry.getValue().getType() == eFileTypes.FOLDER) {
                 foldersOnly.addToMap(entry.getValue());
-                foldersOnly.getMap().putAll(((Folder)entry.getValue()).getBlobMap().getOnlyFolders().getMap());
+                foldersOnly.getMap().putAll(((Folder) entry.getValue()).getBlobMap().getOnlyFolders().getMap());
             }
         }
 
@@ -204,8 +204,8 @@ public class BlobMap {
     public int getSize() {
         int size = map.size();
         for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
-            if(entry.getValue().getType() == eFileTypes.FOLDER) {
-                size += ((Folder)entry.getValue()).getBlobMap().getSize();
+            if (entry.getValue().getType() == eFileTypes.FOLDER) {
+                size += ((Folder) entry.getValue()).getBlobMap().getSize();
             }
         }
 

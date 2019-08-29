@@ -1,5 +1,6 @@
-package controller;
+package controller.screen.popups;
 
+import controller.screen.main.MainController;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
@@ -13,7 +14,7 @@ import magit.Magit;
 import settings.Settings;
 
 public class SettingsController {
-    private Controller mainController;
+    private MainController mainController;
     private Magit model;
     private Stage stage;
     private BooleanProperty languageProperty, themeProperty;
@@ -52,7 +53,7 @@ public class SettingsController {
         stage.close();
     }
 
-    public void setMainController(Controller mainController) {
+    public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
 

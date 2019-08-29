@@ -1,7 +1,7 @@
 package magit;
 
-import controller.BranchManagerController;
-import controller.Controller;
+import controller.screen.main.MainController;
+import controller.screen.popups.BranchManagerController;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
@@ -16,9 +16,9 @@ import java.net.URL;
 public class BranchManagerUI {
     private Magit model;
     private Stage primaryStage;
-    private Controller mainController;
+    private MainController mainController;
 
-    public BranchManagerUI(Stage primaryStage, Magit model, Controller mainController) throws IOException {
+    public BranchManagerUI(Stage primaryStage, Magit model, MainController mainController) throws IOException {
         this.model = model;
         this.primaryStage = primaryStage;
         this.mainController = mainController;
@@ -44,7 +44,7 @@ public class BranchManagerUI {
         stage.setMinWidth(Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH + 50);
         stage.setOnHiding(event -> {
             mainController.updateBranchesMenuButton();
-            mainController.initializeTableViewCommit();
+            mainController.getMainTableController().initializeTableViewCommit(); //todo: add bind
         });
         stage.setTitle(Settings.language.getString("BRANCH_MANAGER_TITLE"));
         stage.setScene(scene);

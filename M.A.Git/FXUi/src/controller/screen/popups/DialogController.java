@@ -1,4 +1,4 @@
-package controller;
+package controller.screen.popups;
 
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;

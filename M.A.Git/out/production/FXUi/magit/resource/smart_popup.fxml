@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 
 
-<BorderPane minHeight="250.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.SmartPopUpController">
+<BorderPane minHeight="250.0" minWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.screen.popups.SmartPopUpController">
    <top>
       <AnchorPane BorderPane.alignment="CENTER">
          <children>

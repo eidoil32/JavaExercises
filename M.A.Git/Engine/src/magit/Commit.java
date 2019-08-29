@@ -19,10 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Commit implements CommitRepresentative {
     private String SHA_ONE, prevCommitSHA_ONE, anotherPrevCommitSHA_ONE, rootFolderSHA_ONE;
@@ -64,6 +61,7 @@ public class Commit implements CommitRepresentative {
         }
 
         this.comment = getCommentFromFile(commitContent);
+        this.rootFolderSHA_ONE = commitContent.get(0);
     }
 
     public Commit XML_Parser(MagitRepository xmlMagit, MagitSingleCommit commit, Folder rootFolder)
@@ -208,8 +206,8 @@ public class Commit implements CommitRepresentative {
     public void loadDataFromFile(Path objectPath, String commit_sha) throws IOException, RepositoryException {
         List<String> commitFile = Files.readAllLines(Paths.get(objectPath + File.separator + commit_sha));
 
-        this.prevCommitSHA_ONE = calcPervsCommit(this.prevCommit,commitFile.get(1),objectPath);
-        this.anotherPrevCommitSHA_ONE = calcPervsCommit(this.anotherPrevCommit,commitFile.get(2),objectPath);
+        this.prevCommitSHA_ONE = calcPervsCommit(this.prevCommit, commitFile.get(1), objectPath);
+        this.anotherPrevCommitSHA_ONE = calcPervsCommit(this.anotherPrevCommit, commitFile.get(2), objectPath);
 
         this.SHA_ONE = commit_sha;
         this.rootFolderSHA_ONE = commitFile.get(0);
@@ -345,8 +343,8 @@ public class Commit implements CommitRepresentative {
     public int namOfPreceding() {
         if (prevCommit == null) {
             return 0;
-        } else  {
-            if(anotherPrevCommit == null) {
+        } else {
+            if (anotherPrevCommit == null) {
                 return 1;
             }
             return 2;
@@ -406,7 +404,7 @@ public class Commit implements CommitRepresentative {
 
     @Override
     public String getFirstPrecedingSha1() {
-        if(prevCommit == null) {
+        if (prevCommit == null) {
             return Settings.EMPTY_STRING;
         }
         return prevCommitSHA_ONE;
@@ -414,9 +412,25 @@ public class Commit implements CommitRepresentative {
 
     @Override
     public String getSecondPrecedingSha1() {
-        if(anotherPrevCommit == null) {
+        if (anotherPrevCommit == null) {
             return Settings.EMPTY_STRING;
         }
         return anotherPrevCommitSHA_ONE;
+    }
+
+    public Set<File> getCommitsFiles(String pathToObjectFolder) throws RepositoryException {
+        Set<File> files = new LinkedHashSet<>();
+        Commit prev = prevCommit, anotherPrev = anotherPrevCommit;
+
+        if (prev != null) {
+            files.addAll(prev.getCommitsFiles(pathToObjectFolder));
+            if (anotherPrev != null) {
+                files.addAll(anotherPrev.getCommitsFiles(pathToObjectFolder));
+            }
+        }
+
+        files.addAll(FileManager.getAllFilesFromFolderSHA(rootFolderSHA_ONE,pathToObjectFolder));
+
+        return files;
     }
 }

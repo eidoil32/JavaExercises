@@ -298,10 +298,23 @@ public class Magit {
         currentBranch.setCommit(oldCommit, currentRepository.getBranchesPath().toString());
     }
 
-    public void afterXMLLayout() throws IOException {
+    public void afterXMLLayout() throws IOException, RepositoryException {
         if (currentRepository.getRootFolder() != null) {
             layoutRepositoryByRootFolder(currentRepository.getRootFolder().getBlobMap().getMap());
         }
+
+        if (currentRepository.getRemoteTrackingBranches() != null) {
+            this.remoteRepository = loadRemoteRepository();
+        }
+    }
+
+    private Magit loadRemoteRepository() throws IOException, RepositoryException {
+        File remoteRepository = new File(currentRepository.getMagitPath() + File.separator + Settings.REMOTE_REPOSITORY_FILE_DATA);
+        List<String> content = Files.readAllLines(remoteRepository.toPath());
+        Magit magit = new Magit();
+        Repository remote = new Repository(Paths.get(content.get(0)), currentUser, null, true);
+        magit.setCurrentRepository(remote);
+        return magit;
     }
 
     public void deleteOldMagitFolder(String path) {
@@ -849,21 +862,67 @@ public class Magit {
         this.getCurrentRepository().updateRemoteTrackingBranchList(remoteTrackingBranches);
     }
 
-    private void fetch(Magit remoteRepository) throws IOException {
+    public void fetch(Magit remoteRepository) throws IOException {
         File objectFolder = new File(remoteRepository.getCurrentRepository().getObjectPath().toString()),
                 branchesFolder = new File(remoteRepository.getCurrentRepository().getBranchesPath().toString()),
                 myObjectFolder = new File(currentRepository.getObjectPath().toString()),
                 myRemoteBranchesFolder = new File(currentRepository.getBranchesPath() + File.separator + remoteRepository.getCurrentRepository().getName());
 
-        FileUtils.copyDirectory(myObjectFolder, objectFolder);
+        FileUtils.copyDirectory(objectFolder, myObjectFolder);
         File[] branchesFiles = branchesFolder.listFiles();
 
         if (branchesFiles != null) {
             for (File branch : branchesFiles) {
                 if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
-                    FileUtils.copyFileToDirectory(myRemoteBranchesFolder, branch);
+                    FileUtils.copyFileToDirectory(branch, myRemoteBranchesFolder);
                 }
             }
         }
+    }
+
+    public void pull() throws RepositoryException, MyFileException, IOException {
+        Branch activeRemoteBranch = remoteRepository.getCurrentBranch();
+        Commit activeRemoteCommit = activeRemoteBranch.getCommit();
+
+        Set<File> files = activeRemoteCommit.getCommitsFiles(remoteRepository.getCurrentRepository().getObjectPath().toString());
+        for (File file : files) {
+            try {
+                FileUtils.copyFileToDirectory(file, currentRepository.getObjectPath().toFile());
+            } catch (IOException e) {
+                throw new RepositoryException(eErrorCodes.COPY_FILE_FROM_REMOTE_TO_LOCAL_FAILED);
+            }
+        }
+
+        updateBranchesData(activeRemoteBranch);
+        deleteOldFiles(this.rootFolder.toString());
+        layoutRepositoryByRootFolder(currentRepository.loadDataFromCommit(activeRemoteCommit).getMap());
+    }
+
+    private void updateBranchesData(Branch activeRemoteBranch) throws RepositoryException, IOException {
+        Branch remote = findInRemoteBranches(activeRemoteBranch);
+        if (remote == null) {
+            throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_FOUND);
+        }
+
+        remote.setCommit(
+                activeRemoteBranch.getCommit(),
+                currentRepository.getBranchesPath() + File.separator + remoteRepository.getCurrentRepository().getName());
+        Branch remoteTrackingBranch = findBranch(activeRemoteBranch.getName());
+        if (!(remoteTrackingBranch instanceof RemoteTrackingBranch)) {
+            remoteTrackingBranch = new RemoteTrackingBranch(remote,
+                    currentRepository.getBranchesPath().toString(),
+                    remoteRepository.getCurrentRepository().getName());
+        }
+        remoteTrackingBranch.setCommit(activeRemoteBranch.getCommit(), currentRepository.getBranchesPath().toString());
+        setNewActiveBranch(remoteTrackingBranch);
+    }
+
+    private Branch findInRemoteBranches(Branch activeRemoteBranch) {
+        for (Branch branch : currentRepository.getRemoteBranches()) {
+            if (activeRemoteBranch.getName().equals(branch.getName())) {
+                return branch;
+            }
+        }
+        return null;
     }
 }

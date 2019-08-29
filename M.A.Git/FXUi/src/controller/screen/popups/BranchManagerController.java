@@ -1,5 +1,7 @@
-package controller;
+package controller.screen.popups;
 
+import controller.screen.main.MainController;
+import controller.screen.intro.IntroController;
 import exceptions.RepositoryException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,7 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class BranchManagerController {
-    private Controller mainController;
+    private MainController mainController;
     private Magit model;
     private Branch selectedBranch = null;
 
@@ -70,7 +72,7 @@ public class BranchManagerController {
         }
     }
 
-    public void setMainController(Controller mainController) {
+    public void setMainController(MainController mainController) {
         this.mainController = mainController;
     }
 

@@ -1,7 +1,7 @@
 package magit;
 
-import controller.Controller;
-import controller.IntroController;
+import controller.screen.main.MainController;
+import controller.screen.intro.IntroController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
@@ -42,22 +42,21 @@ public class MagitUI {
         Pane root = loader.load();
 
         // wire up controller
-        Controller controller = loader.getController();
-        controller.setModel(model);
+        MainController mainController = loader.getController();
+        mainController.setModel(model);
         StringProperty currentUserName = new SimpleStringProperty(Settings.language.getString("USER_ADMINISTRATOR"));
         currentUserName.addListener(((observable, oldValue, newValue) -> {
             model.setCurrentUser(newValue);
         }));
-        controller.setStringProperty_CurrentUser(currentUserName);
+        mainController.setStringProperty_CurrentUser(currentUserName);
         StringProperty currentState = new SimpleStringProperty();
-        controller.setStringProperty_CurrentMagitState(currentState);
+        mainController.setStringProperty_CurrentMagitState(currentState);
         currentState.setValue(String.format(Settings.language.getString("LOAD_REPOSITORY_SUCCESS"), model.getCurrentRepository().getName()));
-        controller.initializeTableViewCommit();
-        controller.updateBranchesSecondRowData();
-        controller.updateRepositoryHistory();
-        controller.setLanguageProperty(languageProperty);
-        controller.setThemeProperty(themeProperty);
-        controller.setIntroController(introController);
+        mainController.updateBranchesSecondRowData();
+        mainController.updateRepositoryHistory();
+        mainController.setLanguageProperty(languageProperty);
+        mainController.setThemeProperty(themeProperty);
+        mainController.setIntroController(introController);
         languageProperty.setValueListener(value -> {
             try {
                 ResourceBundle.clearCache();
@@ -77,7 +76,7 @@ public class MagitUI {
         // set stage
         Stage stage = new Stage();
         primaryStage.hide();
-        controller.setPrimaryStage(stage);
+        mainController.setPrimaryStage(stage);
         stage.setMinWidth(Settings.MAGIT_UI_MIN_WIDTH);
         stage.setMinHeight(Settings.MAGIT_UI_MIN_HEIGHT);
         stage.setResizable(true);

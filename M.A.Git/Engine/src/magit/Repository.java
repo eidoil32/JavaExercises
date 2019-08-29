@@ -39,6 +39,12 @@ public class Repository {
         this.SHA_ONE = null;
     }
 
+    public Repository(Path repoNamePath, String currentUser, String trackingName, boolean... values) throws IOException, RepositoryException {
+        this(repoNamePath, values[0], currentUser, trackingName);
+
+    }
+
+
     private Repository(Path repositoryPath, boolean isOld, String currentUser, String trackingName) throws IOException, RepositoryException {
         if (isOld) {
             this.currentPath = repositoryPath;
@@ -71,15 +77,6 @@ public class Repository {
         }
 
         return branches;
-    }
-
-    public Repository(Path repoNamePath, String currentUser, String trackingName, boolean... values) throws IOException, RepositoryException {
-        this(repoNamePath, values[0], currentUser, trackingName);
-
- /*       if (values[1]) {
-            this.remoteTrackingBranches = loadTrackingBranches(branchesPath.toString());
-        }*/
-
     }
 
     private List<Branch> loadTrackingBranches(String path) throws IOException, RepositoryException {

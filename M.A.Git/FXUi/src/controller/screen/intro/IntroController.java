@@ -1,5 +1,7 @@
-package controller;
+package controller.screen.intro;
 
+import controller.screen.popups.DialogController;
+import controller.ILoader;
 import exceptions.MyFileException;
 import exceptions.MyXMLException;
 import exceptions.RepositoryException;
