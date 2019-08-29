@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="Ui:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/Ui_jar</output-path>
-    <root id="archive" name="Ui.jar">
-      <element id="module-output" name="Ui" />
-    </root>
-  </artifact>
-</component>

@@ -11,25 +11,24 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-
 <StackPane xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.screen.intro.IntroController">
    <children>
       <ImageView pickOnBounds="true" preserveRatio="true" StackPane.alignment="TOP_CENTER">
          <image>
-            <Image url="@intro_background.jpg" />
+            <Image url="@img/intro_background.jpg" />
          </image>
       </ImageView>
       <VBox alignment="TOP_CENTER" StackPane.alignment="CENTER">
          <children>
-            <AnchorPane VBox.vgrow="ALWAYS">
+            <AnchorPane fx:id="topBar" VBox.vgrow="ALWAYS">
                <children>
                   <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <top>
-                        <AnchorPane fx:id="topBar" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+                        <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
                            <children>
                               <ImageView fx:id="closeButton" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="20.0">
                                  <image>
-                                    <Image url="@close.png" />
+                                    <Image url="@img/close.png" />
                                  </image>
                               </ImageView>
                            </children>

@@ -624,7 +624,7 @@ public class Magit {
     }
 
     public Commit getCommitData(Object sha_one) throws IOException {
-        if (((String) sha_one).length() != Settings.SBA_ONE_CORRECT_LENGTH) {
+        if (((String) sha_one).length() != Settings.SHA_ONE_CORRECT_LENGTH) {
             return null;
         } else {
             File commit = new File(currentRepository.getObjectPath() + File.separator + sha_one);
@@ -884,18 +884,24 @@ public class Magit {
         Branch activeRemoteBranch = remoteRepository.getCurrentBranch();
         Commit activeRemoteCommit = activeRemoteBranch.getCommit();
 
-        Set<File> files = activeRemoteCommit.getCommitsFiles(remoteRepository.getCurrentRepository().getObjectPath().toString());
-        for (File file : files) {
-            try {
-                FileUtils.copyFileToDirectory(file, currentRepository.getObjectPath().toFile());
-            } catch (IOException e) {
-                throw new RepositoryException(eErrorCodes.COPY_FILE_FROM_REMOTE_TO_LOCAL_FAILED);
-            }
-        }
+        copyFilesFromCommit(activeRemoteCommit,
+                remoteRepository.getCurrentRepository().getObjectPath().toString(),
+                currentRepository.getObjectPath().toFile());
 
         updateBranchesData(activeRemoteBranch);
         deleteOldFiles(this.rootFolder.toString());
         layoutRepositoryByRootFolder(currentRepository.loadDataFromCommit(activeRemoteCommit).getMap());
+    }
+
+    private void copyFilesFromCommit(Commit activeRemoteCommit, String copyFilesFrom, File copyFileTo) throws RepositoryException {
+        Set<File> files = activeRemoteCommit.getCommitsFiles(copyFilesFrom);
+        for (File file : files) {
+            try {
+                FileUtils.copyFileToDirectory(file, copyFileTo);
+            } catch (IOException e) {
+                throw new RepositoryException(eErrorCodes.COPY_FILE_FROM_REMOTE_TO_LOCAL_FAILED);
+            }
+        }
     }
 
     private void updateBranchesData(Branch activeRemoteBranch) throws RepositoryException, IOException {
@@ -924,5 +930,33 @@ public class Magit {
             }
         }
         return null;
+    }
+
+    public void push() throws RepositoryException, IOException, MyFileException {
+        Branch headBranch = currentBranch;
+        if (headBranch instanceof RemoteTrackingBranch) {
+            Branch remoteBranch = findInRemoteBranches(headBranch);
+            if (remoteBranch != null) {
+                Branch branchFromRemoteRepository = remoteRepository.findInRemoteBranches(remoteBranch);
+                // checking if those branches pointed on the same commit -> mean that user already do fetch & pull commands!
+                if (branchFromRemoteRepository != null &&
+                        remoteBranch.getCommit().getSHA_ONE().equals(branchFromRemoteRepository.getCommit().getSHA_ONE())) {
+
+                    copyFilesFromCommit(remoteBranch.getCommit(),
+                            currentRepository.getObjectPath().toString(),
+                            remoteRepository.getCurrentRepository().getObjectPath().toFile());
+
+                    remoteRepository.updateBranchesData(branchFromRemoteRepository);
+                    remoteRepository.deleteOldFiles(remoteRepository.getRootFolder().toString());
+                    layoutRepositoryByRootFolder(currentRepository.loadDataFromCommit(remoteBranch.getCommit()).getMap());
+                } else {
+                    throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT);
+                }
+            } else {
+                throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_FOUND);
+            }
+        } else {
+            throw new RepositoryException(eErrorCodes.NOT_RTB_CANNOT_PUSH);
+        }
     }
 }

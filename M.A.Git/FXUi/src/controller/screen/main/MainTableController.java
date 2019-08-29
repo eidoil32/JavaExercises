@@ -73,7 +73,7 @@ public class MainTableController {
                     setText(null);
                 } else {
                     long difference = new Date().getTime() - item.getTime();
-                    float daysBetween = (difference / (Settings.DATE_CALCULATE));
+                    float daysBetween = (difference / (Settings.DATE_CALCULATE_MILLISECONDS_TO_DAY));
                     if ((int) daysBetween == 0) {
                         setText(Settings.language.getString("FX_COMMIT_TABLE_TODAY"));
                     } else if (daysBetween < Settings.MINIMUM_DAY_TO_SHOW) {

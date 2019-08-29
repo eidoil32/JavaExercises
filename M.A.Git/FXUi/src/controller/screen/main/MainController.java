@@ -31,6 +31,7 @@ import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import magit.*;
+import magit.tasks.*;
 import magit.utils.*;
 import settings.Settings;
 import utils.MapKeys;

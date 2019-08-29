@@ -1,10 +1,11 @@
-package magit;
+package magit.tasks;
 
 import controller.screen.intro.IntroController;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import magit.Magit;
 import settings.Settings;
 
 import java.io.IOException;

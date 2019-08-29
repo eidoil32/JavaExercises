@@ -1,4 +1,4 @@
-package magit;
+package magit.tasks;
 
 import controller.screen.main.MainController;
 import controller.screen.intro.IntroController;
@@ -6,6 +6,10 @@ import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import magit.BlobMap;
+import magit.Branch;
+import magit.Commit;
+import magit.Magit;
 import magit.utils.MergeProperty;
 import settings.Settings;
 

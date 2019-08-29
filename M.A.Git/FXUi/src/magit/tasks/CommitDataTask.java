@@ -1,9 +1,10 @@
-package magit;
+package magit.tasks;
 
 import controller.screen.main.MainController;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.TreeItem;
+import magit.*;
 import settings.Settings;
 import utils.WarpBasicFile;
 
