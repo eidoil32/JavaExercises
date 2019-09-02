@@ -39,7 +39,7 @@ public class PullTask extends Task<Void> {
             updateStatus(Settings.language.getString("START_MARGIN"), 2);
             Task merge = new MergeTask(model, remote, mainController);
             Platform.runLater(() -> {
-                mainController.bindTaskToUIComponents(merge);
+                mainController.bindTaskToUIComponents(merge, false);
                 new Thread(merge).start();
             });
             model.updateRemoteAfterMerge(remote);

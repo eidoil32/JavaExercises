@@ -41,8 +41,8 @@ public class Settings {
             MAGIT_UI_SETTINGS_MIN_HEIGHT = 250,
             MAGIT_UI_EXIT_TOOL_TIP_WIDTH = 100,
             MAGIT_UI_EXIT_TOOL_TIP_HEIGHT = 20,
-            MAGIT_UI_FILE_VIEWER_HEIGHT = 400,
-            MAGIT_UI_FILE_VIEWER_WIDTH = 600,
+            MAGIT_UI_FILE_VIEWER_HEIGHT = 600,
+            MAGIT_UI_FILE_VIEWER_WIDTH = 400,
             SHA_ONE_CORRECT_LENGTH = 40,
             MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
             MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
@@ -147,6 +147,9 @@ public class Settings {
             FXML_FILE_VIEWER = RESOURCE_ROOT_FOLDER + "fileView.fxml",
             FXML_TREE_VIEW_FILE = RESOURCE_IMAGE_PACKAGE + "file.png",
             FXML_TREE_VIEW_FOLDER = RESOURCE_IMAGE_PACKAGE + "folder.png",
+            DELETE_FILE_IMAGE = RESOURCE_IMAGE_PACKAGE + "delete.png",
+            EDITED_FILE_IMAGE = RESOURCE_IMAGE_PACKAGE + "edited.png",
+            NEW_FILE_IMAGE = RESOURCE_IMAGE_PACKAGE + "new.png",
             FXML_THEME_WHITE_CSS_FILE = THEME_ROOT_FOLDER + "white.css",
             FXML_THEME_BLACK_CSS_FILE = THEME_ROOT_FOLDER + "black.css";
 

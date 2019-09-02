@@ -4,7 +4,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
+import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.MouseButton;
@@ -25,45 +28,94 @@ import java.util.Map;
 public class CommitsDetailsController {
     private Magit model;
     private MainController mainController;
-    private ListView<String> diffDetailsListView, commitDetailsListView;
+    private ListView<WarpBlob> diffDetailsListView;
+    private ListView<String> commitDetailsListView;
     private TextFlow commitCommentLabel;
 
-    @SafeVarargs
-    public CommitsDetailsController(MainController mainController, TextFlow commitComment, ListView<String> ... listViews) {
+
+    public CommitsDetailsController(MainController mainController, TextFlow commitComment, ListView<WarpBlob> filesDiff, ListView<String> details) {
         this.model = mainController.getModel();
         this.mainController = mainController;
-        this.diffDetailsListView = listViews[0];
-        this.commitDetailsListView = listViews[1];
+        this.diffDetailsListView = filesDiff;
+        this.commitDetailsListView = details;
         this.commitCommentLabel = commitComment;
+    }
+
+    private enum eType {
+        DELETE, EDITED, NEW;
+    }
+
+    public class WarpBlob {
+        private BasicFile file;
+        private eType type;
+
+        public WarpBlob(BasicFile file, eType type) {
+            this.file = file;
+            this.type = type;
+        }
+
+        public BasicFile getFile() {
+            return file;
+        }
+
+        public eType getType() {
+            return type;
+        }
     }
 
     public void updateDiffListView(Map<MapKeys, List<BasicFile>> map) {
         new Thread(() -> {
-            List<String>
+            List<WarpBlob>
                     deleted = getDataFromBasicFile(
-                    map.get(MapKeys.LIST_DELETED),
-                    Settings.language.getString("FX_DIFF_DELETED_ITEM")),
+                            map.get(MapKeys.LIST_DELETED),
+                            eType.DELETE),
                     edited = getDataFromBasicFile(
                             map.get(MapKeys.LIST_CHANGED),
-                            Settings.language.getString("FX_DIFF_EDITED_ITEM")),
+                            eType.EDITED),
                     newFiles = getDataFromBasicFile(
                             map.get(MapKeys.LIST_NEW),
-                            Settings.language.getString("FX_DIFF_NEW_ITEM"));
+                            eType.NEW);
 
-            List<String> union = ListUtils.union(ListUtils.union(deleted, edited), newFiles);
+            List<WarpBlob> union = ListUtils.union(ListUtils.union(deleted, edited), newFiles);
 
             Platform.runLater(() -> {
                 diffDetailsListView.getItems().clear();
                 diffDetailsListView.getItems().addAll(union);
             });
         }).start();
+
+        diffDetailsListView.setCellFactory(param -> new ListCell<WarpBlob>() {
+            private ImageView imageView = new ImageView();
+            @Override
+            protected void updateItem(WarpBlob item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setText(item.getFile().getName());
+                    switch (item.getType()) {
+                        case DELETE:
+                            imageView.setImage(new Image(Settings.DELETE_FILE_IMAGE));
+                            break;
+                        case EDITED:
+                            imageView.setImage(new Image(Settings.EDITED_FILE_IMAGE));
+                            break;
+                        case NEW:
+                            imageView.setImage(new Image(Settings.NEW_FILE_IMAGE));
+                            break;
+                    }
+                    setGraphic(imageView);
+                }
+            }
+        });
     }
 
 
-    private List<String> getDataFromBasicFile(List<BasicFile> files, String addon) {
-        List<String> data = new LinkedList<>();
+    private List<WarpBlob> getDataFromBasicFile(List<BasicFile> files, eType type) {
+        List<WarpBlob> data = new LinkedList<>();
         for (BasicFile file : files) {
-            data.add(addon + Settings.FX_DIFF_SEPARATOR + file.getType() + Settings.FX_DIFF_SEPARATOR + file.getName());
+            data.add(new WarpBlob(file,type));
         }
         return data;
     }

@@ -342,13 +342,11 @@
     -fx-highlight-fill: rgb(45,137,239);
     -fx-background-color: -fx-box-border, white;
     -fx-border-color: transparent;
-    -fx-border-insets: 6pt;
 }
 .text-field:focused {
     -fx-background-color: -fx-box-border,-fx-box-border, white;
     -fx-background-radius: 0;
-    -fx-border-color: transparent;
-    -fx-border-insets: 6pt;
+    -fx-border-color: #c2c2c2;
 }
 /*******************************************************************************
  *                                                                             *

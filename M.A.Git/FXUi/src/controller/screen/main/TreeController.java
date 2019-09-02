@@ -5,8 +5,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -26,6 +28,7 @@ import java.util.Map;
 public class TreeController {
     private Magit model;
     private MainController mainController;
+    private ScrollPane scrollPane;
 
     public TreeController(MainController mainController) {
         this.model = mainController.getModel();
@@ -33,7 +36,7 @@ public class TreeController {
     }
 
     public ScrollPane buildCommitTree() {
-        ScrollPane scrollPane = new ScrollPane();
+        this.scrollPane = new ScrollPane();
         VBox vbox = new VBox();
         vbox.setAlignment(Pos.CENTER);
         Group root = new Group();
@@ -146,7 +149,6 @@ public class TreeController {
 
     private Circle createCircle(Point coordinates, Commit data, Map<Commit, Branch> pointedBranches) {
         Circle circle = new Circle(coordinates.getX(), coordinates.getY(), Settings.COMMIT_CIRCLE_RADIUS);
-        circle.setOnMouseClicked(event -> Platform.runLater(() -> mainController.updateCommitDiffAndFileTree(data)));
         circle.setOnMouseEntered(event -> {
             ((Circle) event.getSource()).toFront();
             circle.setFill(Paint.valueOf("#FF4242"));
@@ -155,10 +157,40 @@ public class TreeController {
         if (pointedBranches.containsKey(data)) {
             circle.setStrokeWidth(2);
             circle.setStroke(Paint.valueOf("#FF4242"));
-            Tooltip custom = new Tooltip(pointedBranches.get(data).getName());
-            Tooltip.install(circle, custom);
         }
+        ContextMenu contextMenu = createContextMenu(data, pointedBranches.get(data));
+        circle.setOnMouseClicked((event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                contextMenu.show(circle, event.getScreenX(), event.getScreenY());
+            } else if (event.getButton() == MouseButton.PRIMARY) {
+                mainController.updateCommitDiffAndFileTree(data);
+            }
+        }));
         return circle;
+    }
+
+    private ContextMenu createContextMenu(Commit commit, Branch branch) {
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem createNewBranch = new MenuItem(Settings.language.getString("FX_CREATE_NEW_BRANCH")),
+                resetHeadBranch = new MenuItem(Settings.language.getString("FX_MENU_RESET_BRANCH")),
+                mergeToThisBranch = new MenuItem(Settings.language.getString("FX_MERGE_TO_THIS_BRANCH")),
+                deletePointBranch = new MenuItem(Settings.language.getString("FX_DELETE_POINTED_BRANCH"));
+
+        if (branch != null) {
+            deletePointBranch.setDisable(false);
+            mergeToThisBranch.setDisable(false);
+        } else {
+            mergeToThisBranch.setDisable(true);
+            deletePointBranch.setDisable(true);
+        }
+
+        createNewBranch.setOnAction(event -> mainController.onCreateNewBranchMenuItem_Click());
+        resetHeadBranch.setOnAction(event -> mainController.resetBranchFunction(model.getCurrentBranch(),true,commit.getSHA_ONE()));
+        mergeToThisBranch.setOnAction(event -> mainController.createMergeTask(branch));
+        deletePointBranch.setOnAction(event -> mainController.deleteBranch(branch));
+
+        contextMenu.getItems().addAll(createNewBranch, resetHeadBranch, mergeToThisBranch, deletePointBranch);
+        return contextMenu;
     }
 
     private Line createLine(Point src, Point dest) {

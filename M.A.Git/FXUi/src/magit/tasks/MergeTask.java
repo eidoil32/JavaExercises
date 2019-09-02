@@ -68,11 +68,6 @@ public class MergeTask extends Task<Void> {
                 }
 
                 updateStatus(Settings.language.getString("MERGE_COMPLETED_SUCCESSFULLY"), 3);
-                Platform.runLater(() -> {
-                    mainController.getMainTableController().initializeTableViewCommit();
-                    mainController.getTreeController().buildCommitTree();
-                    mainController.updateTree();
-                });
             }));
         } else if (conflictFinishProperty.isInError()) {
             updateStatus(Settings.language.getString("MARGE_CANCELED"), 3);

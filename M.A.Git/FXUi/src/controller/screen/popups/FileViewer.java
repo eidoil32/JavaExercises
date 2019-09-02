@@ -6,10 +6,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeView;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -24,8 +21,9 @@ import java.text.SimpleDateFormat;
 
 public class FileViewer {
     private Blob blob;
-    @FXML private Label fileName ,fileDateModified, fileEditorName;
+    @FXML private Label fileDateModified, fileEditorName;
     @FXML private TextArea fileContent;
+    @FXML private TextField fileName;
 
     private void update(Blob blob) {
         this.blob = blob;
