@@ -39,7 +39,11 @@ public class Settings {
             MAGIT_UI_INTRO_MIN_HEIGHT = 400,
             MAGIT_UI_SETTINGS_MIN_WIDTH = 600,
             MAGIT_UI_SETTINGS_MIN_HEIGHT = 250,
-            SBA_ONE_CORRECT_LENGTH = 40,
+            MAGIT_UI_EXIT_TOOL_TIP_WIDTH = 100,
+            MAGIT_UI_EXIT_TOOL_TIP_HEIGHT = 20,
+            MAGIT_UI_FILE_VIEWER_HEIGHT = 400,
+            MAGIT_UI_FILE_VIEWER_WIDTH = 600,
+            SHA_ONE_CORRECT_LENGTH = 40,
             MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
             MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
             MAGIT_UI_SELECT_POPUP_WIDTH = 250,
@@ -49,6 +53,9 @@ public class Settings {
             MIN_COMMENT_SUBSTRING = 0,
             MAX_COMMENT_SUBSTRING = 30,
             MINIMUM_DAY_TO_SHOW = 10,
+            FX_NEW_TAB_KEY = 0,
+            FX_EDIT_TAB_KEY = 1,
+            FX_DELETED_TAB_KEY = 2,
             FX_MAX_NAME_OF_REMOTE_REPOSITORY = 15,
             MAX_SHA_ONE_TABLE_LENGTH = 20,
             MENU_ITEM_OPEN_RESOURCE = 1;
@@ -63,16 +70,6 @@ public class Settings {
             RESOURCE_FILE = "languages.lang",
             CANCEL_BTN_CLICKED_STRING = "cancel",
             JAVAFX_NEWLINE_TEXTAREA = "\n",
-            FXML_SELECT_POPUP = "/magit/resource/select_popup.fxml",
-            FXML_SETTINGS_WINDOW = "/magit/resource/settings.fxml",
-            FXML_APPLICATION = "/magit/resource/magit.fxml",
-            FXML_SMART_POPUP_BOX = "/magit/resource/smart_popup.fxml",
-            FXML_DIALOG_BOX = "/magit/resource/dialogBox.fxml",
-            FXML_INTRO_WINDOW = "/magit/resource/magit_intro.fxml",
-            FXML_BRANCH_MANAGER = "/magit/resource/branchManager.fxml",
-            FXML_MERGE_WINDOW = "/magit/resource/mergeWindow.fxml",
-            FXML_THEME_WHITE_CSS_FILE = "/magit/theme/white.css",
-            FXML_THEME_BLACK_CSS_FILE = "/magit/theme/black.css",
             REMOTE_REPOSITORY_FILE_DATA = "remote-repository",
             IS_TRACKING_REMOTE_BRANCH = "true",
             FX_DATE_FORMAT = "dd/MM/yyyy",
@@ -126,8 +123,37 @@ public class Settings {
             TEMP_UNZIP_FOLDER = "unZipTemp";
     public static String currentLanguage = ENGLISH_CODE, currentTheme = THEME_WHITE;
     public static ResourceBundle language = ResourceBundle.getBundle(RESOURCE_FILE, new UTF8Control(new Locale(currentLanguage)));
-    public static Map<String,String> themeManager = new HashMap<>();
-    public static float DATE_CALCULATE = 1000*60*60*24;
+    public static Map<String, String> themeManager = new HashMap<>();
+    public static float DATE_CALCULATE_MILLISECONDS_TO_DAY = 1000 * 60 * 60 * 24;
+
+    // resource files macros
+    public static String
+            RESOURCE_SEPARATOR = "/",                   // instead File.separator, not working in resource path.
+            RESOURCE_MAGIT_PACKAGE = "magit",
+            RESOURCE_RESOURCES_PACKAGE = "resources",
+            RESOURCE_THEME_PACKAGE = "theme",
+            IMAGE_PACKAGE = "img",
+            RESOURCE_ROOT_FOLDER = RESOURCE_SEPARATOR + RESOURCE_MAGIT_PACKAGE + RESOURCE_SEPARATOR + RESOURCE_RESOURCES_PACKAGE + RESOURCE_SEPARATOR,
+            RESOURCE_IMAGE_PACKAGE = RESOURCE_ROOT_FOLDER + RESOURCE_SEPARATOR + IMAGE_PACKAGE + RESOURCE_SEPARATOR,
+            THEME_ROOT_FOLDER = RESOURCE_ROOT_FOLDER + RESOURCE_THEME_PACKAGE + RESOURCE_SEPARATOR,
+            FXML_SELECT_POPUP = RESOURCE_ROOT_FOLDER + "select_popup.fxml",
+            FXML_SETTINGS_WINDOW = RESOURCE_ROOT_FOLDER + "settings.fxml",
+            FXML_APPLICATION = RESOURCE_ROOT_FOLDER + "magit.fxml",
+            FXML_SMART_POPUP_BOX = RESOURCE_ROOT_FOLDER + "smart_popup.fxml",
+            FXML_DIALOG_BOX = RESOURCE_ROOT_FOLDER + "dialogBox.fxml",
+            FXML_INTRO_WINDOW = RESOURCE_ROOT_FOLDER + "magit_intro.fxml",
+            FXML_BRANCH_MANAGER = RESOURCE_ROOT_FOLDER + "branchManager.fxml",
+            FXML_MERGE_WINDOW = RESOURCE_ROOT_FOLDER + "mergeWindow.fxml",
+            FXML_FILE_VIEWER = RESOURCE_ROOT_FOLDER + "fileView.fxml",
+            FXML_TREE_VIEW_FILE = RESOURCE_IMAGE_PACKAGE + "file.png",
+            FXML_TREE_VIEW_FOLDER = RESOURCE_IMAGE_PACKAGE + "folder.png",
+            FXML_THEME_WHITE_CSS_FILE = THEME_ROOT_FOLDER + "white.css",
+            FXML_THEME_BLACK_CSS_FILE = THEME_ROOT_FOLDER + "black.css";
+
+    // css macros
+    public static String
+            HEAD_BRANCH_CSS_CLASS = "head-branch";
+
     public static void setup() {
         themeManager.put(THEME_WHITE, FXML_THEME_WHITE_CSS_FILE);
         themeManager.put(THEME_BLACK, FXML_THEME_BLACK_CSS_FILE);

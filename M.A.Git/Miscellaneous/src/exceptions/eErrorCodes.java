@@ -3,6 +3,10 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    ONLY_ONE_RTB(Settings.language.getString("ONLY_ONE_RTB")),
+    CANNOT_PULL_DATA_FOR_NONE_RTB(Settings.language.getString("CANNOT_PULL_DATA_FOR_NONE_RTB")),
+    REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT(Settings.language.getString("REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT")),
+    NOT_RTB_CANNOT_PUSH(Settings.language.getString("NOT_RTB_CANNOT_PUSH")),
     REMOTE_BRANCH_NOT_FOUND(Settings.language.getString("REMOTE_BRANCH_NOT_FOUND")),
     COPY_FILE_FROM_REMOTE_TO_LOCAL_FAILED(Settings.language.getString("COPY_FILE_FROM_REMOTE_TO_LOCAL_FAILED")),
     FAILED_RECOVER_FOLDER_CONTENT(Settings.language.getString("FAILED_RECOVER_FOLDER_CONTENT")),

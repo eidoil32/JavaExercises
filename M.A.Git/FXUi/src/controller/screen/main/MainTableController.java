@@ -18,7 +18,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class MainTableController implements IController {
+public class MainTableController {
     private Magit model;
     private MainController mainController;
     private TableColumn<List<String>, Date> dateCommitTableColumn;
@@ -61,7 +61,7 @@ public class MainTableController implements IController {
             try {
                 return new ReadOnlyObjectWrapper<>(new SimpleDateFormat(Settings.DATE_FORMAT).parse(param.getValue().get(2)));
             } catch (ParseException e) {
-                Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+                Platform.runLater(() -> IntroController.showError(e.getMessage()));
                 return new ReadOnlyObjectWrapper<>(new Date());
             }
         });
@@ -73,7 +73,7 @@ public class MainTableController implements IController {
                     setText(null);
                 } else {
                     long difference = new Date().getTime() - item.getTime();
-                    float daysBetween = (difference / (Settings.DATE_CALCULATE));
+                    float daysBetween = (difference / (Settings.DATE_CALCULATE_MILLISECONDS_TO_DAY));
                     if ((int) daysBetween == 0) {
                         setText(Settings.language.getString("FX_COMMIT_TABLE_TODAY"));
                     } else if (daysBetween < Settings.MINIMUM_DAY_TO_SHOW) {

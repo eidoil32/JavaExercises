@@ -50,8 +50,8 @@ public class Repository {
             this.currentPath = repositoryPath;
             initialisePaths();
             if (trackingName != null) {
-                this.remoteTrackingBranches = loadBranches(branchesPath.toString());
-                this.remoteBranches = loadBranchesWithoutHead(branchesPath + File.separator + trackingName);
+                this.remoteTrackingBranches = loadTrackingBranches(branchesPath.toString());
+                this.remoteBranches = loadBranchesWithoutHead(branchesPath + File.separator + trackingName, trackingName);
             } else {
                 this.branches = loadBranches(branchesPath.toString());
             }
@@ -62,7 +62,7 @@ public class Repository {
         }
     }
 
-    private List<Branch> loadBranchesWithoutHead(String pathToFolder) throws RepositoryException, IOException {
+    private List<Branch> loadBranchesWithoutHead(String pathToFolder, String trackingName) throws RepositoryException, IOException {
         List<Branch> branches = new LinkedList<>();
 
         File folder = new File(pathToFolder);
@@ -70,7 +70,7 @@ public class Repository {
             File[] files = folder.listFiles();
             assert files != null;
             for (File file : files) {
-                branches.add(new Branch(file, objectPath.toString()));
+                branches.add(new Branch(file, objectPath.toString(), trackingName));
             }
         } else {
             throw new RepositoryException(eErrorCodes.BRANCH_FOLDER_WRONG);
@@ -171,7 +171,7 @@ public class Repository {
         return repository;
     }
 
-    private void updateHeadFile(String branchName) throws FileNotFoundException {
+    public void updateHeadFile(String branchName) throws FileNotFoundException {
         PrintWriter writer = new PrintWriter(new File(branchesPath + File.separator + Settings.MAGIT_BRANCH_HEAD));
         writer.print(branchName);
         writer.close();
@@ -658,5 +658,13 @@ public class Repository {
 
     public List<Branch> getRemoteBranches() {
         return remoteBranches;
+    }
+
+    public List<Branch> getAllBranches() {
+        if (branches != null) {
+            return branches;
+        } else {
+            return ListUtils.union(remoteBranches, remoteTrackingBranches);
+        }
     }
 }

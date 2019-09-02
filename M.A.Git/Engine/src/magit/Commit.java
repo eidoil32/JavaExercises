@@ -430,6 +430,7 @@ public class Commit implements CommitRepresentative {
         }
 
         files.addAll(FileManager.getAllFilesFromFolderSHA(rootFolderSHA_ONE,pathToObjectFolder));
+        files.add(new File(pathToObjectFolder + File.separator + SHA_ONE));
 
         return files;
     }

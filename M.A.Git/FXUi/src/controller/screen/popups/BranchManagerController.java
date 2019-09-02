@@ -1,17 +1,15 @@
 package controller.screen.popups;
 
-import controller.screen.main.MainController;
 import controller.screen.intro.IntroController;
+import controller.screen.main.MainController;
 import exceptions.RepositoryException;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.control.cell.TextFieldListCell;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
-import javafx.util.StringConverter;
 import magit.Branch;
 import magit.Magit;
 import magit.utils.Utilities;
@@ -23,7 +21,7 @@ import java.util.List;
 public class BranchManagerController {
     private MainController mainController;
     private Magit model;
-    private Branch selectedBranch = null;
+    private Branch selectedBranch = null, headBranch;
 
     @FXML
     private GridPane gridPane;
@@ -46,29 +44,28 @@ public class BranchManagerController {
 
     @FXML
     private void onAddNewBranchButton_Click(ActionEvent event) {
-        mainController.onCreateNewBranchMenuItem_Click(event);
+        mainController.onCreateNewBranchMenuItem_Click();
     }
 
     @FXML
     private void onDeleteSelectedBranchButton_Click(ActionEvent event) {
         if (selectedBranch != null) {
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
-            alert.setContentText(String.format(Settings.language.getString("CONFIRM_DELETING_BRANCH"), selectedBranch.getName()));
-            alert.getButtonTypes().setAll(Utilities.getYesAndNoButtons());
-            alert.showAndWait().ifPresent(type -> {
-                if (type.getButtonData() == ButtonBar.ButtonData.YES) {
-                    try {
-                        model.deleteBranch(selectedBranch.getName());
-                        branchListView.getItems().remove(selectedBranch);
-                        IntroController.showAlert(Settings.language.getString("BRANCH_DELETE_SUCCESSFULLY"), Alert.AlertType.INFORMATION);
-                    } catch (RepositoryException e) {
-                        IntroController.showAlert(e.getMessage());
-                    }
-                }
-            });
-            DialogPane dialogPane = alert.getDialogPane();
-            dialogPane.getStylesheets().add(Settings.themeManager.get(Settings.currentTheme));
+            Utilities.customAlert(
+                    Alert.AlertType.WARNING,
+                    type -> {
+                        if (type.getButtonData() == ButtonBar.ButtonData.YES) {
+                            try {
+                                model.deleteBranch(selectedBranch.getName());
+                                branchListView.getItems().remove(selectedBranch);
+                                IntroController.showAlert(Settings.language.getString("BRANCH_DELETE_SUCCESSFULLY"), Alert.AlertType.INFORMATION);
+                            } catch (RepositoryException e) {
+                                IntroController.showError(e.getMessage());
+                            }
+                        }
+                    },
+                    Utilities.getYesAndNoButtons(),
+                    Settings.language.getString("MAGIT_WINDOW_TITLE"),
+                    String.format(Settings.language.getString("CONFIRM_DELETING_BRANCH"), selectedBranch.getName()));
         }
     }
 
@@ -112,6 +109,8 @@ public class BranchManagerController {
         for (Branch branch : data) {
             if (!branch.isHead()) {
                 branches.add(branch);
+            } else {
+                headBranch = branch;
             }
         }
 
@@ -122,22 +121,23 @@ public class BranchManagerController {
     private final void updateListViewData(List<Branch> data, boolean isRemoteCannotDelete, ListView<Branch>... listViews) {
         ObservableList<Branch> allBranches = FXCollections.observableList(data);
         listViews[0].setItems(allBranches);
-        listViews[0].setCellFactory(lv -> {
-            TextFieldListCell<Branch> cell = new TextFieldListCell<>();
-            cell.setConverter(new StringConverter<Branch>() {
-                @Override
-                public String toString(Branch branch) {
-                    return branch.getName();
-                }
+        listViews[0].setCellFactory(param -> new ListCell<Branch>() {
+            @Override
+            protected void updateItem(Branch item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null || item.getName() == null) {
+                    setText(null);
+                    getStyleClass().remove(Settings.HEAD_BRANCH_CSS_CLASS);
+                } else {
+                    setText(item.getName());
 
-                @Override
-                public Branch fromString(String string) {
-                    Branch branch = cell.getItem();
-                    branch.setName(string);
-                    return branch;
+                    if ((item == headBranch.getActiveBranch()) && !getStyleClass().contains(Settings.HEAD_BRANCH_CSS_CLASS)) {
+                        getStyleClass().add(Settings.HEAD_BRANCH_CSS_CLASS);
+                    } else {
+                        getStyleClass().remove(Settings.HEAD_BRANCH_CSS_CLASS);
+                    }
                 }
-            });
-            return cell;
+            }
         });
 
         listViews[0].setOnMouseClicked(event -> {

@@ -10,8 +10,8 @@ import java.nio.file.Files;
 import java.util.List;
 
 public class RemoteTrackingBranch extends Branch {
-    public RemoteTrackingBranch(Branch branch, String pathToBranches, String remoteRepositoryName) throws IOException {
-        super(branch.getName());
+    public RemoteTrackingBranch(Branch branch, String pathToBranches, String newName) throws IOException {
+        super(newName != null ? newName : branch.getName());
         this.commit = branch.getCommit();
         this.SHA_ONE = branch.getSHA_ONE();
         this.remoteBranch = branch;

@@ -1,4 +1,4 @@
-package magit;
+package magit.tasks;
 
 import controller.screen.main.MainController;
 import controller.screen.intro.IntroController;
@@ -6,6 +6,10 @@ import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
+import magit.BlobMap;
+import magit.Branch;
+import magit.Commit;
+import magit.Magit;
 import magit.utils.MergeProperty;
 import settings.Settings;
 
@@ -39,14 +43,14 @@ public class MergeTask extends Task<Void> {
             try {
                 changes = model.findChanges(ancestor, target);
             } catch (RepositoryException | MyFileException e) {
-                Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+                Platform.runLater(() -> IntroController.showError(e.getMessage()));
             }
 
             conflictFinishProperty.addListener(observable -> finishMerge());
             Platform.runLater(() -> mainController.mergeWindow(userApprove, changes, conflictFinishProperty));
 
         } catch (IOException e) {
-            Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+            Platform.runLater(() -> IntroController.showError(e.getMessage()));
         }
         return null;
     }
@@ -60,13 +64,13 @@ public class MergeTask extends Task<Void> {
                     model.merge(changes, userApprove, target.getCommit(), newValue);
                 } catch (IOException | MyFileException | RepositoryException e) {
                     updateStatus(Settings.language.getString("MERGE_FAILED"), 3);
-                    Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+                    Platform.runLater(() -> IntroController.showError(e.getMessage()));
                 }
 
                 updateStatus(Settings.language.getString("MERGE_COMPLETED_SUCCESSFULLY"), 3);
                 Platform.runLater(() -> {
                     mainController.getMainTableController().initializeTableViewCommit();
-                    mainController.buildCommitTree();
+                    mainController.getTreeController().buildCommitTree();
                     mainController.updateTree();
                 });
             }));

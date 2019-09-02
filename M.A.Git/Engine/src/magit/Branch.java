@@ -43,7 +43,7 @@ public class Branch {
         this.activeBranch = this.getActiveBranch();
     }
 
-    public Branch(String name, Commit commit, String pathToBranchesFolder) throws IOException, RepositoryException {
+    public Branch(String name, Commit commit, String pathToBranchesFolder) throws IOException {
         this.name = name;
         this.commit = commit;
         this.activeBranch = null;
@@ -61,8 +61,8 @@ public class Branch {
         }
     }
 
-    public Branch(File file, String pathToObject) throws IOException {
-        this.name = file.getName();
+    public Branch(File file, String pathToObject, String trackingName) throws IOException {
+        this.name = trackingName + File.separator + file.getName();
         this.commit = new Commit(Files.readAllLines(file.toPath()).get(0), pathToObject);
         this.SHA_ONE = commit.getSHA_ONE();
         this.activeBranch = null;
@@ -241,5 +241,9 @@ public class Branch {
 
     public boolean isIsRemote() {
         return isRemote;
+    }
+
+    public Branch makeTrackingRemote(String pathToBranches, String remoteRepositoryName) throws IOException {
+        return new RemoteTrackingBranch(activeBranch,pathToBranches, remoteRepositoryName);
     }
 }
