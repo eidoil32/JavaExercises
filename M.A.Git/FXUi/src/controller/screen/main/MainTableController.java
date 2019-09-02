@@ -61,7 +61,7 @@ public class MainTableController {
             try {
                 return new ReadOnlyObjectWrapper<>(new SimpleDateFormat(Settings.DATE_FORMAT).parse(param.getValue().get(2)));
             } catch (ParseException e) {
-                Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+                Platform.runLater(() -> IntroController.showError(e.getMessage()));
                 return new ReadOnlyObjectWrapper<>(new Date());
             }
         });

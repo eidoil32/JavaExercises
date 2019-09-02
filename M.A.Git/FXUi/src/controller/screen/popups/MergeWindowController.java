@@ -6,8 +6,6 @@ import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 import magit.Blob;
 import magit.BlobMap;
@@ -16,34 +14,31 @@ import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
 import utils.eUserMergeChoice;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MergeWindowController {
     @FXML
-    private TextFlow activeFileText, ancestorFileText, targetFileText;
+    private TextArea activeFileText, ancestorFileText, targetFileText, customFileText;
     @FXML
     private Label targetTitle, activeTitle, ancestorTitle, finalTitle, fileName;
-    @FXML
-    private TextArea customFileText;
     @FXML
     private Button btnOK, btnCancel, copyTextFromBase, btnCopyTextFromActive, btnCopyTextFromTarget;
     @FXML
     private RadioButton radioButtonAncestor, radioButtonActive, radioButtonTarget, radioButtonCustom;
     @FXML
     private ToggleGroup fileSelector;
+    @FXML
+    private ListView<Blob> conflictListFiles;
 
     private MergeProperty conflictFinishProperty;
     private Stage stage;
     private BlobMap[] userChoices;
     private Map<String, BlobMap> blobs;
     private Map<RadioButton, eUserMergeChoice> map = new HashMap<>();
-    private Map<eUserMergeChoice, TextFlow> contentMap = new HashMap<>();
-    private BlobMap changesMap;
     private Blob currentBlob;
     private Map<eUserMergeChoice, Blob> duplicate;
     private String currentUser;
+    private int counter = 0, fileCounter = 0;
 
     @FXML
     public void initialize() {
@@ -52,9 +47,6 @@ public class MergeWindowController {
         map.put(radioButtonCustom, eUserMergeChoice.OTHER);
         map.put(radioButtonTarget, eUserMergeChoice.TARGET);
 
-        contentMap.put(eUserMergeChoice.ACTIVE, activeFileText);
-        contentMap.put(eUserMergeChoice.ANCESTOR, ancestorFileText);
-        contentMap.put(eUserMergeChoice.TARGET, targetFileText);
     }
 
     public void setUserChoiceArray(BlobMap[] userChoices) {
@@ -70,42 +62,77 @@ public class MergeWindowController {
     }
 
     public boolean setFilesToCheck(Map<String, BlobMap> blobs) {
+        setEnabling(false);
         this.blobs = blobs;
-        this.changesMap = blobs.get(Settings.KEY_CHANGE_MAP);
-        this.currentBlob = changesMap.getRandomBlob();
-        if (this.currentBlob != null) {
-            clearOldData();
-            this.fileName.setText(currentBlob.getName());
-            changesMap.remove(this.currentBlob);
-            this.duplicate = changesMap.getDuplicate(this.currentBlob, blobs);
-            this.activeFileText.getChildren().add(getCorrectText(duplicate.get(eUserMergeChoice.ACTIVE), btnCopyTextFromActive));
-            this.targetFileText.getChildren().add(getCorrectText(duplicate.get(eUserMergeChoice.TARGET), btnCopyTextFromTarget));
-            this.ancestorFileText.getChildren().add(getCorrectText(duplicate.get(eUserMergeChoice.ANCESTOR), copyTextFromBase));
-            this.customFileText.clear();
-            if (changesMap.getRandomBlob() != null) {
-                btnOK.setText(Settings.language.getString("FX_MERGE_WINDOW_NEXT_FILE"));
-            } else {
-                btnOK.setOnAction(this::onButtonOK_FinishClick);
-            }
-        } else {
+        BlobMap changesMap = blobs.get(Settings.KEY_CHANGE_MAP);
+        if (changesMap.getRandomBlob() == null) {
             return false;
+        } else {
+            conflictListFiles.getItems().addAll(getAllBlobs(changesMap));
+            conflictListFiles.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+                if (newValue != oldValue && newValue != null) {
+                    clearOldData();
+                    setEnabling(true);
+                    currentBlob = newValue;
+                    fileName.setText(currentBlob.getName());
+                    duplicate = changesMap.getDuplicate(currentBlob, blobs);
+                    activeFileText.setText(getCorrectText(duplicate.get(eUserMergeChoice.ACTIVE), btnCopyTextFromActive));
+                    targetFileText.setText(getCorrectText(duplicate.get(eUserMergeChoice.TARGET), btnCopyTextFromTarget));
+                    ancestorFileText.setText(getCorrectText(duplicate.get(eUserMergeChoice.ANCESTOR), copyTextFromBase));
+                }
+            });
+            conflictListFiles.setCellFactory(param -> new ListCell<Blob>() {
+                @Override
+                protected void updateItem(Blob item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if(empty || item == null) {
+                        setText(null);
+                    } else {
+                        setText(item.getName());
+                    }
+                }
+            });
+            return true;
         }
-        return true;
+    }
+
+    private void setEnabling(boolean flag) {
+        btnCopyTextFromActive.setDisable(!flag);
+        btnCopyTextFromTarget.setDisable(!flag);
+        btnOK.setDisable(!flag);
+        copyTextFromBase.setDisable(!flag);
+        if (!flag) {
+            fileName.setText(Settings.language.getString("FX_MERGE_WINDOW_PLEASE_SELECT_FILE_FROM_LIST"));
+        }
+    }
+
+    private List<Blob> getAllBlobs(BlobMap blobs) {
+        Blob blob = blobs.getRandomBlob();
+        List<Blob> blobList = new LinkedList<>();
+        while (blob != null) {
+            fileCounter++;
+            blobList.add(blob);
+            blobs.remove(blob);
+            blob = blobs.getRandomBlob();
+        }
+
+        return blobList;
     }
 
     private void clearOldData() {
-        this.activeFileText.getChildren().clear();
-        this.ancestorFileText.getChildren().clear();
-        this.targetFileText.getChildren().clear();
+        this.activeFileText.clear();
+        this.ancestorFileText.clear();
+        this.targetFileText.clear();
         this.fileSelector.selectToggle(null);
+        this.customFileText.clear();
     }
 
-    private Text getCorrectText(Blob blob, Button button) {
+    private String getCorrectText(Blob blob, Button button) {
         if (blob == null) {
             Platform.runLater(() -> button.setDisable(true));
-            return new Text(Settings.language.getString("FX_MERGE_FILE_NOT_EXIST"));
+            return Settings.language.getString("FX_MERGE_FILE_NOT_EXIST");
         }
-        return new Text(blob.getContent());
+        return blob.getContent();
     }
 
     @FXML
@@ -117,7 +144,13 @@ public class MergeWindowController {
 
     @FXML
     private void onButtonOK_Click(ActionEvent event) {
-        blobTreat(true);
+        counter++;
+        if (counter + 1 == fileCounter) {
+            blobTreat(false);
+            btnOK.setOnAction(this::onButtonOK_FinishClick);
+        } else {
+            blobTreat(true);
+        }
     }
 
     private void blobTreat(boolean hasNext) {
@@ -130,6 +163,7 @@ public class MergeWindowController {
                 temp.setDate(new Date());
                 temp.setEditorName(currentUser);
                 userChoices[0].addToMap(temp);
+                conflictListFiles.getItems().remove(currentBlob);
             } else {
                 if (duplicate.get(choice) == null) {
                     userChoices[1].addToMap(currentBlob);
@@ -137,8 +171,6 @@ public class MergeWindowController {
                     userChoices[0].addToMap(duplicate.get(choice));
                 }
             }
-            if (hasNext)
-                setFilesToCheck(blobs);
         }
     }
 
@@ -160,29 +192,26 @@ public class MergeWindowController {
         stage.close();
     }
 
-    @FXML
-    private void onCopyTextFromActive_Click(ActionEvent event) {
-        String content = ((Text) activeFileText.getChildren().get(0)).getText();
+    private void getTextFromTextField(TextArea textArea) {
+        String content = textArea.getText();
         customFileText.clear();
         customFileText.setText(content);
         radioButtonCustom.setSelected(true);
+    }
+
+    @FXML
+    private void onCopyTextFromActive_Click(ActionEvent event) {
+        getTextFromTextField(activeFileText);
     }
 
     @FXML
     private void onCopyTextFromBase_Click(ActionEvent event) {
-        String content = ((Text) ancestorFileText.getChildren().get(0)).getText();
-        customFileText.clear();
-        customFileText.setText(content);
-        radioButtonCustom.setSelected(true);
-
+        getTextFromTextField(ancestorFileText);
     }
 
     @FXML
     private void onCopyTextFromTarget_Click(ActionEvent event) {
-        String content = ((Text) targetFileText.getChildren().get(0)).getText();
-        customFileText.clear();
-        customFileText.setText(content);
-        radioButtonCustom.setSelected(true);
+        getTextFromTextField(targetFileText);
     }
 
 

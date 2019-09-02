@@ -39,6 +39,10 @@ public class Settings {
             MAGIT_UI_INTRO_MIN_HEIGHT = 400,
             MAGIT_UI_SETTINGS_MIN_WIDTH = 600,
             MAGIT_UI_SETTINGS_MIN_HEIGHT = 250,
+            MAGIT_UI_EXIT_TOOL_TIP_WIDTH = 100,
+            MAGIT_UI_EXIT_TOOL_TIP_HEIGHT = 20,
+            MAGIT_UI_FILE_VIEWER_HEIGHT = 400,
+            MAGIT_UI_FILE_VIEWER_WIDTH = 600,
             SHA_ONE_CORRECT_LENGTH = 40,
             MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
             MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
@@ -128,18 +132,27 @@ public class Settings {
             RESOURCE_MAGIT_PACKAGE = "magit",
             RESOURCE_RESOURCES_PACKAGE = "resources",
             RESOURCE_THEME_PACKAGE = "theme",
+            IMAGE_PACKAGE = "img",
             RESOURCE_ROOT_FOLDER = RESOURCE_SEPARATOR + RESOURCE_MAGIT_PACKAGE + RESOURCE_SEPARATOR + RESOURCE_RESOURCES_PACKAGE + RESOURCE_SEPARATOR,
-            THEME_ROOT_FOLDER =             RESOURCE_ROOT_FOLDER + RESOURCE_THEME_PACKAGE + RESOURCE_SEPARATOR,
-            FXML_SELECT_POPUP =             RESOURCE_ROOT_FOLDER + "select_popup.fxml",
-            FXML_SETTINGS_WINDOW =          RESOURCE_ROOT_FOLDER + "settings.fxml",
-            FXML_APPLICATION =              RESOURCE_ROOT_FOLDER + "magit.fxml",
-            FXML_SMART_POPUP_BOX =          RESOURCE_ROOT_FOLDER + "smart_popup.fxml",
-            FXML_DIALOG_BOX =               RESOURCE_ROOT_FOLDER + "dialogBox.fxml",
-            FXML_INTRO_WINDOW =             RESOURCE_ROOT_FOLDER + "magit_intro.fxml",
-            FXML_BRANCH_MANAGER =           RESOURCE_ROOT_FOLDER + "branchManager.fxml",
-            FXML_MERGE_WINDOW =             RESOURCE_ROOT_FOLDER + "mergeWindow.fxml",
-            FXML_THEME_WHITE_CSS_FILE =     THEME_ROOT_FOLDER    + "white.css",
-            FXML_THEME_BLACK_CSS_FILE =     THEME_ROOT_FOLDER    + "black.css";
+            RESOURCE_IMAGE_PACKAGE = RESOURCE_ROOT_FOLDER + RESOURCE_SEPARATOR + IMAGE_PACKAGE + RESOURCE_SEPARATOR,
+            THEME_ROOT_FOLDER = RESOURCE_ROOT_FOLDER + RESOURCE_THEME_PACKAGE + RESOURCE_SEPARATOR,
+            FXML_SELECT_POPUP = RESOURCE_ROOT_FOLDER + "select_popup.fxml",
+            FXML_SETTINGS_WINDOW = RESOURCE_ROOT_FOLDER + "settings.fxml",
+            FXML_APPLICATION = RESOURCE_ROOT_FOLDER + "magit.fxml",
+            FXML_SMART_POPUP_BOX = RESOURCE_ROOT_FOLDER + "smart_popup.fxml",
+            FXML_DIALOG_BOX = RESOURCE_ROOT_FOLDER + "dialogBox.fxml",
+            FXML_INTRO_WINDOW = RESOURCE_ROOT_FOLDER + "magit_intro.fxml",
+            FXML_BRANCH_MANAGER = RESOURCE_ROOT_FOLDER + "branchManager.fxml",
+            FXML_MERGE_WINDOW = RESOURCE_ROOT_FOLDER + "mergeWindow.fxml",
+            FXML_FILE_VIEWER = RESOURCE_ROOT_FOLDER + "fileView.fxml",
+            FXML_TREE_VIEW_FILE = RESOURCE_IMAGE_PACKAGE + "file.png",
+            FXML_TREE_VIEW_FOLDER = RESOURCE_IMAGE_PACKAGE + "folder.png",
+            FXML_THEME_WHITE_CSS_FILE = THEME_ROOT_FOLDER + "white.css",
+            FXML_THEME_BLACK_CSS_FILE = THEME_ROOT_FOLDER + "black.css";
+
+    // css macros
+    public static String
+            HEAD_BRANCH_CSS_CLASS = "head-branch";
 
     public static void setup() {
         themeManager.put(THEME_WHITE, FXML_THEME_WHITE_CSS_FILE);

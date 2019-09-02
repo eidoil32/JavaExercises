@@ -7,6 +7,8 @@ import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import magit.utils.MyScene;
@@ -39,16 +41,21 @@ public class Program extends Application {
                 primaryStage.close();
                 new MagitUI(controller.getModel(),primaryStage,controller);
             } catch (IOException e) {
-                IntroController.showAlert(Settings.language.getString("UNKNOWN_FATAL_ERROR") + e.getMessage());
+                IntroController.showError(Settings.language.getString("UNKNOWN_FATAL_ERROR") + e.getMessage());
             }
         });
 
+        Rectangle rect = new Rectangle(Settings.MAGIT_UI_INTRO_MIN_WIDTH,Settings.MAGIT_UI_INTRO_MIN_HEIGHT);
+        rect.setArcHeight(15);
+        rect.setArcWidth(15);
+        root.setClip(rect);
         // set stage
         controller.setPrimaryStage(primaryStage);
         primaryStage.setResizable(false);
         primaryStage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
         primaryStage.setScene(scene);
-        primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        scene.setFill(Color.TRANSPARENT);
         primaryStage.show();
     }
 

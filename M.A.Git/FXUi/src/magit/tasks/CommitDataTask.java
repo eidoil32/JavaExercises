@@ -4,6 +4,7 @@ import controller.screen.main.MainController;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.scene.control.TreeItem;
+import javafx.scene.image.ImageView;
 import magit.*;
 import settings.Settings;
 import utils.WarpBasicFile;
@@ -47,11 +48,11 @@ public class CommitDataTask extends Task<Void> {
     }
 
     private TreeItem<WarpBasicFile> getItemsFromFolder(BlobMap blobMap, Folder root) {
-        TreeItem<WarpBasicFile> rootFolder = new TreeItem<>(new WarpBasicFile(root));
+        TreeItem<WarpBasicFile> rootFolder = new TreeItem<>(new WarpBasicFile(root), new ImageView(Settings.FXML_TREE_VIEW_FOLDER));
         for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
             updateProgress(work++, size);
             if (entry.getValue().getType() == eFileTypes.FILE) {
-                rootFolder.getChildren().add(new TreeItem<>(new WarpBasicFile(entry.getValue())));
+                rootFolder.getChildren().add(new TreeItem<>(new WarpBasicFile(entry.getValue()), new ImageView(Settings.FXML_TREE_VIEW_FILE)));
             } else {
                 TreeItem<WarpBasicFile> tempRootFolder = getItemsFromFolder(((Folder) entry.getValue()).getBlobMap(), (Folder) entry.getValue());
                 rootFolder.getChildren().add(tempRootFolder);

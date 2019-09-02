@@ -1,7 +1,7 @@
 package controller.screen.intro;
 
-import controller.screen.popups.DialogController;
 import controller.ILoader;
+import controller.screen.popups.DialogController;
 import exceptions.MyFileException;
 import exceptions.MyXMLException;
 import exceptions.RepositoryException;
@@ -18,9 +18,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import magit.Magit;
 import magit.Program;
@@ -38,6 +38,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.LinkedList;
+import java.util.List;
 
 public class IntroController {
     @FXML
@@ -45,9 +47,11 @@ public class IntroController {
     @FXML
     private ProgressBar progressBar;
     @FXML
-    private ImageView closeButton;
+    private Label closeButton;
     @FXML
     private AnchorPane topBar;
+    @FXML
+    private StackPane exitHover;
 
     private Magit model;
     private BooleanProperty isRepositoryExists, loadXMLBooleanProperty = new SimpleBooleanProperty();
@@ -64,16 +68,22 @@ public class IntroController {
 
     @FXML
     public void initialize() {
-        closeButton.setOnMouseClicked((event -> {
-            primaryStage.close();
-        }));
+        closeButton.setOnMouseClicked(event -> primaryStage.close());
+        exitHover.setVisible(false);
+        closeButton.setOnMouseEntered(event -> {
+            exitHover.setVisible(true);
+        });
+
+        closeButton.setOnMouseExited(event -> {
+            exitHover.setVisible(false);
+        });
 
         topBar.setOnMouseDragged((event -> {
             primaryStage.setX(event.getScreenX() - mouseXCords);
             primaryStage.setY(event.getScreenY() - mouseYCords);
         }));
 
-        topBar.setOnMouseClicked((event -> {
+        topBar.setOnMousePressed((event -> {
             this.mouseXCords = event.getSceneX();
             this.mouseYCords = event.getSceneY();
         }));
@@ -97,7 +107,7 @@ public class IntroController {
             try {
                 magit.createNewRepository(name, target);
             } catch (IOException | RepositoryException e) {
-                showAlert(e.getMessage());
+                showError(e.getMessage());
             }
         }, selectedDirectory, model, isRepositoryExists);
     }
@@ -131,16 +141,14 @@ public class IntroController {
     }
 
     public static void showAlert(String errorMessage, Alert.AlertType alertType) {
-        Alert alert = new Alert(alertType);
-        alert.setTitle(Settings.language.getString("ERROR_MAGIT_TITLE"));
-        alert.setContentText(errorMessage);
         ButtonType dismissButton = new ButtonType(Settings.language.getString("DISMISS_BTN"), ButtonBar.ButtonData.YES);
-        alert.getButtonTypes().setAll(dismissButton);
-        alert.showAndWait().ifPresent(type -> {
-        });
+        List<ButtonType> buttons = new LinkedList<>();
+        buttons.add(dismissButton);
+        Utilities.customAlert(alertType, type -> {
+        }, buttons, Settings.language.getString("ERROR_MAGIT_TITLE"), errorMessage);
     }
 
-    public static void showAlert(String errorMessage) {
+    public static void showError(String errorMessage) {
         showAlert(errorMessage, Alert.AlertType.ERROR);
     }
 
@@ -149,7 +157,7 @@ public class IntroController {
         Scene scene = ((Node) event.getSource()).getScene();
         File selectedFolder = Utilities.choiceFolderDialog(scene);
         if (selectedFolder != null) {
-            loadExistsRepository(model, selectedFolder, isRepositoryExists,this.progressBar);
+            loadExistsRepository(model, selectedFolder, isRepositoryExists, this.progressBar);
         }
     }
 
@@ -158,20 +166,20 @@ public class IntroController {
             @Override
             protected Void call() {
                 try {
-                    updateProgress(0,1);
+                    updateProgress(0, 1);
                     if (model.changeRepo(selectedFolder.toString())) {
                         Platform.runLater(() -> isRepositoryExists.setValue(true));
-                        updateProgress(1,1);
+                        updateProgress(1, 1);
                     } else {
-                        Platform.runLater(() -> showAlert(Settings.language.getString("LOAD_REPOSITORY_FAILED_NOT_EXIST_MAGIT")));
+                        Platform.runLater(() -> showError(Settings.language.getString("LOAD_REPOSITORY_FAILED_NOT_EXIST_MAGIT")));
                     }
                 } catch (IOException | RepositoryException e) {
-                    Platform.runLater(() -> showAlert(e.getMessage()));
+                    Platform.runLater(() -> showError(e.getMessage()));
                 }
                 return null;
             }
         };
-        bindComponentToTask(loadRepository,progressBar);
+        bindComponentToTask(loadRepository, progressBar);
         new Thread(loadRepository).start();
     }
 
@@ -185,7 +193,8 @@ public class IntroController {
             scene = ((Node) event.getSource()).getScene();
         }
         File file = Utilities.fileChooser(Settings.language.getString("XML_FILE_REQUEST"), Settings.XML_FILE_REQUEST_TYPE, scene);
-        loadXMLFromFile(file, progressBar, (name, target, magit) -> { });
+        loadXMLFromFile(file, progressBar, (name, target, magit) -> {
+        });
     }
 
     public void loadXMLFromFile(File file, ProgressBar progressBar, ILoader updateData) {
@@ -217,17 +226,17 @@ public class IntroController {
                             model.afterXMLLayout();
                             updateProgress(5, loadXMLLevels);
                             Platform.runLater(() -> isRepositoryExists.setValue(true));
-                            updateData.execute("",file,model);
+                            updateData.execute("", file, model);
                         } catch (IOException | MyFileException | RepositoryException e) {
-                            Platform.runLater(() -> showAlert(e.getMessage()));
+                            Platform.runLater(() -> showError(e.getMessage()));
                         } catch (MyXMLException e) {
                             if (e.getCode() == eErrorCodesXML.ALREADY_EXIST_FOLDER) {
                                 Platform.runLater(() -> folderNotEmpty(e, model, loadXMLBooleanProperty));
                             } else {
-                                Platform.runLater(() -> showAlert(e.getMessage()));
+                                Platform.runLater(() -> showError(e.getMessage()));
                             }
                         } catch (JAXBException e) {
-                            Platform.runLater(() -> showAlert(Settings.language.getString("XML_PARSE_FAILED")));
+                            Platform.runLater(() -> showError(Settings.language.getString("XML_PARSE_FAILED")));
                         }
                     }
                     updateProgress(6, loadXMLLevels);
@@ -244,18 +253,17 @@ public class IntroController {
     }
 
     public static void folderNotEmpty(MyXMLException e, Magit model, BooleanProperty tempProperty) {
-        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
-        alert.setContentText(Settings.language.getString("XML_DELETE_AND_START_NEW_REPOSITORY"));
-        alert.getButtonTypes().setAll(Utilities.getYesAndNoButtons());
-        alert.showAndWait().ifPresent(type -> {
-            if (type.getButtonData().equals(ButtonBar.ButtonData.YES)) {
-                model.deleteOldMagitFolder(e.getAdditionalData());
-                Platform.runLater(() -> tempProperty.set(true));
-            } else {
-                Platform.runLater(() -> tempProperty.set(false));
-            }
-        });
+        Utilities.customAlert(Alert.AlertType.CONFIRMATION, type -> {
+                    if (type.getButtonData().equals(ButtonBar.ButtonData.YES)) {
+                        model.deleteOldMagitFolder(e.getAdditionalData());
+                        Platform.runLater(() -> tempProperty.set(true));
+                    } else {
+                        Platform.runLater(() -> tempProperty.set(false));
+                    }
+                },
+                Utilities.getYesAndNoButtons(),
+                Settings.language.getString("MAGIT_WINDOW_TITLE"),
+                Settings.language.getString("XML_DELETE_AND_START_NEW_REPOSITORY"));
     }
 
     public void setFinishStart(BooleanProperty isRepositoryExists) {

@@ -40,71 +40,85 @@
  * ScrollBar                                                                   *
  *                                                                             *
  ******************************************************************************/
+/****************************************************************
+
+  ScrollBar Skin
+
+****************************************************************/
 .scroll-bar{
-    -fx-background-color: white;
+    -fx-background-color: transparent;
+    -fx-background-radius: 2em;
 }
 .scroll-bar:horizontal .track,
 .scroll-bar:vertical .track {
-    -fx-background-color: white;
+    -fx-background-color: transparent;
     -fx-border-color:transparent;
-    -fx-background-radius: 0em;
+    -fx-background-radius: 2em;
 }
 .scroll-bar:vertical .track-background,
 .scroll-bar:horizontal .track-background {
-    -fx-background-color: white;
-    -fx-background-insets:  0;
-    -fx-background-radius: 0em;
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 2em;
 }
 .scroll-bar:horizontal .thumb {
-    -fx-background-color: rgb(205,205,205);
-    -fx-background-insets: 2 0 2 0;
-    -fx-background-radius: 5px;
+    -fx-background-color: rgb(211,211,211);
+    -fx-background-insets: 4 0 4 0;
+    -fx-background-radius: 2em;
 }
 .scroll-bar:vertical .thumb {
-    -fx-background-color: rgb(205,205,205);
-    -fx-background-insets: 0 2 0 2;
-    -fx-background-radius: 5px;
+    -fx-background-color: rgb(211,211,211);
+    -fx-background-insets: 0 4 0 4;
+    -fx-background-radius: 2em;
 }
 .scroll-bar:horizontal .thumb:hover,
 .scroll-bar:vertical .thumb:hover {
-    -fx-background-color: rgb(215,215,215);
+    -fx-background-color: rgb(231,231,231);
 }
 .scroll-bar:horizontal .thumb:pressed,
 .scroll-bar:vertical .thumb:pressed {
-    -fx-background-color: rgb(96,96,96);
+    -fx-background-color: rgb(231,231,231);
 }
 .scroll-bar:vertical .increment-button, .scroll-bar:vertical .decrement-button {
     -fx-background-color:transparent;
-    -fx-background-radius: 0em;
-    -fx-padding: 5 5 5 5;
+    -fx-background-radius: 2em;
+    -fx-padding: 5;
 }
 .scroll-bar:horizontal .increment-button, .scroll-bar:horizontal .decrement-button {
     -fx-background-color:transparent;
-    -fx-background-radius: 0em;
-    -fx-padding: 5 5 5 5;
+    -fx-background-radius: 2em;
+    -fx-padding: 5;
 }
 .scroll-bar:horizontal .increment-arrow {
-    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
-    -fx-padding: 0.25em;
-    -fx-rotate: 90;
-}
-.scroll-bar:vertical .increment-arrow {
-    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
-    -fx-padding: 0.25em;
-    -fx-rotate: 180;
-}
-.scroll-bar:horizontal .decrement-arrow {
-    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+    -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+    -fx-background-color: rgb(211,211,211);
     -fx-padding: 0.25em;
     -fx-rotate: -90;
 }
-.scroll-bar:vertical .decrement-arrow {
-    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+.scroll-bar:vertical .increment-arrow {
+    -fx-background-color: rgb(211,211,211);
+    -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
     -fx-padding: 0.25em;
+    -fx-rotate: 0;
+}
+.scroll-bar:horizontal .decrement-arrow {
+    -fx-background-color: rgb(211,211,211);
+    -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+    -fx-padding: 0.25em;
+    -fx-rotate: 90;
+}
+.scroll-bar:vertical .decrement-arrow {
+    -fx-background-color: rgb(211,211,211);
+    -fx-shape: "M 0 0 L 4 8 L 8 0 Z";
+    -fx-padding: 0.25em;
+    -fx-rotate: -180;
 }
 .scroll-bar:vertical:focused,
 .scroll-bar:horizontal:focused {
-    -fx-background-color: -fx-box-border,-fx-box-border,white;
+    -fx-background-color: transparent,rgb(96,96,96),rgb(96,96,96);
+}
+.scroll-pane > .corner {
+    -fx-background-color: transparent;
 }
 /*******************************************************************************
  *                                                                             *
@@ -154,7 +168,13 @@
 .list-view .list-cell:selected {
     -fx-background-color: rgb(205,205,205);
 }
-
+#commit-details-list-view {
+    -fx-background-color: #ececec;
+    -fx-border-width: 0px;
+}
+#commit-details-list-view .list-cell {
+    -fx-background-color: #ececec;
+}
 /*******************************************************************************
  *                                                                             *
  * TreeView and TreeCell                                                       *
@@ -210,90 +230,65 @@
  * TableView                                                                   *
  *                                                                             *
  ******************************************************************************/
-.table-cell {
-    -fx-padding: 0.8em 0em 0.5em 0.3em;
-    -fx-border-color: transparent -fx-box-border transparent transparent;
-    -fx-font: 12px "Segoe UI";
-    -fx-text-fill: #212121;
-}
-.table-view {
-    -fx-table-header-border-color: #959595;
-    -fx-table-cell-border-color: -fx-box-border;
-}
-.table-view:focused {
-    -fx-background-color: -fx-box-border,-fx-box-border, white;
-}
-.table-row-cell {
-    -fx-background-color: white;
-}
-.table-row-cell:odd {
-    -fx-background-color: white;
-    -fx-background-insets: 0, 0 0 1 0;
-}
-.table-view:focused .table-row-cell:focused,.table-view:focused .table-row-cell:focused:odd {
-    -fx-background-color: -fx-box-border, white;
-    -fx-background-insets: 0, 1, 2;
-}
-.table-view:focused .table-row-cell:filled:focused:selected {
-    -fx-background-color: -fx-box-border, rgb(205,205,205);
-}
-.table-view:focused .table-row-cell:filled:selected, .table-view:row-selection .table-row-cell:filled:hover:selected {
-    -fx-background-color: rgb(205,205,205);
-    -fx-background-insets: 0,1 1 1 1 0;
-}
-.table-view:focused .table-row-cell:filled:focused:selected:hover {
-    -fx-background-color: -fx-box-border, rgb(205,205,205);
-    -fx-background-insets: 0,1 1 1 1 0;
-}
-.table-row-cell:filled:selected:focused, .table-row-cell:filled:selected {
-    -fx-background-color: rgb(205,205,205);
-}
-.table-view:row-selection .table-row-cell:filled:hover {
-    -fx-background-color: rgb(231,231,231);
-}
-.table-view:row-selection .table-row-cell:filled:focused:hover {
-    -fx-background-color: rgb(205,205,205);
-}
-.table-view:focused .table-row-cell:filled:focused:hover {
-    -fx-background-color: -fx-box-border,rgb(231,231,231);
-}
-.table-view .column-header-background {
-    -fx-background-color: white;
+.table-view{
+    -fx-background-color: transparent;
+    -fx-font-size: 14px;
 }
 
-/* table header label color
-.table-view .column-header .label{
-     -fx-text-fill: white;
+.table-view:focused{
+    -fx-background-color: transparent;
 }
-*/
 
-.table-view .column-header, .table-view .filler {
+.table-view .column-header-background .label{
+    -fx-background-color: transparent;
+    -fx-text-fill: #323232;
+}
+
+.table-view .column-header {
     -fx-background-color: #ececec;
-    -fx-size: 35px;
-    -fx-font-weight: bold;
-    -fx-border-color: -fx-box-border;
-    -fx-border-insets: -1 0 0 -1;
-    -fx-padding: 0 5 0 0;
+    -fx-pref-height: 40px;
 }
-.table-view .show-hide-columns-button {
-    -fx-background-color: white;
-    -fx-border-color: -fx-box-border;
-    -fx-border-insets: -1 -1 0 0;
+
+.table-view .table-cell{
+    -fx-text-fill: black;
+    -fx-min-height: 30px;
+    -fx-border-width: 0 0 0 1;
+    -fx-border-color: #e8e8e8;
+    -fx-alignment: center-left;
 }
-.table-view .column-drag-header {
-    -fx-background-color: rgb(45,137,239);
-    -fx-opacity: 0.6;
+
+.table-row-cell{
+    -fx-background-color: #ffffff;
+    -fx-padding: 0.0em; /* 0 */
 }
-.table-view .column-resize-line {
-    -fx-background-color: rgb(45,137,239);
+
+.table-row-cell:odd{
+    -fx-background-color: #ffffff;
+    -fx-padding: 0.0em; /* 0 */
 }
-.table-view .column-overlay {
-    -fx-background-color: darkgray;
-    -fx-opacity: 0.2;
+
+.table-row-cell:hover {
+    -fx-background-color: #f7f7f7;
 }
-.table-view .arrow {
-    -fx-padding: 0.2em;
-    -fx-shape: "M4,17v-2.889l4.124-3.86l4.125,3.86V17l-4.125-3.375L4,17z";
+
+.table-row-cell:selected {
+    -fx-background-color: #cdcdcd;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+
+.table-view > .virtual-flow > .scroll-bar:vertical,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track,
+.table-view > .virtual-flow > .scroll-bar:vertical > .track-background,
+.table-view > .virtual-flow > .scroll-bar:horizontal,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track,
+.table-view > .virtual-flow > .scroll-bar:horizontal > .track-background {
+    -fx-background-color: transparent;
+}
+
+.table-view > .virtual-flow > .scroll-bar > .increment-button,
+.table-view > .virtual-flow > .scroll-bar > .decrement-button {
+    -fx-opacity: 0;
 }
 /*******************************************************************************
  *                                                                             *
@@ -370,20 +365,29 @@
  *                                                                             *
  ******************************************************************************/
 .text-area {
-    -fx-font: 12px "Segoe UI";
-    -fx-text-fill: #212121;
-    -fx-background-color: -fx-box-border, white;
-    -fx-highlight-fill: rgb(45,137,239);
-    -fx-background-radius: 0;
+    -fx-font-family: Consolas;
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, white, transparent, white;
+    -fx-background-radius: 0, 0, 0, 0;
+    -fx-border-color: #c8c8c8;
+    -fx-border-width: 1;
 }
-.text-area .scroll-pane .scroll-bar .track,
-.text-area .scroll-pane .scroll-bar .scroll-bar,
-.text-area .scroll-pane .scroll-bar .track-background {
-    -fx-background-color: transparent;
+
+.text-area .content {
+    -fx-background-color: transparent, white, transparent, white;
 }
+
+.text-area:focused .content {
+    -fx-background-color: transparent, white, transparent, white;
+}
+
 .text-area:focused {
-    -fx-background-color: -fx-box-border,-fx-box-border, white;
-    -fx-background-radius: 0;
+    -fx-highlight-fill: #7ecfff;
+    -fx-background-insets: 0;
+    -fx-background-color: transparent, white, transparent, white;
+    -fx-background-radius: 0, 0, 0, 0;
+    -fx-border-color: #c8c8c8;
+    -fx-border-width: 1;
 }
 /*******************************************************************************
  *                                                                             *
@@ -392,10 +396,12 @@
  ******************************************************************************/
 .primaryButton:hover {
     -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 0.1), 100, 0, 0, 0);
+    -fx-cursor: hand;
 }
 
 .primaryButton:pressed {
     -fx-background-color: #223768;
+    -fx-cursor: hand;
 }
 
 .primaryButton {
@@ -413,10 +419,12 @@
  ******************************************************************************/
 .simple-button:hover {
     -fx-effect: innershadow(gaussian, rgba(255, 255, 255, 0.1), 100, 0, 0, 0);
+    -fx-cursor: hand;
 }
 
 .simple-button:pressed {
     -fx-background-color: #607B7D;
+    -fx-cursor: hand;
 }
 
 .simple-button {
@@ -496,4 +504,56 @@
 .radio-button .dot {
     -fx-background-radius: 15px;
     -fx-padding: 5px;
+}
+/*******************************************************************************
+ * head branch                                                                 *
+ ******************************************************************************/
+.head-branch {
+    -fx-text-fill: red;
+    -fx-font-weight: bold;
+}
+/*******************************************************************************
+ * Intro pane                                                                  *
+ ******************************************************************************/
+#root-node {
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
+}
+#close-button:hover {
+    -fx-text-fill: #0089d0;
+    -fx-cursor: hand;
+}
+/*******************************************************************************
+ * Tab pane (commit, filetree..)                                               *
+ ******************************************************************************/
+.tree-cell .tree-disclosure-node .arrow {
+    -fx-shape: null;
+    -fx-background-color: null;
+    -fx-background-image: url("/magit/resources/img/empty.png");
+}
+
+.tree-cell:expanded .tree-disclosure-node .arrow {
+    -fx-shape: null;
+    -fx-background-color: null;
+    -fx-background-image: url("/magit/resources/img/empty.png");
+}
+.tab-pane *.tab-header-area *.tab-header-background {
+    -fx-background-color: #ececec;
+}
+
+.tab-pane {
+    -fx-tab-min-width:120px;
+    -fx-tab-max-width:120px;
+    -fx-tab-min-height:30px;
+    -fx-tab-max-height:30px;
+}
+
+.tab {
+    -fx-font-family: Arial;
+    -fx-font-size: 14;
+    -fx-background-color: #d1d1d1 ;
+}
+
+.tab:selected {
+    -fx-background-color: #b4b4b4 ;
 }

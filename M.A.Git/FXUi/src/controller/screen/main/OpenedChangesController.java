@@ -81,7 +81,7 @@ public class OpenedChangesController {
                         }
                     }
                     Platform.runLater(() -> {
-                        IntroController.showAlert(e.getMessage());
+                        IntroController.showError(e.getMessage());
                         newFileTab.setExpanded(false);
                         if (editedFileTab.isExpanded())
                             editedFileTab.setExpanded(false);

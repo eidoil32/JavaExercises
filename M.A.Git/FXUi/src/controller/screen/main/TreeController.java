@@ -45,7 +45,7 @@ public class TreeController {
             List<Node> circles = warpDrawCommitTree(commitMap);
             Platform.runLater(() -> root.getChildren().addAll(circles));
         }).start();
-        double size = model.getCurrentRepository().getActiveBranches().size();
+        double size = model.getCurrentRepository().getAllBranches().size();
         size = (Settings.COMMIT_CIRCLE_RADIUS + Settings.COMMIT_SPACE_BETWEEN_CIRCLES) * size; //each branch take column width radius + 10 (for spaces)
 
         scrollPane.setContent(vbox);
@@ -83,7 +83,7 @@ public class TreeController {
         Map<Commit, Point> commitNodeMap = new HashMap<>();
         Map<Branch, Point> pointMap = new HashMap<>();
         Map<Commit, Branch> pointedBranch = model.getPointedBranchesToCommitsMap();
-        List<Branch> branches = model.getCurrentRepository().getActiveBranches();
+        List<Branch> branches = model.getCurrentRepository().getAllBranches();
 
         int x = Settings.COMMIT_TREE_START_X, y = Settings.COMMIT_TREE_START_Y;
 
@@ -113,8 +113,10 @@ public class TreeController {
         List<Node> nodeList = new LinkedList<>();
 
         for (Branch branch : branches) {
-            Commit firstCommit = branch.getCommit();
-            nodeList.addAll(createLines(commitNodeMap, firstCommit));
+            if (!branch.isHead()) {
+                Commit firstCommit = branch.getCommit();
+                nodeList.addAll(createLines(commitNodeMap, firstCommit));
+            }
         }
 
         return nodeList;

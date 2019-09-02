@@ -43,14 +43,14 @@ public class MergeTask extends Task<Void> {
             try {
                 changes = model.findChanges(ancestor, target);
             } catch (RepositoryException | MyFileException e) {
-                Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+                Platform.runLater(() -> IntroController.showError(e.getMessage()));
             }
 
             conflictFinishProperty.addListener(observable -> finishMerge());
             Platform.runLater(() -> mainController.mergeWindow(userApprove, changes, conflictFinishProperty));
 
         } catch (IOException e) {
-            Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+            Platform.runLater(() -> IntroController.showError(e.getMessage()));
         }
         return null;
     }
@@ -64,7 +64,7 @@ public class MergeTask extends Task<Void> {
                     model.merge(changes, userApprove, target.getCommit(), newValue);
                 } catch (IOException | MyFileException | RepositoryException e) {
                     updateStatus(Settings.language.getString("MERGE_FAILED"), 3);
-                    Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+                    Platform.runLater(() -> IntroController.showError(e.getMessage()));
                 }
 
                 updateStatus(Settings.language.getString("MERGE_COMPLETED_SUCCESSFULLY"), 3);

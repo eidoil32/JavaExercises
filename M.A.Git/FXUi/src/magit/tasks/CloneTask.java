@@ -31,7 +31,7 @@ public class CloneTask extends Task<Void> {
             remote.getCurrentRepository().setName(newName);
             updateTask(2,Settings.language.getString("FX_CLONE_FINISH_SUCCESSFULLY"));
         } catch (IOException | RepositoryException e) {
-            Platform.runLater(()-> IntroController.showAlert(e.getMessage()));
+            Platform.runLater(()-> IntroController.showError(e.getMessage()));
             updateTask(2,Settings.language.getString("FX_CLONE_FINISH_FAILED"));
         }
         return null;

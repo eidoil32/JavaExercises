@@ -21,20 +21,21 @@ public class PushTask extends Task<Void> {
     @Override
     protected Void call() {
         if (model.getRemoteRepository() == null) {
-            Platform.runLater(()-> IntroController.showAlert(Settings.language.getString("FX_RR_NOT_EXIST_NOT_WHERE_TO_PUSH")));
+            Platform.runLater(()-> IntroController.showError(Settings.language.getString("FX_RR_NOT_EXIST_NOT_WHERE_TO_PUSH")));
             return null;
         }
         updateStatus(Settings.language.getString("FX_CHECKING_FOR_UPDATES"),1);
         try {
-            if (model.getRemoteRepository().getCurrentRepository().scanRepository(model.getCurrentUser()) == null) {
-                Platform.runLater(() -> IntroController.showAlert(Settings.language.getString("FX_OPENED_ISSUES_FOUND_IN_RR")));
+            if (model.getRemoteRepository().getCurrentRepository().scanRepository(model.getCurrentUser()) != null) {
+                Platform.runLater(() -> IntroController.showError(Settings.language.getString("FX_OPENED_ISSUES_FOUND_IN_RR")));
                 return null;
             }
             updateStatus(Settings.language.getString("FX_START_PUSH"), 2);
             model.push();
             updateStatus(Settings.language.getString("FX_PUSH_COMMAND_FINISH_SUCCESSFULLY"), 3);
         } catch (RepositoryException | MyFileException | IOException e) {
-            Platform.runLater(() -> IntroController.showAlert(e.getMessage()));
+            Platform.runLater(() -> IntroController.showError(e.getMessage()));
+            updateStatus(Settings.language.getString("FX_PUSH_COMMAND_FAILED"),3);
         }
         return null;
     }
