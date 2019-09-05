@@ -30,6 +30,10 @@ public class Folder extends Blob {
     public Folder() {
     } // empty c'tor for recovering from SHA-1
 
+    public Folder(String SHA_ONE) {
+        this.SHA_ONE = SHA_ONE;
+    }
+
     private Folder(MagitSingleFolder folder, Folder root, String path) throws MyXMLException {
         this.type = eFileTypes.FOLDER;
         this.editorName = folder.getLastUpdater();

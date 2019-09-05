@@ -46,10 +46,12 @@ public class Settings {
             SHA_ONE_CORRECT_LENGTH = 40,
             MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
             MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
-            MAGIT_UI_SELECT_POPUP_WIDTH = 250,
+            MAGIT_UI_SELECT_POPUP_WIDTH = 350,
             MAGIT_UI_SELECT_POPUP_HEIGHT = 150,
             MAGIT_UI_MERGE_WINDOW_HEIGHT = 700,
             MAGIT_UI_MERGE_WINDOW_WIDTH = 800,
+            BRANCH_REC_WIDTH = 50,
+            BRANCH_REC_HEIGHT = 10,
             MIN_COMMENT_SUBSTRING = 0,
             MAX_COMMENT_SUBSTRING = 30,
             MINIMUM_DAY_TO_SHOW = 10,
@@ -155,7 +157,9 @@ public class Settings {
 
     // css macros
     public static String
-            HEAD_BRANCH_CSS_CLASS = "head-branch";
+            HEAD_BRANCH_CSS_CLASS = "head-branch",
+            BRANCH_LABLE_CSS = "branch-label",
+            CSS_TREE_VBOX_CLASS = "tree-vbox";
 
     public static void setup() {
         themeManager.put(THEME_WHITE, FXML_THEME_WHITE_CSS_FILE);

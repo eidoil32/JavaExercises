@@ -20,6 +20,16 @@
     -fx-alignment: center;
 }
 
+
+#tree-vbox {
+    -fx-background-color: #ececec;
+    -fx-border-width: 0px;
+}
+
+#tree-vbox:focused {
+    -fx-border-width: 0px;
+}
+
 #commit-table-date-column {
     -fx-alignment: center;
 }

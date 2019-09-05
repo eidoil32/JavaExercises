@@ -18,6 +18,7 @@ import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class Magit {
     private Path rootFolder;
@@ -399,9 +400,7 @@ public class Magit {
         List<MagitSingleBranch> branches = branchManager.getMagitSingleBranch();
         List<MagitSingleCommit> commits = commitsManager.getMagitSingleCommit();
 
-
-        // TODO : add remote branches to xml
-        for (Branch branch : currentRepository.getActiveBranches()) {
+        for (Branch branch : currentRepository.getAllBranches()) {
             if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
                 MagitSingleBranch tempBranch = new MagitSingleBranch();
                 Commit realCommit = branch.getCommit();
@@ -422,6 +421,7 @@ public class Magit {
                     tempBranch.setTracking(true);
                     tempBranch.setTrackingAfter(temp.getName());
                 }
+                tempBranch.setIsRemote(branch.isIsRemote());
                 branches.add(tempBranch);
             }
         }
@@ -518,7 +518,7 @@ public class Magit {
         return false;
     }
 
-    public boolean tryCreateNewBranch(String branchName) throws RepositoryException, IOException {
+    public void tryCreateNewBranch(String branchName, Commit commit) throws RepositoryException, IOException {
         File newBranch = new File(currentRepository.getBranchesPath() + File.separator + branchName);
         if (branchName.toLowerCase().equals(Settings.MAGIT_BRANCH_HEAD)) {
             throw new RepositoryException(eErrorCodes.FORBIDDEN_HEAD_NAME);
@@ -526,15 +526,14 @@ public class Magit {
         if (newBranch.exists()) {
             throw new RepositoryException(eErrorCodes.BRANCH_ALREADY_EXIST, branchName);
         } else {
-            Branch branch = new Branch(branchName, currentBranch.getCommit(), currentRepository.getBranchesPath().toString());
+            Branch branch = new Branch(branchName, commit == null ? currentBranch.getCommit() : commit, currentRepository.getBranchesPath().toString());
             PrintWriter writer = new PrintWriter(newBranch);
-            if (currentBranch.getCommit() != null)
+            if (branch.getCommit() != null)
                 writer.print(branch.getCommit().getSHA_ONE());
             else
                 writer.print(Settings.EMPTY_COMMIT);
             writer.close();
             currentRepository.addBranch(branch);
-            return true;
         }
     }
 
@@ -740,6 +739,7 @@ public class Magit {
         buildFromTwoBlobMaps(userApprove, finalMap);
 
         deleteOldFiles(rootFolder.toString());
+
         layoutRepositoryByRootFolder(finalMap.getMap(), null);
         try {
             commitMagit(currentUser, comment, theirCommit);
@@ -755,15 +755,15 @@ public class Magit {
     }
 
     private void replaceEasyTakeInFinalMap(BlobMap finalMap, BlobMap blobMap) {
-        for (Map.Entry<BasicFile,Blob> entry : blobMap.getMap().entrySet()) {
-            finalMap.replace(entry.getValue(),entry.getValue().getRootFolder());
+        for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
+            finalMap.replace(entry.getValue());
         }
     }
 
     private void buildFromTwoBlobMaps(BlobMap[] userApprove, BlobMap finalMap) {
         BlobMap deleted = userApprove[1], edited = userApprove[0];
         for (Map.Entry<BasicFile, Blob> entry : edited.getMap().entrySet()) {
-            finalMap.replace(entry.getValue(), entry.getValue().getRootFolder());
+            finalMap.replace(entry.getValue());
         }
 
         for (Map.Entry<BasicFile, Blob> entry : deleted.getMap().entrySet()) {
@@ -874,7 +874,7 @@ public class Magit {
         Branch branch = magit.getCurrentRepository().getActiveBranch();
         RemoteTrackingBranch active = branch.createRemoteTrackingBranch(
                 this.getCurrentRepository().getBranchesPath().toString(),
-                this.remoteRepository.getCurrentRepository().getName());
+                null);
         remoteTrackingBranches.add(active);
 
         for (Branch b : magit.getCurrentRepository().getActiveBranches()) {
@@ -1014,5 +1014,14 @@ public class Magit {
         } else {
             localRemote.setCommit(remote.getCommit(), currentRepository.getBranchesPath().toString());
         }
+    }
+
+    public List<Commit> getCommitList() {
+        List<Commit> commits = new LinkedList<>();
+        for (Branch branch : currentRepository.getAllBranches()) {
+            commits.addAll(branch.getAllCommits());
+        }
+
+        return commits.stream().distinct().collect(Collectors.toList());
     }
 }

@@ -8,26 +8,31 @@
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/CommitsDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/CommitsDetailsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Commit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Folder.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Folder.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Repository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/utils/MapKeys.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/MapKeys.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/utils/WarpInteger.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/WarpInteger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/intro/IntroController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/intro/IntroController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/OpenedChangesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/OpenedChangesController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/BranchManagerUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/BranchManagerUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/MagitUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/MagitUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/dialogBox.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/dialogBox.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/fileView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/fileView.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/magit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/magit.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/black.css" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/black.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/MergeWindowController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/MergeWindowController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SelectController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SelectController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/select_popup.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/select_popup.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/white.css" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/white.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/tasks/MergeTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/tasks/MergeTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/tasks/PullTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/tasks/PullTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/utils/MyBooleanProperty.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/utils/MyBooleanProperty.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/utils/SmartListener.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/utils/SmartListener.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/BranchManagerUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FXUi/magit/BranchManagerUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/MagitUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FXUi/magit/MagitUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/BlobMap.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/BlobMap.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Folder.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Folder.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/MapKeys$3.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/MapKeys$3.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/WarpInteger.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/WarpInteger.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
@@ -82,7 +87,7 @@
     </option>
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/.." value="master" />
+        <entry key="$PROJECT_DIR$/.." value="ido" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
@@ -232,7 +237,7 @@
       <workItem from="1567233837117" duration="10625000" />
       <workItem from="1567255505792" duration="7019000" />
       <workItem from="1567263581207" duration="23272000" />
-      <workItem from="1567447869890" duration="4888000" />
+      <workItem from="1567447869890" duration="25177000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -346,7 +351,14 @@
       <option name="project" value="LOCAL" />
       <updated>1567437411596</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Update binding from tasks to updating ui components.&#10;Start styling the app.">
+      <created>1567452819967</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1567452819967</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -382,7 +394,8 @@
     <MESSAGE value="Finish split main controller" />
     <MESSAGE value="Fetch, pull and push function is finish.&#10;WITHOUT TESTING :O !" />
     <MESSAGE value="Bug fix, adding conflict list for merge window (show all files that needs user)&#10;improve merge, pull.&#10;next to do: fix push command, now working well." />
-    <option name="LAST_COMMIT_MESSAGE" value="Bug fix, adding conflict list for merge window (show all files that needs user)&#10;improve merge, pull.&#10;next to do: fix push command, now working well." />
+    <MESSAGE value="Update binding from tasks to updating ui components.&#10;Start styling the app." />
+    <option name="LAST_COMMIT_MESSAGE" value="Update binding from tasks to updating ui components.&#10;Start styling the app." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -392,13 +405,18 @@
           <line>910</line>
           <option name="timeStamp" value="9" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Engine/src/magit/Magit.java</url>
+          <line>740</line>
+          <option name="timeStamp" value="38" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Engine/src/magit/Magit.java</url>
+          <line>736</line>
+          <option name="timeStamp" value="39" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-    <watches-manager>
-      <configuration name="Application">
-        <watch expression="Settings.FXML_INTRO_WINDOW" />
-      </configuration>
-    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/M_A_Git$IntroUI.ic" NAME="IntroUI Coverage Results" MODIFIED="1566297313958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

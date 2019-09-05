@@ -226,7 +226,7 @@ public class IntroController {
                             model.afterXMLLayout();
                             updateProgress(5, loadXMLLevels);
                             Platform.runLater(() -> isRepositoryExists.setValue(true));
-                            updateData.execute("", file, model);
+                            Platform.runLater(()->updateData.execute("", file, model));
                         } catch (IOException | MyFileException | RepositoryException e) {
                             Platform.runLater(() -> showError(e.getMessage()));
                         } catch (MyXMLException e) {

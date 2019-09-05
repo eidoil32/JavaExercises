@@ -28,6 +28,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import magit.*;
 import magit.tasks.*;
 import magit.utils.*;
@@ -320,12 +321,17 @@ public class MainController {
         StringProperty newBranchName = new SimpleStringProperty();
         ChangeListener<String> listener = (observable, oldValue, newValue) -> {
             if (!newValue.equals(Settings.EMPTY_STRING)) {
-                try {
-                    model.tryCreateNewBranch(newValue);
-                    refreshData();
-                } catch (RepositoryException | IOException e) {
-                    IntroController.showError(e.getMessage());
-                }
+                SmartListener<Commit> commit = new SmartListener<>();
+                BooleanProperty commitProperty = new MyBooleanProperty();
+                commitProperty.addListener(observable1 -> {
+                    try {
+                        model.tryCreateNewBranch(newValue, commit.getItem());
+                        refreshData();
+                    } catch (RepositoryException | IOException e) {
+                        IntroController.showError(e.getMessage());
+                    }
+                });
+                Platform.runLater(()->selectCommit(commit,model.getCommitList(),commitProperty));
             }
         };
         newBranchName.addListener(listener);
@@ -435,35 +441,64 @@ public class MainController {
     }
 
     private void selectBranch(SmartListener branch, List<Branch> branches, BooleanProperty flag) {
-        Stage stage = new Stage();
-        Pane root;
         try {
-            FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = MainController.class.getResource(Settings.FXML_SELECT_POPUP);
-            loader.setLocation(mainFXML);
-            loader.setResources(Settings.language);
-            root = loader.load();
-            SelectController selectController = loader.getController();
-            selectController.setQuestion(Settings.language.getString("FX_CHOOSE_BRANCH"));
-            selectController.setListener(branch);
             ObservableList<Object> list = FXCollections.observableArrayList();
             for (Branch branch1 : branches) {
                 if (!branch1.isHead())
                     list.add(branch1);
             }
-            selectController.setListForChoice(list);
-            selectController.setStage(stage);
-            selectController.setFlag(flag);
-            stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
-            stage.setMinHeight(Settings.MAGIT_UI_SELECT_POPUP_HEIGHT + 50);
-            stage.setMinWidth(Settings.MAGIT_UI_SELECT_POPUP_WIDTH + 50);
-            stage.setScene(new MyScene(root, Settings.MAGIT_UI_SELECT_POPUP_WIDTH, Settings.MAGIT_UI_SELECT_POPUP_HEIGHT));
-            stage.initOwner(primaryStage);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.show();
+            showSelectPopup(branch, list, flag, Settings.language.getString("FX_CHOOSE_BRANCH"));
         } catch (IOException e) {
             IntroController.showError(e.getMessage());
         }
+    }
+
+    private void selectCommit(SmartListener commit, List<Commit> commits, BooleanProperty flag) {
+        try {
+            ObservableList<Object> list = FXCollections.observableArrayList();
+            list.addAll(commits);
+            commit.setConverter(new StringConverter<Object>() {
+                @Override
+                public String toString(Object object) {
+                    return ((Commit)object).getSHA_ONE();
+                }
+
+                @Override
+                public Object fromString(String string) {
+                    return list.stream().filter(o -> ((Commit)o).getSHA_ONE().equals(string)).findFirst();
+                }
+            });
+            showSelectPopup(commit, list, flag, Settings.language.getString("FX_CHOOSE_POINTED_COMMIT"));
+        } catch (IOException e) {
+            IntroController.showError(e.getMessage());
+        }
+    }
+
+    private void showSelectPopup(SmartListener smartListener, ObservableList<Object> observableList, BooleanProperty flag, String question) throws IOException {
+        Stage stage = new Stage();
+        Pane root;
+        FXMLLoader loader = new FXMLLoader();
+        URL mainFXML = MainController.class.getResource(Settings.FXML_SELECT_POPUP);
+        loader.setLocation(mainFXML);
+        loader.setResources(Settings.language);
+        root = loader.load();
+        SelectController selectController = loader.getController();
+        selectController.setQuestion(question);
+        selectController.setListener(smartListener);
+        selectController.setListForChoice(observableList);
+        selectController.setStage(stage);
+        selectController.setFlag(flag);
+        StringConverter<Object> converter = smartListener.getConverter();
+        if (converter != null) {
+            selectController.setConverter(converter);
+        }
+        stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
+        stage.setMinHeight(Settings.MAGIT_UI_SELECT_POPUP_HEIGHT + 50);
+        stage.setMinWidth(Settings.MAGIT_UI_SELECT_POPUP_WIDTH + 50);
+        stage.setScene(new MyScene(root, Settings.MAGIT_UI_SELECT_POPUP_WIDTH, Settings.MAGIT_UI_SELECT_POPUP_HEIGHT));
+        stage.initOwner(primaryStage);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.show();
     }
 
     private void showPopup(StringProperty whatToUpdate, String question, String hint, MyBooleanProperty booleanProperty) {
@@ -778,5 +813,9 @@ public class MainController {
 
     private void updateMessage(String message) {
         this.stringProperty_CurrentState.setValue(message);
+    }
+
+    public Stage getPrimaryStage() {
+        return primaryStage;
     }
 }

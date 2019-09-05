@@ -6,9 +6,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import javafx.util.StringConverter;
 import magit.utils.SmartListener;
+import settings.Settings;
 
 public class SelectController {
     private Stage stage;
@@ -20,7 +23,12 @@ public class SelectController {
     @FXML
     private Button btnOK, btnCancel;
     @FXML
-    private Label textLabel;
+    private TextFlow textLabel;
+
+    @FXML
+    private void initialize() {
+        selectChoiceBox.setMaxWidth(Settings.MAGIT_UI_SELECT_POPUP_WIDTH - 10);
+    }
 
     @FXML
     private void onButtonCancel_Click(ActionEvent event) {
@@ -48,13 +56,17 @@ public class SelectController {
     }
 
     public void setQuestion(String question) {
-        textLabel.setText(question);
+        textLabel.getChildren().add(new Text(question));
     }
 
     public void setListForChoice(ObservableList<Object> observableList) {
         for (Object object : observableList) {
             selectChoiceBox.getItems().add(object);
         }
+    }
+
+    public void setConverter(StringConverter<Object> converter) {
+        selectChoiceBox.setConverter(converter);
     }
 
     public void setFlag(BooleanProperty flag) {

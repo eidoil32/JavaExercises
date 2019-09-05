@@ -261,30 +261,24 @@ public class Commit implements CommitRepresentative {
         List<MagitSingleCommit> commits = new LinkedList<>();
 
         Map<Commit, Integer> commitIntegerMap = (Map<Commit, Integer>) values.get(Settings.KEY_ALL_COMMITS);
-        MagitSingleCommit singleCommit = new MagitSingleCommit();
 
+        PrecedingCommits precedingCommits = new PrecedingCommits();
         if (prevCommit != null) {
             commits.addAll(prevCommit.convertToXMLCommit(instance, instance.loadDataFromCommit(prevCommit), values));
-            if (commitIntegerMap.containsKey(prevCommit)) {
-                PrecedingCommits precedingCommits = new PrecedingCommits();
-                PrecedingCommits.PrecedingCommit precedingCommit = new PrecedingCommits.PrecedingCommit();
-                precedingCommit.setId(commitIntegerMap.get(prevCommit).toString());
-                precedingCommits.getPrecedingCommit().add(precedingCommit);
-                singleCommit.setPrecedingCommits(precedingCommits);
-            } else {
-                singleCommit.setPrecedingCommits(new PrecedingCommits());
+            createPrecedingCommit(prevCommit, commitIntegerMap, precedingCommits);
+            if (anotherPrevCommit != null) {
+                commits.addAll(anotherPrevCommit.convertToXMLCommit(instance, instance.loadDataFromCommit(anotherPrevCommit), values));
+                createPrecedingCommit(anotherPrevCommit, commitIntegerMap, precedingCommits);
             }
         }
 
+
         WarpInteger counterFolders = (WarpInteger) values.get(Settings.KEY_COUNTER_FOLDERS);
         WarpInteger counterCommits = (WarpInteger) values.get(Settings.KEY_COUNTER_COMMIT);
+        Map<WarpBasicFile, Integer> myFolders = (Map<WarpBasicFile, Integer>) values.get(Settings.KEY_ALL_FOLDERS);
 
-        singleCommit.setMessage(this.comment);
-        singleCommit.setDateOfCreation(new SimpleDateFormat(Settings.DATE_FORMAT).format(this.date));
-        singleCommit.setAuthor(this.creator);
-        singleCommit.setId(counterCommits.toString());
-        commitIntegerMap.put(this, counterCommits.number);
-        counterCommits.inc();
+        MagitSingleCommit singleCommit = createMagitSingleCommit(commitIntegerMap, counterCommits);
+        singleCommit.setPrecedingCommits(precedingCommits);
 
         Folder temp = new Folder();
         temp.setBlobMap(rootBlob);
@@ -293,19 +287,41 @@ public class Commit implements CommitRepresentative {
         temp.setEditorName(this.creator);
         temp.calcFolderSHAONE();
 
-        RootFolder folder = new RootFolder();
-        folder.setId(counterFolders.toString());
-
-        singleCommit.setRootFolder(folder);
-        Map<WarpBasicFile, Integer> myFolders = (Map<WarpBasicFile, Integer>) values.get(Settings.KEY_ALL_FOLDERS);
-        if (!myFolders.containsKey(new WarpBasicFile(temp))) {
-            myFolders.put(new WarpBasicFile(temp), counterFolders.number);
+        WarpBasicFile rootFolder = new WarpBasicFile(temp);
+        if (!myFolders.containsKey(rootFolder)) {
+            myFolders.put(rootFolder, counterFolders.number);
+            singleCommit.getRootFolder().setId(counterFolders.getStringValue());
             counterFolders.inc();
+
+        } else {
+            String id = myFolders.get(rootFolder).toString();
+            singleCommit.getRootFolder().setId(id);
         }
 
         getListOfItems(rootBlob, values);
         commits.add(singleCommit);
         return commits;
+    }
+
+    private void createPrecedingCommit(Commit prevCommit, Map<Commit, Integer> commitIntegerMap, PrecedingCommits precedingCommits) {
+        if (commitIntegerMap.containsKey(prevCommit)) {
+            PrecedingCommits.PrecedingCommit precedingCommit = new PrecedingCommits.PrecedingCommit();
+            precedingCommit.setId(commitIntegerMap.get(prevCommit).toString());
+            precedingCommits.getPrecedingCommit().add(precedingCommit);
+        }
+    }
+
+    private MagitSingleCommit createMagitSingleCommit(Map<Commit, Integer> commitIntegerMap, WarpInteger counterCommits) {
+        MagitSingleCommit singleCommit = new MagitSingleCommit();
+        singleCommit.setMessage(this.comment);
+        singleCommit.setDateOfCreation(new SimpleDateFormat(Settings.DATE_FORMAT).format(this.date));
+        singleCommit.setAuthor(this.creator);
+        singleCommit.setId(counterCommits.toString());
+        commitIntegerMap.put(this, counterCommits.number);
+        counterCommits.inc();
+        singleCommit.setRootFolder(new RootFolder());
+
+        return singleCommit;
     }
 
     private void getListOfItems(BlobMap rootBlob, Map<String, Object> values) {
@@ -429,7 +445,7 @@ public class Commit implements CommitRepresentative {
             }
         }
 
-        files.addAll(FileManager.getAllFilesFromFolderSHA(rootFolderSHA_ONE,pathToObjectFolder));
+        files.addAll(FileManager.getAllFilesFromFolderSHA(rootFolderSHA_ONE, pathToObjectFolder));
         files.add(new File(pathToObjectFolder + File.separator + SHA_ONE));
 
         return files;
