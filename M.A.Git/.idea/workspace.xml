@@ -8,12 +8,6 @@
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/CommitsDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/CommitsDetailsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/MagitUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/MagitUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/MagitUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FXUi/magit/MagitUI.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -151,6 +145,9 @@
       <list>
         <item itemvalue="Application.Program" />
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Program" />
+        <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Program" />
       </list>
     </recent_temporary>
   </component>
