@@ -1,5 +1,8 @@
 package settings;
 
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
@@ -8,10 +11,12 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class Settings {
+    public static Duration ANIMATION_DURATION = Duration.millis(0);
     public static final double
             COMMIT_CIRCLE_RADIUS = 7,
             COMMIT_SPACE_BETWEEN_CIRCLES = 20;
     public static final int
+            ANIMATION_DURATION_TWO_SECONDS = 2000,
             COMMIT_TREE_START_X = 10,
             COMMIT_TREE_START_Y = 50,
             COMMIT_TREE_ADD_TO_X = 25,
@@ -159,7 +164,12 @@ public class Settings {
     public static String
             HEAD_BRANCH_CSS_CLASS = "head-branch",
             BRANCH_LABLE_CSS = "branch-label",
+            MOUSE_HAND_ON_HOVER = "hands-on",
+            COMMIT_TREE_LISTVIEW_CSS = "tree-list-view",
+            COMMIT_TREE_HIDE_SHOW_BUTTON = "hide-show-button",
             CSS_TREE_VBOX_CLASS = "tree-vbox";
+
+    public static Color getBrighter(Color current) { return current.brighter(); }
 
     public static void setup() {
         themeManager.put(THEME_WHITE, FXML_THEME_WHITE_CSS_FILE);

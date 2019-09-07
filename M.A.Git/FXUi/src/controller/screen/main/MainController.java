@@ -24,10 +24,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import javafx.util.StringConverter;
 import magit.*;
 import magit.tasks.*;
@@ -46,48 +48,29 @@ import java.util.List;
 import java.util.Map;
 
 public class MainController {
-    @FXML
-    private BorderPane mainBoard;
-    @FXML
-    private Button commitBtn, scanRepositoryBtn, mergeBtn, compareToFatherOneBtn, compareToFatherTwoBtn;
-    @FXML
-    private CheckMenuItem menuItem_animation, menuItemShowCommitTree;
-    @FXML
-    private Label executeCommandProgress, currentUser, currentRepositoryName;
-    @FXML
-    private ListView<String> deletedFilesListView, editedFilesListView, newFilesListView,
+    @FXML private BorderPane mainBoard;
+    @FXML private Button commitBtn, scanRepositoryBtn, mergeBtn, compareToFatherOneBtn, compareToFatherTwoBtn;
+    @FXML private CheckMenuItem menuItem_animation, menuItemShowCommitTree;
+    @FXML private Label executeCommandProgress, currentUser, currentRepositoryName;
+    @FXML private ListView<String> deletedFilesListView, editedFilesListView, newFilesListView,
             commitDetailsListView;
-    @FXML
-    private ListView<CommitsDetailsController.WarpBlob> diffDetailsListView;
-    @FXML
-    private Menu menuFile, menuRepository, menuTools, menuHelp;
-    @FXML
-    private MenuBar topMenuBar;
-    @FXML
-    private MenuButton repositoryListMenuBtn, branchListMenuBtn;
-    @FXML
-    private MenuItem menuItem_themeManager, menuItem_exportToXML,
+    @FXML private ListView<CommitsDetailsController.WarpBlob> diffDetailsListView;
+    @FXML private Menu menuFile, menuRepository, menuTools, menuHelp;
+    @FXML private MenuBar topMenuBar;
+    @FXML private MenuButton repositoryListMenuBtn, branchListMenuBtn;
+    @FXML private MenuItem menuItem_themeManager, menuItem_exportToXML,
             createNewBranchMenuItem, changeRepositoryMenuItem, menuItem_loadXMLRepository, menuItem_changeName,
             menuItem_quit, menuItem_changeRepository, menuItem_about, menuItem_createNewRepository, menuItem_manageBranches,
             menuItemFetch, menuItemPull, menuItemPush, menuItemMerge, menuItemCommit, menuItemResetBranch, menuItemClone;
-    @FXML
-    private ProgressBar executeCommandProgressBar;
-    @FXML
-    private Tab fileTreeTab, diffTab, commitTab;
-    @FXML
-    private TableColumn<List<String>, Date> dateCommitTableColumn;
-    @FXML
-    private TableColumn<List<String>, String> branchCommitTableColumn, commentCommitTableColumn, shaoneCommitTableColumn;
-    @FXML
-    private TableView<List<String>> commitTable;
-    @FXML
-    private TextFlow commitCommentLabel;
-    @FXML
-    private TitledPane newFileTab, deletedFileTab, editedFileTab;
-    @FXML
-    private TreeView<WarpBasicFile> commitFileTree;
-    @FXML
-    private AnchorPane bottomPane;
+    @FXML private ProgressBar executeCommandProgressBar;
+    @FXML private Tab fileTreeTab, diffTab, commitTab;
+    @FXML private TableColumn<List<String>, Date> dateCommitTableColumn;
+    @FXML private TableColumn<List<String>, String> branchCommitTableColumn, commentCommitTableColumn, shaoneCommitTableColumn;
+    @FXML private TableView<List<String>> commitTable;
+    @FXML private TextFlow commitCommentLabel;
+    @FXML private TitledPane newFileTab, deletedFileTab, editedFileTab;
+    @FXML private TreeView<WarpBasicFile> commitFileTree;
+    @FXML private AnchorPane bottomPane;
 
     private boolean isAnimationTurnOn = false;
     private BooleanProperty isRepositoryExists = new SimpleBooleanProperty(), languageProperty, themeProperty;
@@ -133,6 +116,7 @@ public class MainController {
                     }
                 }));
         updateCommitTree.addListener((observable -> {
+            //todo: open new window for commit tree
             if (mainBoard.getRight() != null) {
                 mainBoard.setRight(commitTreePane);
             }
@@ -219,6 +203,12 @@ public class MainController {
                             updateProgress(0, 1);
                             model.commitMagit(stringProperty_CurrentUser.get(), newValue);
                             updateProgress(1, 1);
+                            new Thread(() -> {
+                                boolean status = false;
+                                while(!status) {
+                                    status = animationOnAddingNewCommit();
+                                }
+                            }).start();
                             updateMessage(Settings.language.getString("COMMIT_CREATED_SUCCESSFULLY"));
                         } catch (IOException | MyFileException | RepositoryException e) {
                             Platform.runLater(() -> IntroController.showError(e.getMessage()));
@@ -254,6 +244,8 @@ public class MainController {
     @FXML
     private void onMenuItem_AnimationClick() {
         this.isAnimationTurnOn = !isAnimationTurnOn;
+        Settings.ANIMATION_DURATION = Duration.millis(isAnimationTurnOn ? Settings.ANIMATION_DURATION_TWO_SECONDS : 0);
+        updateMessage(Settings.language.getString(isAnimationTurnOn ? "FX_ANIMATION_IS_TURN_ON" : "FX_ANIMATION_IS_TURN_OFF"));
     }
 
     @FXML
@@ -316,9 +308,22 @@ public class MainController {
         showPopup(stringProperty_CurrentUser, Settings.language.getString("PLEASE_ENTER_YOUR_NAME"), Settings.language.getString("USER_NAME_HINT"), null);
     }
 
+    public void createNewBranchPointedToCommit(Commit commit) {
+        ChangeListener<String> listener = (observable, oldValue, newValue) -> {
+            if (!newValue.equals(Settings.EMPTY_STRING)) {
+                try {
+                    model.tryCreateNewBranch(newValue, commit);
+                    refreshData();
+                } catch (RepositoryException | IOException e) {
+                    IntroController.showError(e.getMessage());
+                }
+            }
+        };
+        createNewBranch(listener);
+    }
+
     @FXML
     public void onCreateNewBranchMenuItem_Click() {
-        StringProperty newBranchName = new SimpleStringProperty();
         ChangeListener<String> listener = (observable, oldValue, newValue) -> {
             if (!newValue.equals(Settings.EMPTY_STRING)) {
                 SmartListener<Commit> commit = new SmartListener<>();
@@ -331,9 +336,14 @@ public class MainController {
                         IntroController.showError(e.getMessage());
                     }
                 });
-                Platform.runLater(()->selectCommit(commit,model.getCommitList(),commitProperty));
+                Platform.runLater(() -> selectCommit(commit, model.getCommitList(), commitProperty));
             }
         };
+        createNewBranch(listener);
+    }
+
+    private void createNewBranch(ChangeListener<String> listener) {
+        StringProperty newBranchName = new SimpleStringProperty();
         newBranchName.addListener(listener);
         MyBooleanProperty booleanProperty = null;
         if (model.getRemoteRepository() != null) {
@@ -460,12 +470,12 @@ public class MainController {
             commit.setConverter(new StringConverter<Object>() {
                 @Override
                 public String toString(Object object) {
-                    return ((Commit)object).getSHA_ONE();
+                    return ((Commit) object).getSHA_ONE();
                 }
 
                 @Override
                 public Object fromString(String string) {
-                    return list.stream().filter(o -> ((Commit)o).getSHA_ONE().equals(string)).findFirst();
+                    return list.stream().filter(o -> ((Commit) o).getSHA_ONE().equals(string)).findFirst();
                 }
             });
             showSelectPopup(commit, list, flag, Settings.language.getString("FX_CHOOSE_POINTED_COMMIT"));
@@ -574,10 +584,6 @@ public class MainController {
 
     public TableView<List<String>> getTableView() {
         return commitTable;
-    }
-
-    public MainTableController getMainTableController() {
-        return mainTableController;
     }
 
     public TitledPane getFilesTab(int key) {
@@ -709,7 +715,22 @@ public class MainController {
                 text);
     }
 
-    public void updateBranchesMenuButton() {
+    private boolean animationOnAddingNewCommit() {
+        boolean isActivated = false;
+        Commit lastCommit = model.getCurrentBranch().getCommit();
+        List<Node> nodes = treeController.getListOfCommitsNodes(lastCommit);
+
+        if (nodes == null) return false;
+        for (Node node : nodes) {
+            Circle circle = (Circle) node;
+            CustomAnimations.fillTransition(circle).play();
+            isActivated = true;
+        }
+
+        return isActivated;
+    }
+
+    private void updateBranchesMenuButton() {
         branchListMenuBtn.getItems().clear();
         branchListMenuBtn.getItems().add(new SeparatorMenuItem());
         branchListMenuBtn.getItems().add(createNewBranchMenuItem);
@@ -742,7 +763,7 @@ public class MainController {
         }
     }
 
-    public void updateTree() {
+    private void updateTree() {
         commitTreePane = treeController.buildCommitTree();
         if (mainBoard.getRight() != null) {
             mainBoard.setRight(commitTreePane);
@@ -774,7 +795,7 @@ public class MainController {
         commitFileTree.setRoot(null);
         commitsDetailsController.updateCommitDetailsListView(commit);
         Task task = new CommitDataTask(model, this, commit);
-        bindTaskToUIComponents(task,false);
+        bindTaskToUIComponents(task, false);
         new Thread(task).start();
     }
 
@@ -797,10 +818,6 @@ public class MainController {
         stringProperty_CurrentUser.addListener((observable, oldValue, newValue) -> this.currentUser.setText(newValue));
     }
 
-    public TreeController getTreeController() {
-        return this.treeController;
-    }
-
     public void deleteBranch(Branch branch) {
         try {
             model.deleteBranch(branch.getName());
@@ -813,9 +830,5 @@ public class MainController {
 
     private void updateMessage(String message) {
         this.stringProperty_CurrentState.setValue(message);
-    }
-
-    public Stage getPrimaryStage() {
-        return primaryStage;
     }
 }
