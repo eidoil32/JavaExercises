@@ -51,30 +51,29 @@ public class MagitUI {
         mainController.setStringProperty_CurrentUser(currentUserName);
         StringProperty currentState = new SimpleStringProperty();
         mainController.setStringProperty_CurrentMagitState(currentState);
-        currentState.setValue(String.format(Settings.language.getString("LOAD_REPOSITORY_SUCCESS"), model.getCurrentRepository().getName()));
+        currentState.set(String.format(Settings.language.getString("LOAD_REPOSITORY_SUCCESS"), model.getCurrentRepository().getName()));
         mainController.updateBranchesSecondRowData();
         mainController.updateRepositoryHistory();
         mainController.setLanguageProperty(languageProperty);
         mainController.setThemeProperty(themeProperty);
         mainController.setIntroController(introController);
+        // set stage
+        Stage stage = new Stage();
         languageProperty.setValueListener(value -> {
             try {
                 ResourceBundle.clearCache();
                 Settings.language = ResourceBundle.getBundle(Settings.RESOURCE_FILE, new UTF8Control(new Locale(Settings.currentLanguage)));
+                stage.hide();
                 start();
             } catch (IOException e) {
                 System.out.println("error....");
             }
         });
+        Scene scene = new MyScene(root, Settings.MAGIT_UI_MIN_WIDTH, Settings.MAGIT_UI_INTRO_MIN_HEIGHT);
         themeProperty.setValueListener(value -> {
-            try {
-                start();
-            } catch (IOException e) {
-                System.out.println("error....");
-            }
+            scene.getStylesheets().clear();
+            scene.getStylesheets().add(Settings.themeManager.get(Settings.currentTheme));
         });
-        // set stage
-        Stage stage = new Stage();
         primaryStage.hide();
         mainController.setPrimaryStage(stage);
         stage.setMinWidth(Settings.MAGIT_UI_MIN_WIDTH);
@@ -82,7 +81,6 @@ public class MagitUI {
         stage.setResizable(true);
         stage.initStyle(StageStyle.DECORATED);
         stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
-        Scene scene = new MyScene(root, Settings.MAGIT_UI_MIN_WIDTH, Settings.MAGIT_UI_INTRO_MIN_HEIGHT);
         stage.setScene(scene);
         stage.show();
     }

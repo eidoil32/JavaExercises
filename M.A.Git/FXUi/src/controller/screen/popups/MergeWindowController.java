@@ -46,7 +46,7 @@ public class MergeWindowController {
         map.put(radioButtonAncestor, eUserMergeChoice.ANCESTOR);
         map.put(radioButtonCustom, eUserMergeChoice.OTHER);
         map.put(radioButtonTarget, eUserMergeChoice.TARGET);
-
+        radioButtonCustom.setSelected(true);
     }
 
     public void setUserChoiceArray(BlobMap[] userChoices) {
@@ -145,7 +145,10 @@ public class MergeWindowController {
     @FXML
     private void onButtonOK_Click(ActionEvent event) {
         counter++;
-        if (counter + 1 == fileCounter) {
+        if (counter == fileCounter) {
+            onButtonOK_FinishClick(event);
+        }
+        else if (counter + 1 == fileCounter) {
             blobTreat(false);
             btnOK.setOnAction(this::onButtonOK_FinishClick);
         } else {

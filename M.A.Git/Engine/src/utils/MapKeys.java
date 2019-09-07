@@ -29,7 +29,7 @@ public enum MapKeys {
     }, LIST_CHANGED(1) {
         @Override
         public void execute(BlobMap map, BasicFile file, Folder root) {
-            map.replace(file,root);
+            map.replace(file);
         }
 
         @Override

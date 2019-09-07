@@ -2,7 +2,11 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
@@ -13,37 +17,53 @@
    <children>
       <VBox alignment="CENTER">
          <children>
-            <Label fx:id="fileName" text="Label" VBox.vgrow="ALWAYS" />
             <GridPane>
               <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="100.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                   <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
               </columnConstraints>
               <rowConstraints>
-                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="48.0" prefHeight="48.0" vgrow="SOMETIMES" />
+                <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                  <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <Label text="%FX_FILE_VIEWER_EDIT_TIME" GridPane.rowIndex="1" />
-                  <Label text="%FX_FILE_VIEWER_EDITOR_NAME" GridPane.rowIndex="2" />
-                  <Label fx:id="fileDateModified" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+                  <Label text="%FX_FILE_VIEWER_EDIT_TIME" GridPane.rowIndex="2" />
+                  <Label text="%FX_FILE_VIEWER_EDITOR_NAME" GridPane.rowIndex="3" />
+                  <Label fx:id="fileDateModified" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
                      <GridPane.margin>
                         <Insets left="5.0" />
                      </GridPane.margin>
                   </Label>
-                  <Label fx:id="fileEditorName" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2">
+                  <Label fx:id="fileEditorName" text="Label" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3">
                      <padding>
                         <Insets left="5.0" />
                      </padding>
                   </Label>
+                  <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@img/file_more.png" />
+                     </image>
+                  </ImageView>
+                  <TextField fx:id="fileName" editable="false" GridPane.columnIndex="1" GridPane.columnSpan="3" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="4" />
+                  <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="1" />
                </children>
+               <VBox.margin>
+                  <Insets left="10.0" />
+               </VBox.margin>
             </GridPane>
          </children>
       </VBox>
-      <TextArea fx:id="fileContent" editable="false" VBox.vgrow="ALWAYS" />
+      <TextArea fx:id="fileContent" editable="false" VBox.vgrow="ALWAYS">
+         <VBox.margin>
+            <Insets top="5.0" />
+         </VBox.margin>
+      </TextArea>
    </children>
    <padding>
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

@@ -1,5 +1,8 @@
 package settings;
 
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Locale;
@@ -8,10 +11,12 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class Settings {
+    public static Duration ANIMATION_DURATION = Duration.millis(0);
     public static final double
             COMMIT_CIRCLE_RADIUS = 7,
             COMMIT_SPACE_BETWEEN_CIRCLES = 20;
     public static final int
+            ANIMATION_DURATION_TWO_SECONDS = 2000,
             COMMIT_TREE_START_X = 10,
             COMMIT_TREE_START_Y = 50,
             COMMIT_TREE_ADD_TO_X = 25,
@@ -41,15 +46,17 @@ public class Settings {
             MAGIT_UI_SETTINGS_MIN_HEIGHT = 250,
             MAGIT_UI_EXIT_TOOL_TIP_WIDTH = 100,
             MAGIT_UI_EXIT_TOOL_TIP_HEIGHT = 20,
-            MAGIT_UI_FILE_VIEWER_HEIGHT = 400,
-            MAGIT_UI_FILE_VIEWER_WIDTH = 600,
+            MAGIT_UI_FILE_VIEWER_HEIGHT = 600,
+            MAGIT_UI_FILE_VIEWER_WIDTH = 400,
             SHA_ONE_CORRECT_LENGTH = 40,
             MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
             MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
-            MAGIT_UI_SELECT_POPUP_WIDTH = 250,
+            MAGIT_UI_SELECT_POPUP_WIDTH = 350,
             MAGIT_UI_SELECT_POPUP_HEIGHT = 150,
             MAGIT_UI_MERGE_WINDOW_HEIGHT = 700,
             MAGIT_UI_MERGE_WINDOW_WIDTH = 800,
+            BRANCH_REC_WIDTH = 50,
+            BRANCH_REC_HEIGHT = 10,
             MIN_COMMENT_SUBSTRING = 0,
             MAX_COMMENT_SUBSTRING = 30,
             MINIMUM_DAY_TO_SHOW = 10,
@@ -118,8 +125,13 @@ public class Settings {
             FOLDER_TABLE_DELIMITER = ",",
             REPOSITORY_NAME = "repository.magit",
             OBJECT_FOLDER = "object",
+            FOLDER_IMAGE_KEY = "folder",
+            FILE_IMAGE_KEY = "file",
             BRANCHES_FOLDER = "branches",
             TEMP_FOLDER_NAME = "temp.magit",
+            FILE_FOLDER_DELETE = "delete",
+            FILE_FOLDER_EDIT = "edit",
+            FILE_FOLDER_NEW = "new",
             TEMP_UNZIP_FOLDER = "unZipTemp";
     public static String currentLanguage = ENGLISH_CODE, currentTheme = THEME_WHITE;
     public static ResourceBundle language = ResourceBundle.getBundle(RESOURCE_FILE, new UTF8Control(new Locale(currentLanguage)));
@@ -133,6 +145,7 @@ public class Settings {
             RESOURCE_RESOURCES_PACKAGE = "resources",
             RESOURCE_THEME_PACKAGE = "theme",
             IMAGE_PACKAGE = "img",
+            IMAGE_PNG_TYPE = ".png",
             RESOURCE_ROOT_FOLDER = RESOURCE_SEPARATOR + RESOURCE_MAGIT_PACKAGE + RESOURCE_SEPARATOR + RESOURCE_RESOURCES_PACKAGE + RESOURCE_SEPARATOR,
             RESOURCE_IMAGE_PACKAGE = RESOURCE_ROOT_FOLDER + RESOURCE_SEPARATOR + IMAGE_PACKAGE + RESOURCE_SEPARATOR,
             THEME_ROOT_FOLDER = RESOURCE_ROOT_FOLDER + RESOURCE_THEME_PACKAGE + RESOURCE_SEPARATOR,
@@ -152,7 +165,14 @@ public class Settings {
 
     // css macros
     public static String
-            HEAD_BRANCH_CSS_CLASS = "head-branch";
+            HEAD_BRANCH_CSS_CLASS = "head-branch",
+            BRANCH_LABLE_CSS = "branch-label",
+            MOUSE_HAND_ON_HOVER = "hands-on",
+            COMMIT_TREE_LISTVIEW_CSS = "tree-list-view",
+            COMMIT_TREE_HIDE_SHOW_BUTTON = "hide-show-button",
+            CSS_TREE_VBOX_CLASS = "tree-vbox";
+
+    public static Color getBrighter(Color current) { return current.brighter(); }
 
     public static void setup() {
         themeManager.put(THEME_WHITE, FXML_THEME_WHITE_CSS_FILE);

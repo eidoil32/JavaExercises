@@ -27,4 +27,8 @@ public class WarpInteger {
     public String toString() {
         return Integer.toString(number);
     }
+
+    public String getStringValue() {
+        return String.valueOf(number);
+    }
 }

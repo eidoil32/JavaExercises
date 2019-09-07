@@ -20,6 +20,26 @@
     -fx-alignment: center;
 }
 
+.hands-on:hover {
+    -fx-cursor: hand;
+}
+
+.hide-show-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0px;
+    -fx-font-size: 10px;
+    -fx-max-height: 10px;
+}
+
+#tree-vbox {
+    -fx-background-color: #ececec;
+    -fx-border-width: 0px;
+}
+
+#tree-vbox:focused {
+    -fx-border-width: 0px;
+}
+
 #commit-table-date-column {
     -fx-alignment: center;
 }
@@ -35,16 +55,27 @@
 #scan-repository-background {
     -fx-background-color: #ececec;
 }
+
+/*
+    Tree list view custom style
+ */
+.tree-list-view {
+    -fx-border-width: 0px;
+    -fx-background-color: #f4f4f4;
+}
+
+.tree-list-view .list-cell:even,
+.tree-list-view .list-cell:odd {
+    -fx-background-color: #f4f4f4;
+    -fx-font-size: 10px;
+    -fx-cell-size: 40 ;
+}
+
 /*******************************************************************************
  *                                                                             *
  * ScrollBar                                                                   *
  *                                                                             *
  ******************************************************************************/
-/****************************************************************
-
-  ScrollBar Skin
-
-****************************************************************/
 .scroll-bar{
     -fx-background-color: transparent;
     -fx-background-radius: 2em;
@@ -342,13 +373,11 @@
     -fx-highlight-fill: rgb(45,137,239);
     -fx-background-color: -fx-box-border, white;
     -fx-border-color: transparent;
-    -fx-border-insets: 6pt;
 }
 .text-field:focused {
     -fx-background-color: -fx-box-border,-fx-box-border, white;
     -fx-background-radius: 0;
-    -fx-border-color: transparent;
-    -fx-border-insets: 6pt;
+    -fx-border-color: #c2c2c2;
 }
 /*******************************************************************************
  *                                                                             *

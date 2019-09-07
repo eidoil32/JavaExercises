@@ -42,10 +42,7 @@ public class BranchManagerUI {
         Stage stage = new Stage();
         stage.setMinHeight(Settings.MAGIT_UI_SMART_POPUP_MAX_HEIGHT + 50);
         stage.setMinWidth(Settings.MAGIT_UI_SMART_POPUP_MAX_WIDTH + 50);
-        stage.setOnHiding(event -> {
-            mainController.updateBranchesMenuButton();
-            mainController.getMainTableController().initializeTableViewCommit(); //todo: add bind
-        });
+        stage.setOnHiding(event -> mainController.refreshData());
         stage.setTitle(Settings.language.getString("BRANCH_MANAGER_TITLE"));
         stage.setScene(scene);
         stage.initOwner(primaryStage);

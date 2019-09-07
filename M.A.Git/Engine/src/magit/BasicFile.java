@@ -77,12 +77,6 @@ public abstract class BasicFile {
         this.rootFolder = rootFolder;
     }
 
-    public void updateAllChain(String currentUser) {
-        this.editorName = currentUser;
-        if (rootFolder != null)
-            rootFolder.updateAllChain(currentUser);
-    }
-
     public Folder tryParseFolder()
     {
         if(this instanceof Folder)

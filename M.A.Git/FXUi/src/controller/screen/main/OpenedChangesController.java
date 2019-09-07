@@ -92,7 +92,7 @@ public class OpenedChangesController {
                 return null;
             }
         };
-        mainController.bindTaskToUIComponents(task);
+        mainController.bindTaskToUIComponents(task, true);
         new Thread(task).start();
     }
 }

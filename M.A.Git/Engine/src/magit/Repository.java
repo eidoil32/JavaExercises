@@ -86,7 +86,7 @@ public class Repository {
         RemoteTrackingBranch head = null;
 
         for (Branch branch : branches) {
-            RemoteTrackingBranch temp = new RemoteTrackingBranch(branch, branchesPath.toString(), new File(path).getName());
+            RemoteTrackingBranch temp = new RemoteTrackingBranch(branch, branchesPath.toString(), branch.getName());
             remoteTrackingBranches.add(temp);
             if (temp.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
                 head = temp;

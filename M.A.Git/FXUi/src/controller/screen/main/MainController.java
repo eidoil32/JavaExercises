@@ -21,12 +21,16 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+import javafx.util.StringConverter;
 import magit.*;
 import magit.tasks.*;
 import magit.utils.*;
@@ -54,7 +58,9 @@ public class MainController {
     private Label executeCommandProgress, currentUser, currentRepositoryName;
     @FXML
     private ListView<String> deletedFilesListView, editedFilesListView, newFilesListView,
-            diffDetailsListView, commitDetailsListView;
+            commitDetailsListView;
+    @FXML
+    private ListView<CommitsDetailsController.WarpBlob> diffDetailsListView;
     @FXML
     private Menu menuFile, menuRepository, menuTools, menuHelp;
     @FXML
@@ -82,6 +88,8 @@ public class MainController {
     private TitledPane newFileTab, deletedFileTab, editedFileTab;
     @FXML
     private TreeView<WarpBasicFile> commitFileTree;
+    @FXML
+    private AnchorPane bottomPane;
 
     private boolean isAnimationTurnOn = false;
     private BooleanProperty isRepositoryExists = new SimpleBooleanProperty(), languageProperty, themeProperty;
@@ -89,7 +97,7 @@ public class MainController {
     private IntroController introController;
     private Magit model;
     private MainTableController mainTableController;
-    private MyBooleanProperty updateCommitTree = new MyBooleanProperty(), updateCommitTableProperty, updateCommitTreeProperty;
+    private MyBooleanProperty updateCommitTree = new MyBooleanProperty();
     private Node commitTreePane;
     private OpenedChangesController openedChangesController;
     private Stage primaryStage;
@@ -98,24 +106,14 @@ public class MainController {
 
     @FXML
     public void initialize() {
-        updateCommitTableProperty = new MyBooleanProperty();
-        updateCommitTableProperty.addListener(((observable, oldValue, newValue) -> {
-            mainTableController.initializeTableViewCommit();
-        }));
-        updateCommitTreeProperty = new MyBooleanProperty();
-        updateCommitTreeProperty.addListener(((observable, oldValue, newValue) -> {
-            commitTreePane = treeController.buildCommitTree();
-            updateTree();
-        }));
         Tooltip currentRepositoryName = new Tooltip(), currentRepositoryLocation = new Tooltip();
         currentRepositoryName.textProperty().bind(this.currentRepositoryName.textProperty());
-        Tooltip.install(this.currentRepositoryName,currentRepositoryName);
+        Tooltip.install(this.currentRepositoryName, currentRepositoryName);
         currentRepositoryLocation.textProperty().bind(repositoryListMenuBtn.textProperty());
         Tooltip.install(repositoryListMenuBtn, currentRepositoryLocation);
         this.commitTable.getSelectionModel().
                 selectedItemProperty().
-                addListener(((observable, oldValue, newValue) ->
-                {
+                addListener(((observable, oldValue, newValue) -> {
                     if (newValue != null) {
                         Task task = new Task<Void>() {
                             @Override
@@ -132,11 +130,12 @@ public class MainController {
                                 return null;
                             }
                         };
-                        bindTaskToUIComponents(task);
+                        bindTaskToUIComponents(task, false);
                         new Thread(task).start();
                     }
                 }));
         updateCommitTree.addListener((observable -> {
+            //todo: open new window for commit tree
             if (mainBoard.getRight() != null) {
                 mainBoard.setRight(commitTreePane);
             }
@@ -147,6 +146,12 @@ public class MainController {
                 FileViewer.showFileViewer(event, commitFileTree, getClass(), primaryStage);
             }
         });
+    }
+
+    public void refreshData() {
+        mainTableController.initializeTableViewCommit();
+        updateTree();
+        updateBranchesMenuButton();
     }
 
     @FXML
@@ -178,9 +183,7 @@ public class MainController {
                 flag.addListener((observable -> {
                     if (branch.getItem() != null) {
                         if (!branch.getItem().equals(model.getCurrentBranch())) {
-                            Task merge = new MergeTask(model, branch.getItem(), this);
-                            bindTaskToUIComponents(merge);
-                            new Thread(merge).start();
+                            createMergeTask(branch.getItem());
                         } else {
                             IntroController.showError(Settings.language.getString("CANNOT_MERGE_BRANCH_TO_ITSELF"));
                         }
@@ -202,6 +205,12 @@ public class MainController {
         }).start();
     }
 
+    public void createMergeTask(Branch branch) {
+        Task merge = new MergeTask(model, branch, this);
+        bindTaskToUIComponents(merge, true);
+        new Thread(merge).start();
+    }
+
     @FXML
     private void onCommitButtonClick() {
         commitCommentPopup((observable, oldValue, newValue) -> {
@@ -213,20 +222,20 @@ public class MainController {
                             updateProgress(0, 1);
                             model.commitMagit(stringProperty_CurrentUser.get(), newValue);
                             updateProgress(1, 1);
+                            new Thread(() -> {
+                                boolean status = false;
+                                while (!status) {
+                                    status = animationOnAddingNewCommit();
+                                }
+                            }).start();
                             updateMessage(Settings.language.getString("COMMIT_CREATED_SUCCESSFULLY"));
-                            Platform.runLater(() -> {
-                                mainTableController.initializeTableViewCommit(); // todo: add bind
-                                openedChangesController.cleanListViews();
-                                commitTreePane = treeController.buildCommitTree();
-                                updateTree();
-                            });
                         } catch (IOException | MyFileException | RepositoryException e) {
                             Platform.runLater(() -> IntroController.showError(e.getMessage()));
                         }
                         return null;
                     }
                 };
-                bindTaskToUIComponents(commit);
+                bindTaskToUIComponents(commit, true);
                 new Thread(commit).start();
             }
         });
@@ -254,6 +263,8 @@ public class MainController {
     @FXML
     private void onMenuItem_AnimationClick() {
         this.isAnimationTurnOn = !isAnimationTurnOn;
+        Settings.ANIMATION_DURATION = Duration.millis(isAnimationTurnOn ? Settings.ANIMATION_DURATION_TWO_SECONDS : 0);
+        updateMessage(Settings.language.getString(isAnimationTurnOn ? "FX_ANIMATION_IS_TURN_ON" : "FX_ANIMATION_IS_TURN_OFF"));
     }
 
     @FXML
@@ -285,7 +296,7 @@ public class MainController {
                 return null;
             }
         };
-        bindTaskToUIComponents(exportXML);
+        bindTaskToUIComponents(exportXML, true);
         new Thread(exportXML).start();
     }
 
@@ -293,11 +304,7 @@ public class MainController {
     private void onMenuItem_LoadXMLRepositoryClick() {
         File target = Utilities.fileChooser(Settings.language.getString("XML_FILE_REQUEST"), Settings.XML_FILE_REQUEST_TYPE, primaryStage.getScene());
         if (target != null) {
-            introController.loadXMLFromFile(target, executeCommandProgressBar, (name, target1, magit) -> Platform.runLater(() -> {
-                mainTableController.initializeTableViewCommit(); //todo: add bind
-                updateBranchesMenuButton();
-                commitTreePane = treeController.buildCommitTree();
-            }));
+            introController.loadXMLFromFile(target, executeCommandProgressBar, (name, target1, magit) -> refreshData());
         }
     }
 
@@ -320,19 +327,42 @@ public class MainController {
         showPopup(stringProperty_CurrentUser, Settings.language.getString("PLEASE_ENTER_YOUR_NAME"), Settings.language.getString("USER_NAME_HINT"), null);
     }
 
-    @FXML
-    public void onCreateNewBranchMenuItem_Click() {
-        StringProperty newBranchName = new SimpleStringProperty();
+    public void createNewBranchPointedToCommit(Commit commit) {
         ChangeListener<String> listener = (observable, oldValue, newValue) -> {
             if (!newValue.equals(Settings.EMPTY_STRING)) {
                 try {
-                    model.tryCreateNewBranch(newValue);
-                    updateBranchesMenuButton();
+                    model.tryCreateNewBranch(newValue, commit);
+                    refreshData();
                 } catch (RepositoryException | IOException e) {
                     IntroController.showError(e.getMessage());
                 }
             }
         };
+        createNewBranch(listener);
+    }
+
+    @FXML
+    public void onCreateNewBranchMenuItem_Click() {
+        ChangeListener<String> listener = (observable, oldValue, newValue) -> {
+            if (!newValue.equals(Settings.EMPTY_STRING)) {
+                SmartListener<Commit> commit = new SmartListener<>();
+                BooleanProperty commitProperty = new MyBooleanProperty();
+                commitProperty.addListener(observable1 -> {
+                    try {
+                        model.tryCreateNewBranch(newValue, commit.getItem());
+                        refreshData();
+                    } catch (RepositoryException | IOException e) {
+                        IntroController.showError(e.getMessage());
+                    }
+                });
+                Platform.runLater(() -> selectCommit(commit, model.getCommitList(), commitProperty));
+            }
+        };
+        createNewBranch(listener);
+    }
+
+    private void createNewBranch(ChangeListener<String> listener) {
+        StringProperty newBranchName = new SimpleStringProperty();
         newBranchName.addListener(listener);
         MyBooleanProperty booleanProperty = null;
         if (model.getRemoteRepository() != null) {
@@ -348,7 +378,7 @@ public class MainController {
                         booleanProperty1.addListener((observable1 -> {
                             try {
                                 model.tryCreateNewRemoteTrackingBranch(newValue, branch.getItem());
-                                updateBranchesMenuButton();
+                                refreshData();
                             } catch (RepositoryException | IOException e) {
                                 IntroController.showError(e.getMessage());
                             }
@@ -393,21 +423,21 @@ public class MainController {
     @FXML
     private void onMenuItemPush_Clicked() {
         Task pushTask = new PushTask(model);
-        bindTaskToUIComponents(pushTask);
+        bindTaskToUIComponents(pushTask, true);
         new Thread(pushTask).start();
     }
 
     @FXML
     private void onMenuItemFetch_Clicked() {
         Task fetchTask = new FetchTask(model);
-        bindTaskToUIComponents(fetchTask);
+        bindTaskToUIComponents(fetchTask, true);
         new Thread(fetchTask).start();
     }
 
     @FXML
     private void onMenuItemPull_Clicked() {
         Task pullTask = new PullTask(model, this);
-        bindTaskToUIComponents(pullTask);
+        bindTaskToUIComponents(pullTask, true);
         new Thread(pullTask).start();
     }
 
@@ -420,7 +450,7 @@ public class MainController {
                 try {
                     model.checkCleanDir(targetFolder.toString());
                     Task clone = new CloneTask(model, newValue, targetFolder, new File(model.getRootFolder().toString()));
-                    bindTaskToUIComponents(clone);
+                    bindTaskToUIComponents(clone, true);
                     new Thread(clone).start();
                 } catch (RepositoryException e) {
                     IntroController.showError(e.getMessage());
@@ -440,41 +470,71 @@ public class MainController {
     }
 
     private void selectBranch(SmartListener branch, List<Branch> branches, BooleanProperty flag) {
-        Stage stage = new Stage();
-        Pane root;
         try {
-            FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = MainController.class.getResource(Settings.FXML_SELECT_POPUP);
-            loader.setLocation(mainFXML);
-            loader.setResources(Settings.language);
-            root = loader.load();
-            SelectController selectController = loader.getController();
-            selectController.setQuestion(Settings.language.getString("FX_CHOOSE_BRANCH"));
-            selectController.setListener(branch);
             ObservableList<Object> list = FXCollections.observableArrayList();
             for (Branch branch1 : branches) {
                 if (!branch1.isHead())
                     list.add(branch1);
             }
-            selectController.setListForChoice(list);
-            selectController.setStage(stage);
-            selectController.setFlag(flag);
-            stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
-            stage.setMinHeight(Settings.MAGIT_UI_SELECT_POPUP_HEIGHT + 50);
-            stage.setMinWidth(Settings.MAGIT_UI_SELECT_POPUP_WIDTH + 50);
-            stage.setScene(new MyScene(root, Settings.MAGIT_UI_SELECT_POPUP_WIDTH, Settings.MAGIT_UI_SELECT_POPUP_HEIGHT));
-            stage.initOwner(primaryStage);
-            stage.initModality(Modality.WINDOW_MODAL);
-            stage.show();
+            showSelectPopup(branch, list, flag, Settings.language.getString("FX_CHOOSE_BRANCH"));
         } catch (IOException e) {
             IntroController.showError(e.getMessage());
         }
+    }
+
+    private void selectCommit(SmartListener commit, List<Commit> commits, BooleanProperty flag) {
+        try {
+            ObservableList<Object> list = FXCollections.observableArrayList();
+            list.addAll(commits);
+            commit.setConverter(new StringConverter<Object>() {
+                @Override
+                public String toString(Object object) {
+                    return ((Commit) object).getSHA_ONE();
+                }
+
+                @Override
+                public Object fromString(String string) {
+                    return list.stream().filter(o -> ((Commit) o).getSHA_ONE().equals(string)).findFirst();
+                }
+            });
+            showSelectPopup(commit, list, flag, Settings.language.getString("FX_CHOOSE_POINTED_COMMIT"));
+        } catch (IOException e) {
+            IntroController.showError(e.getMessage());
+        }
+    }
+
+    private void showSelectPopup(SmartListener smartListener, ObservableList<Object> observableList, BooleanProperty flag, String question) throws IOException {
+        Stage stage = new Stage();
+        Pane root;
+        FXMLLoader loader = new FXMLLoader();
+        URL mainFXML = MainController.class.getResource(Settings.FXML_SELECT_POPUP);
+        loader.setLocation(mainFXML);
+        loader.setResources(Settings.language);
+        root = loader.load();
+        SelectController selectController = loader.getController();
+        selectController.setQuestion(question);
+        selectController.setListener(smartListener);
+        selectController.setListForChoice(observableList);
+        selectController.setStage(stage);
+        selectController.setFlag(flag);
+        StringConverter<Object> converter = smartListener.getConverter();
+        if (converter != null) {
+            selectController.setConverter(converter);
+        }
+        stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
+        stage.setMinHeight(Settings.MAGIT_UI_SELECT_POPUP_HEIGHT + 50);
+        stage.setMinWidth(Settings.MAGIT_UI_SELECT_POPUP_WIDTH + 50);
+        stage.setScene(new MyScene(root, Settings.MAGIT_UI_SELECT_POPUP_WIDTH, Settings.MAGIT_UI_SELECT_POPUP_HEIGHT));
+        stage.initOwner(primaryStage);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.show();
     }
 
     private void showPopup(StringProperty whatToUpdate, String question, String hint, MyBooleanProperty booleanProperty) {
         Stage stage = new Stage();
         Pane root;
         try {
+            int smaller = 0;
             FXMLLoader loader = new FXMLLoader();
             URL mainFXML = MainController.class.getResource(Settings.FXML_DIALOG_BOX);
             loader.setLocation(mainFXML);
@@ -486,12 +546,14 @@ public class MainController {
             dialogController.setPromptText(hint);
             if (booleanProperty != null) {
                 dialogController.setCheckBoxData(booleanProperty.getAdditionalData(), booleanProperty);
+            } else {
+                smaller = -50;
             }
             stage.setTitle(Settings.language.getString("MAGIT_WINDOW_TITLE"));
-            stage.setMinHeight(Settings.MAGIT_UI_DIALOG_BOX_HEIGHT);
+            stage.setMinHeight(Settings.MAGIT_UI_DIALOG_BOX_HEIGHT + smaller);
             stage.setMinWidth(Settings.MAGIT_UI_DIALOG_BOX_WIDTH);
             stage.setResizable(false);
-            stage.setScene(new MyScene(root, Settings.MAGIT_UI_DIALOG_BOX_WIDTH, Settings.MAGIT_UI_DIALOG_BOX_HEIGHT));
+            stage.setScene(new MyScene(root, Settings.MAGIT_UI_DIALOG_BOX_WIDTH, Settings.MAGIT_UI_DIALOG_BOX_HEIGHT + smaller));
             stage.initOwner(primaryStage);
             stage.initModality(Modality.WINDOW_MODAL);
             stage.show();
@@ -502,20 +564,21 @@ public class MainController {
 
     public void resetBranch(Branch branch, boolean doCheckout) {
         StringProperty newSHA_ONE = new SimpleStringProperty();
-        newSHA_ONE.addListener(((observable, oldValue, newValue) -> new Thread(() -> {
-            try {
-                model.changeBranchPoint(branch, newValue, doCheckout);
-                Platform.runLater(() -> {
-                    mainTableController.initializeTableViewCommit(); //todo: add bind
-                    updateTree();
-                });
-            } catch (RepositoryException | IOException | MyFileException e) {
-                Platform.runLater(() -> IntroController.showError(e.getMessage()));
-            }
-        }).start()));
+        newSHA_ONE.addListener(
+                ((observable, oldValue, newValue) -> new Thread(
+                        () -> resetBranchFunction(branch, doCheckout, newValue)).start()));
         showPopup(newSHA_ONE,
                 String.format(Settings.language.getString("CHOOSE_SHA_ONE_FOR_BRANCH"), model.getCurrentBranch()),
                 Settings.language.getString("FX_HINT_ENTER_SHA_ONE"), null);
+    }
+
+    public void resetBranchFunction(Branch branch, boolean doCheckout, String sha_one) {
+        try {
+            model.changeBranchPoint(branch, sha_one, doCheckout);
+            Platform.runLater(this::refreshData);
+        } catch (RepositoryException | IOException | MyFileException e) {
+            Platform.runLater(() -> IntroController.showError(e.getMessage()));
+        }
     }
 
     public void setThemeProperty(MyBooleanProperty themeProperty) {
@@ -540,10 +603,6 @@ public class MainController {
 
     public TableView<List<String>> getTableView() {
         return commitTable;
-    }
-
-    public MainTableController getMainTableController() {
-        return mainTableController;
     }
 
     public TitledPane getFilesTab(int key) {
@@ -622,7 +681,8 @@ public class MainController {
 
     public void setStringProperty_CurrentMagitState(StringProperty currentStatus) {
         this.stringProperty_CurrentState = currentStatus;
-        currentStatus.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> executeCommandProgress.setText(newValue)));
+        currentStatus.addListener(((observable, oldValue, newValue) -> Platform.runLater(() -> executeCommandProgress.setText(newValue))));
+        //currentStatus.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> stringProperty_CurrentState.setValue(newValue)));
     }
 
     public void updateBranchesSecondRowData() {
@@ -649,14 +709,13 @@ public class MainController {
                             forceCheckout.addListener(((observable1, oldValue1, newValue1) -> {
                                 try {
                                     model.checkout(branch.getName());
-                                    Platform.runLater(this::updateBranchesMenuButton);
                                 } catch (RepositoryException | IOException | MyFileException e) {
                                     IntroController.showError(e.getMessage());
                                 }
                             }));
                             Platform.runLater(() -> confirmPopup(forceCheckout, Settings.language.getString("IGNORE_OPENED_ISSUES")));
                         }
-                        Platform.runLater(this::updateBranchesMenuButton);
+                        Platform.runLater(this::refreshData);
                     } catch (RepositoryException | IOException | MyFileException e) {
                         Platform.runLater(() -> IntroController.showError(e.getMessage()));
                     }
@@ -676,7 +735,22 @@ public class MainController {
                 text);
     }
 
-    public void updateBranchesMenuButton() {
+    private boolean animationOnAddingNewCommit() {
+        boolean isActivated = false;
+        Commit lastCommit = model.getCurrentBranch().getCommit();
+        List<Node> nodes = treeController.getListOfCommitsNodes(lastCommit);
+
+        if (nodes == null) return false;
+        for (Node node : nodes) {
+            Circle circle = (Circle) node;
+            CustomAnimations.fillTransition(circle).play();
+            isActivated = true;
+        }
+
+        return isActivated;
+    }
+
+    private void updateBranchesMenuButton() {
         branchListMenuBtn.getItems().clear();
         branchListMenuBtn.getItems().add(new SeparatorMenuItem());
         branchListMenuBtn.getItems().add(createNewBranchMenuItem);
@@ -709,24 +783,24 @@ public class MainController {
         }
     }
 
-    public void updateTree() {
+    private void updateTree() {
+        commitTreePane = treeController.buildCommitTree();
         if (mainBoard.getRight() != null) {
-            commitTreePane = treeController.buildCommitTree();
             mainBoard.setRight(commitTreePane);
         }
     }
 
-    public void bindTaskToUIComponents(Task task) {
+    public void bindTaskToUIComponents(Task task, boolean includeUpdate) {
         this.executeCommandProgress.textProperty().bind(task.messageProperty());
         this.executeCommandProgressBar.progressProperty().bind(task.progressProperty());
-        task.setOnSucceeded((event -> {
-            updateCommitTreeProperty.setValue(true);
-            updateCommitTableProperty.setValue(true);
-        }));
+        if (includeUpdate) {
+            task.setOnSucceeded((event -> refreshData()));
+        }
     }
 
     public void setPrimaryStage(Stage stage) {
         this.primaryStage = stage;
+        this.bottomPane.minHeightProperty().bind(primaryStage.heightProperty().multiply(0.3));
         this.isRepositoryExists.addListener((observable, oldValue, newValue) -> {
             try {
                 new MagitUI(model, primaryStage, introController);
@@ -741,7 +815,7 @@ public class MainController {
         commitFileTree.setRoot(null);
         commitsDetailsController.updateCommitDetailsListView(commit);
         Task task = new CommitDataTask(model, this, commit);
-        bindTaskToUIComponents(task);
+        bindTaskToUIComponents(task, false);
         new Thread(task).start();
     }
 
@@ -764,7 +838,17 @@ public class MainController {
         stringProperty_CurrentUser.addListener((observable, oldValue, newValue) -> this.currentUser.setText(newValue));
     }
 
-    public TreeController getTreeController() {
-        return this.treeController;
+    public void deleteBranch(Branch branch) {
+        try {
+            model.deleteBranch(branch.getName());
+            refreshData();
+            Platform.runLater(() -> updateMessage(Settings.language.getString("BRANCH_DELETE_SUCCESSFULLY")));
+        } catch (RepositoryException e) {
+            Platform.runLater(() -> IntroController.showError(e.getMessage()));
+        }
+    }
+
+    private void updateMessage(String message) {
+        this.stringProperty_CurrentState.setValue(message);
     }
 }

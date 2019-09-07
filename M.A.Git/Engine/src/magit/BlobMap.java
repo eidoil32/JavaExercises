@@ -64,28 +64,22 @@ public class BlobMap {
         }
     }
 
-    public boolean replace(BasicFile file, Folder root) {
-        if (file.getRootFolder().equals(root)) {
-            map.remove(file);
-            map.put(file, (Blob) file);
-            return true;
-        } else {
-            for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
-                if (entry.getValue().getType() == eFileTypes.FOLDER) {
-                    Folder myRoot = (Folder) entry.getValue();
-                    boolean result = myRoot.getBlobMap().replace(file, myRoot);
-                    if (myRoot.getRootFolder().equals(root) && result) {
-                        Folder temp = (Folder) map.get(myRoot);
-                        BlobMap tempBlob = temp.getBlobMap();
-                        map.remove(myRoot);
-                        map.put(myRoot, myRoot);
-                        myRoot.setBlobMap(tempBlob);
-                        return true;
-                    }
-                }
+    public boolean replace(BasicFile file) {
+        boolean flag = false;
+
+        for (Map.Entry<BasicFile, Blob> entry : map.entrySet()) {
+            if (entry.getValue().equals(file)) {
+                map.remove(entry.getValue());
+                map.put(file, (Blob) file);
+                return true;
+            } else if (entry.getValue().getType() == eFileTypes.FOLDER) {
+                flag = ((Folder) entry.getValue()).getBlobMap().replace(file);
+                if (flag)
+                    return true;
             }
         }
-        return false;
+
+        return flag;
     }
 
     public void addNew(BasicFile file, Folder root) {

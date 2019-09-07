@@ -1,10 +1,20 @@
 package magit.utils;
 
+import javafx.beans.InvalidationListener;
 import javafx.beans.property.SimpleBooleanProperty;
 
 public class MyBooleanProperty extends SimpleBooleanProperty {
     private OnSetValueListener value;
     private String additionalData;
+
+    public MyBooleanProperty() {
+        super();
+    }
+
+    public MyBooleanProperty(InvalidationListener function) {
+        super();
+        addListener(function);
+    }
 
     @Override
     public void set(boolean newValue) {
