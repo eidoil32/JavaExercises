@@ -17,6 +17,7 @@ import javafx.scene.text.TextFlow;
 import magit.BasicFile;
 import magit.Commit;
 import magit.Magit;
+import magit.eFileTypes;
 import org.apache.commons.collections4.ListUtils;
 import settings.Settings;
 import utils.MapKeys;
@@ -67,8 +68,8 @@ public class CommitsDetailsController {
         new Thread(() -> {
             List<WarpBlob>
                     deleted = getDataFromBasicFile(
-                            map.get(MapKeys.LIST_DELETED),
-                            eType.DELETE),
+                    map.get(MapKeys.LIST_DELETED),
+                    eType.DELETE),
                     edited = getDataFromBasicFile(
                             map.get(MapKeys.LIST_CHANGED),
                             eType.EDITED),
@@ -85,7 +86,6 @@ public class CommitsDetailsController {
         }).start();
 
         diffDetailsListView.setCellFactory(param -> new ListCell<WarpBlob>() {
-            private ImageView imageView = new ImageView();
             @Override
             protected void updateItem(WarpBlob item, boolean empty) {
                 super.updateItem(item, empty);
@@ -94,18 +94,24 @@ public class CommitsDetailsController {
                     setGraphic(null);
                 } else {
                     setText(item.getFile().getName());
+                    StringBuilder imageName = new StringBuilder(Settings.RESOURCE_IMAGE_PACKAGE);
+                    if (item.getFile().getType() == eFileTypes.FOLDER)
+                        imageName.append(Settings.FOLDER_IMAGE_KEY);
+                    else
+                        imageName.append(Settings.FILE_IMAGE_KEY);
+
                     switch (item.getType()) {
                         case DELETE:
-                            imageView.setImage(new Image(Settings.DELETE_FILE_IMAGE));
+                            imageName.append("_").append(Settings.FILE_FOLDER_DELETE);
                             break;
                         case EDITED:
-                            imageView.setImage(new Image(Settings.EDITED_FILE_IMAGE));
+                            imageName.append("_").append(Settings.FILE_FOLDER_EDIT);
                             break;
                         case NEW:
-                            imageView.setImage(new Image(Settings.NEW_FILE_IMAGE));
+                            imageName.append("_").append(Settings.FILE_FOLDER_NEW);
                             break;
                     }
-                    setGraphic(imageView);
+                    setGraphic(new ImageView(new Image(imageName.toString() + Settings.IMAGE_PNG_TYPE)));
                 }
             }
         });
@@ -115,7 +121,7 @@ public class CommitsDetailsController {
     private List<WarpBlob> getDataFromBasicFile(List<BasicFile> files, eType type) {
         List<WarpBlob> data = new LinkedList<>();
         for (BasicFile file : files) {
-            data.add(new WarpBlob(file,type));
+            data.add(new WarpBlob(file, type));
         }
         return data;
     }

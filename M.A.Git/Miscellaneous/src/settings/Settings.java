@@ -125,8 +125,13 @@ public class Settings {
             FOLDER_TABLE_DELIMITER = ",",
             REPOSITORY_NAME = "repository.magit",
             OBJECT_FOLDER = "object",
+            FOLDER_IMAGE_KEY = "folder",
+            FILE_IMAGE_KEY = "file",
             BRANCHES_FOLDER = "branches",
             TEMP_FOLDER_NAME = "temp.magit",
+            FILE_FOLDER_DELETE = "delete",
+            FILE_FOLDER_EDIT = "edit",
+            FILE_FOLDER_NEW = "new",
             TEMP_UNZIP_FOLDER = "unZipTemp";
     public static String currentLanguage = ENGLISH_CODE, currentTheme = THEME_WHITE;
     public static ResourceBundle language = ResourceBundle.getBundle(RESOURCE_FILE, new UTF8Control(new Locale(currentLanguage)));
@@ -140,6 +145,7 @@ public class Settings {
             RESOURCE_RESOURCES_PACKAGE = "resources",
             RESOURCE_THEME_PACKAGE = "theme",
             IMAGE_PACKAGE = "img",
+            IMAGE_PNG_TYPE = ".png",
             RESOURCE_ROOT_FOLDER = RESOURCE_SEPARATOR + RESOURCE_MAGIT_PACKAGE + RESOURCE_SEPARATOR + RESOURCE_RESOURCES_PACKAGE + RESOURCE_SEPARATOR,
             RESOURCE_IMAGE_PACKAGE = RESOURCE_ROOT_FOLDER + RESOURCE_SEPARATOR + IMAGE_PACKAGE + RESOURCE_SEPARATOR,
             THEME_ROOT_FOLDER = RESOURCE_ROOT_FOLDER + RESOURCE_THEME_PACKAGE + RESOURCE_SEPARATOR,
@@ -154,9 +160,6 @@ public class Settings {
             FXML_FILE_VIEWER = RESOURCE_ROOT_FOLDER + "fileView.fxml",
             FXML_TREE_VIEW_FILE = RESOURCE_IMAGE_PACKAGE + "file.png",
             FXML_TREE_VIEW_FOLDER = RESOURCE_IMAGE_PACKAGE + "folder.png",
-            DELETE_FILE_IMAGE = RESOURCE_IMAGE_PACKAGE + "delete.png",
-            EDITED_FILE_IMAGE = RESOURCE_IMAGE_PACKAGE + "edited.png",
-            NEW_FILE_IMAGE = RESOURCE_IMAGE_PACKAGE + "new.png",
             FXML_THEME_WHITE_CSS_FILE = THEME_ROOT_FOLDER + "white.css",
             FXML_THEME_BLACK_CSS_FILE = THEME_ROOT_FOLDER + "black.css";
 

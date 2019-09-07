@@ -48,29 +48,48 @@ import java.util.List;
 import java.util.Map;
 
 public class MainController {
-    @FXML private BorderPane mainBoard;
-    @FXML private Button commitBtn, scanRepositoryBtn, mergeBtn, compareToFatherOneBtn, compareToFatherTwoBtn;
-    @FXML private CheckMenuItem menuItem_animation, menuItemShowCommitTree;
-    @FXML private Label executeCommandProgress, currentUser, currentRepositoryName;
-    @FXML private ListView<String> deletedFilesListView, editedFilesListView, newFilesListView,
+    @FXML
+    private BorderPane mainBoard;
+    @FXML
+    private Button commitBtn, scanRepositoryBtn, mergeBtn, compareToFatherOneBtn, compareToFatherTwoBtn;
+    @FXML
+    private CheckMenuItem menuItem_animation, menuItemShowCommitTree;
+    @FXML
+    private Label executeCommandProgress, currentUser, currentRepositoryName;
+    @FXML
+    private ListView<String> deletedFilesListView, editedFilesListView, newFilesListView,
             commitDetailsListView;
-    @FXML private ListView<CommitsDetailsController.WarpBlob> diffDetailsListView;
-    @FXML private Menu menuFile, menuRepository, menuTools, menuHelp;
-    @FXML private MenuBar topMenuBar;
-    @FXML private MenuButton repositoryListMenuBtn, branchListMenuBtn;
-    @FXML private MenuItem menuItem_themeManager, menuItem_exportToXML,
+    @FXML
+    private ListView<CommitsDetailsController.WarpBlob> diffDetailsListView;
+    @FXML
+    private Menu menuFile, menuRepository, menuTools, menuHelp;
+    @FXML
+    private MenuBar topMenuBar;
+    @FXML
+    private MenuButton repositoryListMenuBtn, branchListMenuBtn;
+    @FXML
+    private MenuItem menuItem_themeManager, menuItem_exportToXML,
             createNewBranchMenuItem, changeRepositoryMenuItem, menuItem_loadXMLRepository, menuItem_changeName,
             menuItem_quit, menuItem_changeRepository, menuItem_about, menuItem_createNewRepository, menuItem_manageBranches,
             menuItemFetch, menuItemPull, menuItemPush, menuItemMerge, menuItemCommit, menuItemResetBranch, menuItemClone;
-    @FXML private ProgressBar executeCommandProgressBar;
-    @FXML private Tab fileTreeTab, diffTab, commitTab;
-    @FXML private TableColumn<List<String>, Date> dateCommitTableColumn;
-    @FXML private TableColumn<List<String>, String> branchCommitTableColumn, commentCommitTableColumn, shaoneCommitTableColumn;
-    @FXML private TableView<List<String>> commitTable;
-    @FXML private TextFlow commitCommentLabel;
-    @FXML private TitledPane newFileTab, deletedFileTab, editedFileTab;
-    @FXML private TreeView<WarpBasicFile> commitFileTree;
-    @FXML private AnchorPane bottomPane;
+    @FXML
+    private ProgressBar executeCommandProgressBar;
+    @FXML
+    private Tab fileTreeTab, diffTab, commitTab;
+    @FXML
+    private TableColumn<List<String>, Date> dateCommitTableColumn;
+    @FXML
+    private TableColumn<List<String>, String> branchCommitTableColumn, commentCommitTableColumn, shaoneCommitTableColumn;
+    @FXML
+    private TableView<List<String>> commitTable;
+    @FXML
+    private TextFlow commitCommentLabel;
+    @FXML
+    private TitledPane newFileTab, deletedFileTab, editedFileTab;
+    @FXML
+    private TreeView<WarpBasicFile> commitFileTree;
+    @FXML
+    private AnchorPane bottomPane;
 
     private boolean isAnimationTurnOn = false;
     private BooleanProperty isRepositoryExists = new SimpleBooleanProperty(), languageProperty, themeProperty;
@@ -205,7 +224,7 @@ public class MainController {
                             updateProgress(1, 1);
                             new Thread(() -> {
                                 boolean status = false;
-                                while(!status) {
+                                while (!status) {
                                     status = animationOnAddingNewCommit();
                                 }
                             }).start();
@@ -662,7 +681,8 @@ public class MainController {
 
     public void setStringProperty_CurrentMagitState(StringProperty currentStatus) {
         this.stringProperty_CurrentState = currentStatus;
-        currentStatus.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> stringProperty_CurrentState.setValue(newValue)));
+        currentStatus.addListener(((observable, oldValue, newValue) -> Platform.runLater(() -> executeCommandProgress.setText(newValue))));
+        //currentStatus.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> stringProperty_CurrentState.setValue(newValue)));
     }
 
     public void updateBranchesSecondRowData() {

@@ -51,7 +51,7 @@ public class MagitUI {
         mainController.setStringProperty_CurrentUser(currentUserName);
         StringProperty currentState = new SimpleStringProperty();
         mainController.setStringProperty_CurrentMagitState(currentState);
-        currentState.setValue(String.format(Settings.language.getString("LOAD_REPOSITORY_SUCCESS"), model.getCurrentRepository().getName()));
+        currentState.set(String.format(Settings.language.getString("LOAD_REPOSITORY_SUCCESS"), model.getCurrentRepository().getName()));
         mainController.updateBranchesSecondRowData();
         mainController.updateRepositoryHistory();
         mainController.setLanguageProperty(languageProperty);
