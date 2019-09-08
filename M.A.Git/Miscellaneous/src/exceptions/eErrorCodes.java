@@ -3,6 +3,7 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    OPEN_CHANGES_NEEDS_PULL(Settings.language.getString("OPEN_CHANGES_NEEDS_PULL")),
     ONLY_ONE_RTB(Settings.language.getString("ONLY_ONE_RTB")),
     CANNOT_PULL_DATA_FOR_NONE_RTB(Settings.language.getString("CANNOT_PULL_DATA_FOR_NONE_RTB")),
     REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT(Settings.language.getString("REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT")),

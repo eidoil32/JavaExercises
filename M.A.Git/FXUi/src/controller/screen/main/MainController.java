@@ -17,18 +17,23 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import magit.*;
@@ -91,7 +96,7 @@ public class MainController {
     @FXML
     private AnchorPane bottomPane;
 
-    private boolean isAnimationTurnOn = false;
+    private boolean isAnimationTurnOn = false, isTreeAlreadyShown = false;
     private BooleanProperty isRepositoryExists = new SimpleBooleanProperty(), languageProperty, themeProperty;
     private CommitsDetailsController commitsDetailsController;
     private IntroController introController;
@@ -134,12 +139,6 @@ public class MainController {
                         new Thread(task).start();
                     }
                 }));
-        updateCommitTree.addListener((observable -> {
-            //todo: open new window for commit tree
-            if (mainBoard.getRight() != null) {
-                mainBoard.setRight(commitTreePane);
-            }
-        }));
         commitFileTree.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -165,10 +164,41 @@ public class MainController {
 
     @FXML
     public void onMenuItemShowCommitTree_Click() {
-        if (mainBoard.getRight() == null) {
-            mainBoard.setRight(commitTreePane);
+        if (menuItemShowCommitTree.isSelected() && !isTreeAlreadyShown) {
+            isTreeAlreadyShown = true;
+            Stage stage = new Stage();
+            Pane root;
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                URL mainFXML = MainController.class.getResource(Settings.FXML_TREE_WINDOW);
+                loader.setLocation(mainFXML);
+                loader.setResources(Settings.language);
+                root = loader.load();
+                treeController = loader.getController();
+                treeController.setMainController(this);
+                treeController.setStage(stage);
+                stage.setMinHeight(Settings.MAGIT_UI_TREE_WINDOW_HEIGHT);
+                stage.setMinWidth(Settings.MAGIT_UI_TREE_WINDOW_WIDTH);
+                Scene scene = new MyScene(root, Settings.MAGIT_UI_TREE_WINDOW_WIDTH, Settings.MAGIT_UI_TREE_WINDOW_HEIGHT);
+                Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+                stage.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - Settings.MAGIT_UI_TREE_WINDOW_WIDTH);
+                stage.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight() - Settings.MAGIT_UI_TREE_WINDOW_HEIGHT);
+                scene.setFill(Color.TRANSPARENT);
+                stage.initStyle(StageStyle.TRANSPARENT);
+                stage.setScene(scene);
+                stage.show();
+                stage.setOnHidden((event) -> {
+                    menuItemShowCommitTree.setSelected(false);
+                    isTreeAlreadyShown = false;
+                });
+                primaryStage.setOnHiding((event -> stage.close()));
+
+            } catch (IOException e) {
+                IntroController.showError(e.getMessage());
+            }
         } else {
-            mainBoard.setRight(null);
+            treeController.getStage().close();
+            isTreeAlreadyShown = false;
         }
     }
 
@@ -436,7 +466,7 @@ public class MainController {
 
     @FXML
     private void onMenuItemPull_Clicked() {
-        Task pullTask = new PullTask(model, this);
+        Task pullTask = new PullTask(model);
         bindTaskToUIComponents(pullTask, true);
         new Thread(pullTask).start();
     }
@@ -674,8 +704,7 @@ public class MainController {
         mainTableController = new MainTableController(this,
                 dateCommitTableColumn, branchCommitTableColumn, commentCommitTableColumn, shaoneCommitTableColumn);
         openedChangesController = new OpenedChangesController(this, newFilesListView, deletedFilesListView, editedFilesListView);
-        treeController = new TreeController(this);
-        this.commitTreePane = treeController.buildCommitTree();
+        //this.commitTreePane = treeController.buildCommitTree();
         this.currentRepositoryName.textProperty().setValue(model.getCurrentRepository().getName());
     }
 
@@ -738,10 +767,9 @@ public class MainController {
     private boolean animationOnAddingNewCommit() {
         boolean isActivated = false;
         Commit lastCommit = model.getCurrentBranch().getCommit();
-        List<Node> nodes = treeController.getListOfCommitsNodes(lastCommit);
+        Node node = treeController.getListOfCommitsNodes(lastCommit);
 
-        if (nodes == null) return false;
-        for (Node node : nodes) {
+        if (node != null) {
             Circle circle = (Circle) node;
             CustomAnimations.fillTransition(circle).play();
             isActivated = true;
@@ -784,10 +812,8 @@ public class MainController {
     }
 
     private void updateTree() {
-        commitTreePane = treeController.buildCommitTree();
-        if (mainBoard.getRight() != null) {
-            mainBoard.setRight(commitTreePane);
-        }
+        if (isTreeAlreadyShown)
+            treeController.updateTree();
     }
 
     public void bindTaskToUIComponents(Task task, boolean includeUpdate) {
@@ -850,5 +876,11 @@ public class MainController {
 
     private void updateMessage(String message) {
         this.stringProperty_CurrentState.setValue(message);
+    }
+
+    public void markBranchInTree(Branch branch) {
+        if (isTreeAlreadyShown) {
+            treeController.markAllCommits(branch);
+        }
     }
 }

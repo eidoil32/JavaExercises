@@ -7,7 +7,31 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/img/close_pressed.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/treeWindow.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/utils/PairBranchCommit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/PairBranchCommit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/CommitsDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/CommitsDetailsController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainTableController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainTableController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/BranchManagerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/BranchManagerController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/img/close.png" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/img/close.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/magit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/magit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/white.css" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/white.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/tasks/PullTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/tasks/PullTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/tasks/PushTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/tasks/PushTask.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/utils/CustomAnimations.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/utils/CustomAnimations.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -394,11 +418,6 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/Engine/src/magit/Magit.java</url>
-          <line>910</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/Engine/src/magit/Magit.java</url>
           <line>740</line>
           <option name="timeStamp" value="38" />
         </line-breakpoint>
@@ -407,8 +426,18 @@
           <line>736</line>
           <option name="timeStamp" value="39" />
         </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/Engine/src/magit/Magit.java</url>
+          <line>987</line>
+          <option name="timeStamp" value="44" />
+        </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <watches-manager>
+      <configuration name="Application">
+        <watch expression="remoteRepository.currentBranch" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/M_A_Git$IntroUI.ic" NAME="IntroUI Coverage Results" MODIFIED="1566297313958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">

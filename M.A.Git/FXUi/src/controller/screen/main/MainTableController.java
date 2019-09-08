@@ -48,9 +48,9 @@ public class MainTableController {
                     setText(Settings.EMPTY_STRING);
                 } else {
                     if (!item.equals(Settings.EMPTY_STRING)) {
-                        this.setId("commit-table-branch-name-column");
+                        this.setId(Settings.CSS_HEAD_BRANCH_ID);
                     } else {
-                        this.setId("");
+                        this.setId(Settings.EMPTY_STRING);
                     }
                     setText(item);
                 }
@@ -85,6 +85,16 @@ public class MainTableController {
             }
         });
         this.shaoneCommitTableColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().get(3)));
+        this.shaoneCommitTableColumn.setCellFactory(object -> new TableCell<List<String>, String>(){
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                if(empty) {
+                    setText(null);
+                } else {
+                    setText(item.substring(Settings.MIN_COMMENT_SUBSTRING, Settings.MAX_SHA_ONE_TABLE_LENGTH));
+                }
+            }
+        });
     }
 
     public void initializeTableViewCommit() {
