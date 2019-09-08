@@ -206,7 +206,7 @@
                       <TableColumn fx:id="branchCommitTableColumn" maxWidth="200.0" minWidth="140.0" prefWidth="140.0" text="%FX_COMMIT_TABLE_BRANCH" />
                       <TableColumn fx:id="commentCommitTableColumn" maxWidth="1200.0" minWidth="250.0" prefWidth="250.0" text="%FX_COMMIT_TABLE_COMMENT" />
                         <TableColumn id="commit-table-date-column" fx:id="dateCommitTableColumn" maxWidth="220.0" minWidth="101.0" prefWidth="129.0" text="%FX_COMMIT_TABLE_DATE" />
-                        <TableColumn fx:id="shaoneCommitTableColumn" maxWidth="200.0" minWidth="98.0" prefWidth="116.0" text="%FX_COMMIT_TABLE_SHA_ONE" />
+                        <TableColumn id="commit-table-sha-1-column" fx:id="shaoneCommitTableColumn" maxWidth="200.0" minWidth="98.0" prefWidth="116.0" text="%FX_COMMIT_TABLE_SHA_ONE" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

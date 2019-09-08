@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+
+<VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.screen.main.TreeController">
+   <children>
+      <HBox fx:id="topBar" VBox.vgrow="NEVER">
+         <children>
+            <AnchorPane>
+               <children>
+                  <Label text="%FX_TREE_WINDOW_TITLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+            <AnchorPane HBox.hgrow="ALWAYS">
+               <children>
+                  <ImageView fx:id="close" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
+                     <image>
+                        <Image url="@img/close.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </children>
+      </HBox>
+      <AnchorPane VBox.vgrow="ALWAYS">
+         <children>
+            <HBox fx:id="hBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Separator orientation="VERTICAL" prefHeight="200.0" />
+                  <ListView id="tree-list-view" fx:id="listView" minWidth="200.0" HBox.hgrow="ALWAYS" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+</VBox>

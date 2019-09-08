@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Pattern;
 
 public class Settings {
-    public static Duration ANIMATION_DURATION = Duration.millis(0);
+
     public static final double
             COMMIT_CIRCLE_RADIUS = 7,
             COMMIT_SPACE_BETWEEN_CIRCLES = 20;
@@ -55,6 +55,8 @@ public class Settings {
             MAGIT_UI_SELECT_POPUP_HEIGHT = 150,
             MAGIT_UI_MERGE_WINDOW_HEIGHT = 700,
             MAGIT_UI_MERGE_WINDOW_WIDTH = 800,
+            MAGIT_UI_TREE_WINDOW_WIDTH = 500,
+            MAGIT_UI_TREE_WINDOW_HEIGHT = 700,
             BRANCH_REC_WIDTH = 50,
             BRANCH_REC_HEIGHT = 10,
             MIN_COMMENT_SUBSTRING = 0,
@@ -64,7 +66,7 @@ public class Settings {
             FX_EDIT_TAB_KEY = 1,
             FX_DELETED_TAB_KEY = 2,
             FX_MAX_NAME_OF_REMOTE_REPOSITORY = 15,
-            MAX_SHA_ONE_TABLE_LENGTH = 20,
+            MAX_SHA_ONE_TABLE_LENGTH = 7,
             MENU_ITEM_OPEN_RESOURCE = 1;
     public static int MENU_SIZE = MENU_ITEM_EXIT;
     public static final String
@@ -159,19 +161,31 @@ public class Settings {
             FXML_MERGE_WINDOW = RESOURCE_ROOT_FOLDER + "mergeWindow.fxml",
             FXML_FILE_VIEWER = RESOURCE_ROOT_FOLDER + "fileView.fxml",
             FXML_TREE_VIEW_FILE = RESOURCE_IMAGE_PACKAGE + "file.png",
+            FXML_TREE_WINDOW = RESOURCE_ROOT_FOLDER + "treeWindow.fxml",
             FXML_TREE_VIEW_FOLDER = RESOURCE_IMAGE_PACKAGE + "folder.png",
+            FXML_CLOSE_BUTTON_HOVER_IMG = RESOURCE_IMAGE_PACKAGE + "close_pressed.png",
+            FXML_CLOSE_BUTTON_IMG = RESOURCE_IMAGE_PACKAGE + "close.png",
             FXML_THEME_WHITE_CSS_FILE = THEME_ROOT_FOLDER + "white.css",
             FXML_THEME_BLACK_CSS_FILE = THEME_ROOT_FOLDER + "black.css";
 
     // css macros
     public static String
             HEAD_BRANCH_CSS_CLASS = "head-branch",
-            BRANCH_LABLE_CSS = "branch-label",
+            BRANCH_LABEL_CSS = "branch-label",
             MOUSE_HAND_ON_HOVER = "hands-on",
+            CSS_HEAD_BRANCH_ID = "commit-table-branch-name-column",
             COMMIT_TREE_LISTVIEW_CSS = "tree-list-view",
             COMMIT_TREE_HIDE_SHOW_BUTTON = "hide-show-button",
-            CSS_TREE_VBOX_CLASS = "tree-vbox";
+            CSS_TREE_VBOX_CLASS = "tree-vbox",
+            LINE_BRIGHTER_COLOR = "#dedede";
 
+    // animation macro
+    public static final float SCALE_NODE = 1.2f;
+    public static final int CYCLE_COUNT = 4;
+    public static final boolean ALLOW_REVERSE = true;
+    public static Duration ANIMATION_DURATION = Duration.millis(0);
+
+    // simple function to get brighter color of input color
     public static Color getBrighter(Color current) { return current.brighter(); }
 
     public static void setup() {

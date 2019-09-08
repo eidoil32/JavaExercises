@@ -56,6 +56,10 @@
     -fx-background-color: #ececec;
 }
 
+#commit-table-sha-1-column {
+    -fx-alignment: center;
+}
+
 /*
     Tree list view custom style
  */

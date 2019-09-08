@@ -911,17 +911,21 @@ public class Magit {
             Branch activeRemoteBranch = remoteRepository.getCurrentBranch();
             Commit activeRemoteCommit = activeRemoteBranch.getCommit();
 
+            if (!currentBranch.getCommit().getSHA_ONE().equals(activeRemoteCommit.getSHA_ONE())) {
+                throw new RepositoryException(eErrorCodes.OPEN_CHANGES_NEEDS_PULL);
+            }
+
             copyFilesFromCommit(activeRemoteCommit,
                     remoteRepository.getCurrentRepository().getObjectPath().toString(),
                     currentRepository.getObjectPath().toFile());
 
-            //updateBranchesData(activeRemoteBranch);
+            updateBranchesData(activeRemoteBranch);
+            deleteOldFiles(this.rootFolder.toString());
+            BlobMap newRootFolder = currentRepository.loadDataFromCommit(activeRemoteCommit);
+            Folder rootFolder = currentRepository.getRootFolder();
+            rootFolder.setBlobMap(newRootFolder);
+            layoutRepositoryByRootFolder(newRootFolder.getMap(), null);
             return activeRemoteBranch;
-/*        deleteOldFiles(this.rootFolder.toString());
-        BlobMap newRootFolder = currentRepository.loadDataFromCommit(activeRemoteCommit);
-        Folder rootFolder = currentRepository.getRootFolder();
-        rootFolder.setBlobMap(newRootFolder);
-        layoutRepositoryByRootFolder(newRootFolder.getMap(), null);*/
         } else {
             throw new RepositoryException(eErrorCodes.CANNOT_PULL_DATA_FOR_NONE_RTB);
         }
@@ -939,14 +943,14 @@ public class Magit {
     }
 
     private void updateBranchesData(Branch activeRemoteBranch) throws RepositoryException, IOException {
-        Branch remote = findInRemoteBranches(activeRemoteBranch);
+        Branch remote = findInRemoteBranches(activeRemoteBranch, remoteRepository.getCurrentRepository().getName());
         if (remote == null) {
             throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_FOUND);
         }
 
         remote.setCommit(
                 activeRemoteBranch.getCommit(),
-                currentRepository.getBranchesPath() + File.separator + remoteRepository.getCurrentRepository().getName());
+                currentRepository.getBranchesPath().toString());
         Branch remoteTrackingBranch = findBranch(activeRemoteBranch.getName());
         if (!(remoteTrackingBranch instanceof RemoteTrackingBranch)) {
             remoteTrackingBranch = new RemoteTrackingBranch(remote,
@@ -957,9 +961,9 @@ public class Magit {
         setNewActiveBranch(remoteTrackingBranch);
     }
 
-    private Branch findInRemoteBranches(Branch activeRemoteBranch) {
+    private Branch findInRemoteBranches(Branch activeRemoteBranch, String remoteRepositoryName) {
         for (Branch branch : currentRepository.getRemoteBranches()) {
-            if (activeRemoteBranch.getName().equals(branch.getName())) {
+            if(branch.getName().equals(remoteRepositoryName + File.separator + activeRemoteBranch.getName())) {
                 return branch;
             }
         }
@@ -969,7 +973,7 @@ public class Magit {
     public void push() throws RepositoryException, IOException, MyFileException {
         Branch headBranch = currentBranch;
         if (headBranch instanceof RemoteTrackingBranch) {
-            Branch remoteBranch = findInRemoteBranches(headBranch);
+            Branch remoteBranch = findInRemoteBranches(headBranch, remoteRepository.getCurrentRepository().getName());
             if (remoteBranch != null) {
                 Branch branchFromRemoteRepository = remoteRepository.findBranch(remoteBranch.getName());
                 // checking if those branches pointed on the same commit -> mean that user already do fetch & pull commands!
@@ -981,8 +985,10 @@ public class Magit {
                             remoteRepository.getCurrentRepository().getObjectPath().toFile());
 
                     remoteRepository.updateBranchesDataFarAway(headBranch);
-                    remoteRepository.deleteOldFiles(remoteRepository.getRootFolder().toString());
-                    remoteRepository.layoutRepositoryByRootFolder(currentRepository.loadDataFromCommit(headBranch.getCommit()).getMap(), remoteRepository.getRootFolder().toString());
+                    if (remoteRepository.getCurrentBranch().getName().equals(headBranch.getName())) {
+                        remoteRepository.deleteOldFiles(remoteRepository.getRootFolder().toString());
+                        remoteRepository.layoutRepositoryByRootFolder(currentRepository.loadDataFromCommit(headBranch.getCommit()).getMap(), remoteRepository.getRootFolder().toString());
+                    }
                     remoteBranch.setCommit(headBranch.getCommit(), currentRepository.getBranchesPath().toString());
                 } else {
                     throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT);
@@ -1008,7 +1014,7 @@ public class Magit {
     }
 
     public void updateRemoteAfterMerge(Branch remote) throws RepositoryException {
-        Branch localRemote = findInRemoteBranches(remote);
+        Branch localRemote = findInRemoteBranches(remote, remoteRepository.getCurrentRepository().getName());
         if (localRemote == null) {
             throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_FOUND);
         } else {

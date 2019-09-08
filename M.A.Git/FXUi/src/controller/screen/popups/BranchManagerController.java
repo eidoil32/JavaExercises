@@ -3,6 +3,7 @@ package controller.screen.popups;
 import controller.screen.intro.IntroController;
 import controller.screen.main.MainController;
 import exceptions.RepositoryException;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -40,6 +41,11 @@ public class BranchManagerController {
     public void initialize() {
         remoteBranchListView.setEditable(true);
         branchListView.setEditable(true);
+
+        ChangeListener<Branch> listener = (observable, oldValue, newValue) -> mainController.markBranchInTree(newValue);
+
+        remoteBranchListView.getSelectionModel().selectedItemProperty().addListener(listener);
+        branchListView.getSelectionModel().selectedItemProperty().addListener(listener);
     }
 
     @FXML
@@ -131,7 +137,7 @@ public class BranchManagerController {
                 } else {
                     setText(item.getName());
 
-                    if ((item == headBranch.getActiveBranch()) && !getStyleClass().contains(Settings.HEAD_BRANCH_CSS_CLASS)) {
+                    if ((item == model.getCurrentBranch() && !getStyleClass().contains(Settings.HEAD_BRANCH_CSS_CLASS))) {
                         getStyleClass().add(Settings.HEAD_BRANCH_CSS_CLASS);
                     } else {
                         getStyleClass().remove(Settings.HEAD_BRANCH_CSS_CLASS);

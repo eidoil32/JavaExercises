@@ -46,7 +46,7 @@ public class CommitsDetailsController {
         DELETE, EDITED, NEW;
     }
 
-    public class WarpBlob {
+    public static class WarpBlob {
         private BasicFile file;
         private eType type;
 
@@ -68,8 +68,8 @@ public class CommitsDetailsController {
         new Thread(() -> {
             List<WarpBlob>
                     deleted = getDataFromBasicFile(
-                    map.get(MapKeys.LIST_DELETED),
-                    eType.DELETE),
+                            map.get(MapKeys.LIST_DELETED),
+                            eType.DELETE),
                     edited = getDataFromBasicFile(
                             map.get(MapKeys.LIST_CHANGED),
                             eType.EDITED),
@@ -116,7 +116,6 @@ public class CommitsDetailsController {
             }
         });
     }
-
 
     private List<WarpBlob> getDataFromBasicFile(List<BasicFile> files, eType type) {
         List<WarpBlob> data = new LinkedList<>();
