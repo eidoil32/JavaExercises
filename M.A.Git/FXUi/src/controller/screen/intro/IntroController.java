@@ -8,7 +8,6 @@ import exceptions.RepositoryException;
 import exceptions.eErrorCodesXML;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.concurrent.Task;
@@ -25,6 +24,7 @@ import javafx.stage.Stage;
 import magit.Magit;
 import magit.Program;
 import magit.Repository;
+import magit.utils.MyBooleanProperty;
 import magit.utils.MyScene;
 import magit.utils.Utilities;
 import org.apache.commons.io.FilenameUtils;
@@ -54,7 +54,7 @@ public class IntroController {
     private StackPane exitHover;
 
     private Magit model;
-    private BooleanProperty isRepositoryExists, loadXMLBooleanProperty = new SimpleBooleanProperty();
+    private BooleanProperty isRepositoryExists, loadXMLBooleanProperty = new MyBooleanProperty();
     private Stage primaryStage;
     private double mouseXCords, mouseYCords;
 
@@ -203,45 +203,50 @@ public class IntroController {
             @Override
             protected Void call() {
                 if (file != null) {
-                    loadXMLBooleanProperty.addListener(((observable, oldValue, newValue) -> {
-                        if (newValue) {
-                            loadXMLFromFile(file, progressBar, updateData);
-                        } else {
-                            updateProgress(1, 1);
-                        }
-                    }));
-
-                    updateProgress(0, loadXMLLevels);
-                    String extension = FilenameUtils.getExtension(file.getName());
-                    if (extension.equals(Settings.XML_EXTENSION)) {
-                        try {
-                            updateProgress(1, loadXMLLevels);
-                            InputStream inputStream = new FileInputStream(file);
-                            MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
-                            updateProgress(2, loadXMLLevels);
-                            model.basicCheckXML(magitRepository);
-                            updateProgress(3, loadXMLLevels);
-                            model.setCurrentRepository(Repository.XML_RepositoryFactory(magitRepository));
-                            updateProgress(4, loadXMLLevels);
-                            model.afterXMLLayout();
-                            updateProgress(5, loadXMLLevels);
-                            Platform.runLater(() -> isRepositoryExists.setValue(true));
-                            Platform.runLater(()->updateData.execute("", file, model));
-                        } catch (IOException | MyFileException | RepositoryException e) {
-                            Platform.runLater(() -> showError(e.getMessage()));
-                        } catch (MyXMLException e) {
-                            if (e.getCode() == eErrorCodesXML.ALREADY_EXIST_FOLDER) {
-                                Platform.runLater(() -> folderNotEmpty(e, model, loadXMLBooleanProperty));
-                            } else {
-                                Platform.runLater(() -> showError(e.getMessage()));
-                            }
-                        } catch (JAXBException e) {
-                            Platform.runLater(() -> showError(Settings.language.getString("XML_PARSE_FAILED")));
-                        }
-                    }
-                    updateProgress(6, loadXMLLevels);
+                    loadXMLBooleanProperty.addListener(((observable, oldValue, newValue) -> loadXML(newValue)));
+                    xmlLoadFunction();
                 }
                 return null;
+            }
+
+            private void xmlLoadFunction() {
+                updateProgress(0, loadXMLLevels);
+                String extension = FilenameUtils.getExtension(file.getName());
+                if (extension.equals(Settings.XML_EXTENSION)) {
+                    try {
+                        updateProgress(1, loadXMLLevels);
+                        InputStream inputStream = new FileInputStream(file);
+                        MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
+                        updateProgress(2, loadXMLLevels);
+                        model.basicCheckXML(magitRepository);
+                        updateProgress(3, loadXMLLevels);
+                        model.setCurrentRepository(Repository.XML_RepositoryFactory(magitRepository));
+                        updateProgress(4, loadXMLLevels);
+                        model.afterXMLLayout();
+                        updateProgress(5, loadXMLLevels);
+                        Platform.runLater(() -> isRepositoryExists.setValue(true));
+                        Platform.runLater(() -> updateData.execute("", file, model));
+                    } catch (IOException | MyFileException | RepositoryException e) {
+                        Platform.runLater(() -> showError(e.getMessage()));
+                    } catch (MyXMLException e) {
+                        if (e.getCode() == eErrorCodesXML.ALREADY_EXIST_FOLDER) {
+                            Platform.runLater(() -> folderNotEmpty(e, model, loadXMLBooleanProperty));
+                        } else {
+                            Platform.runLater(() -> showError(e.getMessage()));
+                        }
+                    } catch (JAXBException e) {
+                        Platform.runLater(() -> showError(Settings.language.getString("XML_PARSE_FAILED")));
+                    }
+                }
+                updateProgress(6, loadXMLLevels);
+            }
+
+            private void loadXML(Boolean newValue) {
+                if (newValue) {
+                    xmlLoadFunction();
+                } else {
+                    updateProgress(1, 1);
+                }
             }
         };
         bindComponentToTask(loadXML, progressBar);
@@ -252,13 +257,13 @@ public class IntroController {
         progressBar.progressProperty().bind(task.progressProperty());
     }
 
-    public static void folderNotEmpty(MyXMLException e, Magit model, BooleanProperty tempProperty) {
+    private static void folderNotEmpty(MyXMLException e, Magit model, BooleanProperty tempProperty) {
         Utilities.customAlert(Alert.AlertType.CONFIRMATION, type -> {
                     if (type.getButtonData().equals(ButtonBar.ButtonData.YES)) {
                         model.deleteOldMagitFolder(e.getAdditionalData());
-                        Platform.runLater(() -> tempProperty.set(true));
+                        tempProperty.set(true);
                     } else {
-                        Platform.runLater(() -> tempProperty.set(false));
+                        tempProperty.set(false);
                     }
                 },
                 Utilities.getYesAndNoButtons(),

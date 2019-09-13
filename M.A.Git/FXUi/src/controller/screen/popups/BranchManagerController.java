@@ -166,7 +166,7 @@ public class BranchManagerController {
     @FXML
     void onResetBranchButton_Click(ActionEvent event) {
         if (selectedBranch != null) {
-            mainController.resetBranch(selectedBranch, true);
+            mainController.resetBranch(selectedBranch, false);
         }
     }
 }

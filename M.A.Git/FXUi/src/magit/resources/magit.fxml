@@ -53,6 +53,7 @@
                   <MenuItem fx:id="menuItemFetch" mnemonicParsing="false" onAction="#onMenuItemFetch_Clicked" text="%FX_MENU_FETCH" />
                   <MenuItem fx:id="menuItemPull" mnemonicParsing="false" onAction="#onMenuItemPull_Clicked" text="%FX_MENU_PULL" />
                   <MenuItem fx:id="menuItemPush" mnemonicParsing="false" onAction="#onMenuItemPush_Clicked" text="%FX_MENU_PUSH" />
+                  <MenuItem fx:id="menuItemPushBranch" mnemonicParsing="false" onAction="#onMenuItemPushBranch_Click" text="%FX_MENU_PUSH_BRANCH" />
               </items>
             </Menu>
         <Menu fx:id="menuTools" mnemonicParsing="false" text="%FX_MENU_TOOLS">

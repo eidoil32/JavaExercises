@@ -11,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
+import magit.utils.CustomAnimations;
 import magit.utils.MyBooleanProperty;
 import settings.Settings;
 
@@ -36,6 +37,12 @@ public class DialogController {
             }
         });
         textField.requestFocus();
+        textField.setOnMouseClicked(event -> {
+            textField.getStyleClass().clear();
+            textField.getStyleClass().addAll(Settings.CSS_TEXT_AREA_BASIC, Settings.CSS_TEXT_INPUT_BASIC);
+        });
+
+        textField.disableProperty().bind(anotherOption.selectedProperty());
     }
 
     public void setCheckBoxData(String text, MyBooleanProperty booleanProperty) {
@@ -82,6 +89,15 @@ public class DialogController {
             Stage stage = (Stage) ButtonClick.getScene().getWindow();
             stage.close();
             property.setValue(result);
+        } else if (hasCheckBoxOn && anotherOption.isSelected()) {
+            booleanProperty.set(true);
+            Stage stage = (Stage) ButtonClick.getScene().getWindow();
+            stage.close();
+            property.setValue("not-empty");
+        } else {
+            textField.getStyleClass().clear();
+            textField.getStyleClass().add(Settings.CSS_RED_BORDER_ERROR);
+            CustomAnimations.playAnimation(CustomAnimations.snoozeNode(textField));
         }
     }
 

@@ -85,10 +85,10 @@ public class MainTableController {
             }
         });
         this.shaoneCommitTableColumn.setCellValueFactory(param -> new ReadOnlyStringWrapper(param.getValue().get(3)));
-        this.shaoneCommitTableColumn.setCellFactory(object -> new TableCell<List<String>, String>(){
+        this.shaoneCommitTableColumn.setCellFactory(object -> new TableCell<List<String>, String>() {
             @Override
             protected void updateItem(String item, boolean empty) {
-                if(empty) {
+                if (empty) {
                     setText(null);
                 } else {
                     setText(item.substring(Settings.MIN_COMMENT_SUBSTRING, Settings.MAX_SHA_ONE_TABLE_LENGTH));
@@ -99,27 +99,32 @@ public class MainTableController {
 
     public void initializeTableViewCommit() {
         Map<String, Object> results = model.getCurrentRepository().getAllCommits();
-        List<Commit> commitList = new LinkedList<>(new HashSet<>((List<Commit>) results.get(Settings.KEY_COMMIT_LIST)));
-        Map<Commit, Branch> headCommits = (Map<Commit, Branch>) results.get(Settings.KEY_COMMIT_BRANCH_LIST);
+        List<Commit> commitList = new LinkedList<>((Set<Commit>) results.get(Settings.KEY_COMMIT_LIST));
+        Map<Branch, Commit> headCommits = (Map<Branch, Commit>) results.get(Settings.KEY_COMMIT_BRANCH_LIST);
 
         final ObservableList<List<String>> data = FXCollections.observableArrayList();
 
         for (Commit commit : commitList) {
-            List<String> unit = new ArrayList<>();
-            if (headCommits.containsKey(commit)) {
-                unit.add(headCommits.get(commit).getName());
-            } else {
-                unit.add(Settings.EMPTY_STRING);
-            }
-            String temp = commit.getComment();
-            unit.add(temp.substring(Settings.MIN_COMMENT_SUBSTRING, Math.min(temp.length(), Settings.MAX_COMMENT_SUBSTRING)));
-            unit.add(new SimpleDateFormat(Settings.DATE_FORMAT).format(commit.getDate()));
-            unit.add(commit.getSHA_ONE());
-            data.add(unit);
+            addToDataCollection(data, Settings.EMPTY_STRING, commit);
         }
+
+        for (Map.Entry<Branch, Commit> entry : headCommits.entrySet()) {
+            addToDataCollection(data, entry.getKey().getName(), entry.getValue());
+        }
+
         dateCommitTableColumn.setSortType(TableColumn.SortType.DESCENDING);
         commitTable.setItems(data);
         commitTable.getSortOrder().add(dateCommitTableColumn);
         commitTable.sort();
+    }
+
+    private void addToDataCollection(ObservableList<List<String>> data, String branchName, Commit commit) {
+        List<String> unit = new ArrayList<>();
+        unit.add(branchName);
+        String temp = commit.getComment();
+        unit.add(temp.substring(Settings.MIN_COMMENT_SUBSTRING, Math.min(temp.length(), Settings.MAX_COMMENT_SUBSTRING)));
+        unit.add(new SimpleDateFormat(Settings.DATE_FORMAT).format(commit.getDate()));
+        unit.add(commit.getSHA_ONE());
+        data.add(unit);
     }
 }

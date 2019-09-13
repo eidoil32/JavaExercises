@@ -202,4 +202,17 @@ public class FileManager {
 
         return files;
     }
+
+    public static String makeContent(String content) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String[] lines = content.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            stringBuilder.append(lines[i]);
+            if (i + 1 != lines.length) {
+                stringBuilder.append(System.lineSeparator());
+            }
+        }
+
+        return stringBuilder.toString();
+    }
 }

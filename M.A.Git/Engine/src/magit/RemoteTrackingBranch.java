@@ -11,13 +11,13 @@ import java.util.List;
 
 public class RemoteTrackingBranch extends Branch {
     public RemoteTrackingBranch(Branch branch, String pathToBranches, String newName) throws IOException {
-        super(newName != null ? newName : branch.getName());
+        super(branch.getName());
         this.commit = branch.getCommit();
         this.SHA_ONE = branch.getSHA_ONE();
         this.remoteBranch = branch;
 
-        if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
-            File file = new File(pathToBranches + File.separator + branch.getName());
+        if (!name.equals(Settings.MAGIT_BRANCH_HEAD)) {
+            File file = new File(pathToBranches + File.separator + name);
             if (file.exists()) {
                 List<String> content = Files.readAllLines(file.toPath());
                 if (content.size() == 1) {
@@ -31,7 +31,7 @@ public class RemoteTrackingBranch extends Branch {
 
     private void WriteToBranchFile(Branch branch, File file) throws FileNotFoundException {
         PrintWriter branchFile = new PrintWriter(file);
-        branchFile.write(branch.getSHA_ONE());
+        branchFile.write(branch.getSHA_ONE() != null ? branch.getSHA_ONE() : Settings.EMPTY_COMMIT);
         branchFile.write(System.lineSeparator() + Settings.IS_TRACKING_REMOTE_BRANCH);
         branchFile.close();
     }

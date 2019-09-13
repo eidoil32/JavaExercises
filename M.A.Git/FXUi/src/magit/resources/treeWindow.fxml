@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-
 
 <VBox xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.screen.main.TreeController">
    <children>
@@ -21,23 +21,44 @@
             </AnchorPane>
             <AnchorPane HBox.hgrow="ALWAYS">
                <children>
-                  <ImageView fx:id="close" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
-                     <image>
-                        <Image url="@img/close.png" />
-                     </image>
-                  </ImageView>
+                  <HBox layoutX="202.0" layoutY="2.0" AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="2.0" AnchorPane.topAnchor="2.0">
+                     <children>
+                        <ImageView fx:id="expandTree">
+                           <image>
+                              <Image url="@img/close.png" />
+                           </image>
+                           <HBox.margin>
+                              <Insets right="2.0" />
+                           </HBox.margin>
+                        </ImageView>
+                        <ImageView fx:id="close">
+                           <image>
+                              <Image url="@img/close.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
                </children>
             </AnchorPane>
          </children>
       </HBox>
+      <ScrollPane fitToHeight="true" vbarPolicy="NEVER">
+         <content>
+            <HBox fx:id="branchTable" minHeight="50.0">
+               <padding>
+                  <Insets left="5.0" right="5.0" />
+               </padding>
+            </HBox>
+         </content>
+      </ScrollPane>
       <AnchorPane VBox.vgrow="ALWAYS">
          <children>
-            <HBox fx:id="hBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <children>
-                  <Separator orientation="VERTICAL" prefHeight="200.0" />
-                  <ListView id="tree-list-view" fx:id="listView" minWidth="200.0" HBox.hgrow="ALWAYS" />
-               </children>
-            </HBox>
+            <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+              <items>
+                <AnchorPane fx:id="left" minHeight="0.0" minWidth="200.0" />
+                <AnchorPane fx:id="right" minWidth="200.0" />
+              </items>
+            </SplitPane>
          </children>
       </AnchorPane>
    </children>
