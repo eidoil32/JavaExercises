@@ -1,19 +1,25 @@
 package controller.screen.main;
 
+import controller.screen.intro.IntroController;
+import exceptions.RepositoryException;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.scene.Group;
 import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListView;
+import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.CubicCurve;
@@ -22,6 +28,7 @@ import magit.Branch;
 import magit.Commit;
 import magit.Magit;
 import magit.utils.CustomAnimations;
+import magit.utils.Utilities;
 import settings.Settings;
 import utils.PairBranchCommit;
 
@@ -40,27 +47,46 @@ public class TreeController {
     private Stage stage;
     private Map<Branch, Point> pointMap = new HashMap<>();
     private double mouseXCords, mouseYCords;
+    private boolean expandedTree;
 
     @FXML
-    private ListView<PairBranchCommit> listView;
+    private ImageView close, expandTree;
     @FXML
-    private ImageView close;
+    private HBox topBar, branchTable;
     @FXML
-    private HBox topBar, hBox;
+    private AnchorPane left, right;
 
     public void setMainController(MainController mainController) {
         this.model = mainController.getModel();
         this.mainController = mainController;
-        this.hBox.getChildren().add(0, buildCommitTree());
+        this.left.getChildren().add(0, buildCommitTree(expandedTree));
+    }
+
+    private void setExpandedTree(boolean expandedTree) {
+        this.expandedTree = expandedTree;
     }
 
     public void initialize() {
-
         close.imageProperty().bind(
                 Bindings.when(close.hoverProperty())
                         .then(new Image(Settings.FXML_CLOSE_BUTTON_HOVER_IMG))
                         .otherwise(new Image(Settings.FXML_CLOSE_BUTTON_IMG))
         );
+
+        expandTree.imageProperty().bind(
+                Bindings.when(expandTree.hoverProperty())
+                        .then(new Image(Settings.FXML_EXPAND_BUTTON_HOVER_IMG))
+                        .otherwise(new Image(Settings.FXML_EXPAND_BUTTON_IMG))
+        );
+
+        close.getStyleClass().add(Settings.MOUSE_HAND_ON_HOVER);
+        expandTree.getStyleClass().add(Settings.MOUSE_HAND_ON_HOVER);
+
+        expandTree.setOnMouseClicked(event -> {
+            setExpandedTree(!expandedTree);
+            timeline = new LinkedList<>();
+            updateTree();
+        });
 
         this.close.setOnMouseClicked((event -> stage.close()));
 
@@ -79,27 +105,67 @@ public class TreeController {
         return commitNodes.getOrDefault(commit, null);
     }
 
-    private ScrollPane buildCommitTree() {
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setFitToWidth(true);
-        scrollPane.setFitToHeight(true);
-        scrollPane.setPadding(new Insets(10));
+    private ScrollPane buildCommitTree(boolean isExtendedTree) {
+        ScrollPane scrollPane = customScrollPane();
+        scrollPane.setHvalue(scrollPane.getHvalue());
         Group root = new Group();
         new Thread(() -> {
-            Map<Branch, List<PairBranchCommit>> commitMap = model.getAllCommits();
-            List<Node> circles = warpDrawCommitTree(commitMap);
-            Platform.runLater(() -> root.getChildren().addAll(circles));
-            getBranchListDetails(listView);
+            try {
+                Map<Branch, List<PairBranchCommit>> commitMap = model.getAllCommits(isExtendedTree);
+                List<Node> circles = warpDrawCommitTree(commitMap);
+                Platform.runLater(() -> root.getChildren().addAll(circles));
+                if (isExtendedTree) {
+                    model.deleteBranch(Settings.TEMP_BRANCH_FOR_EXPANDED_TREE);
+                }
+                getBranchListDetails();
+            } catch (RepositoryException e) {
+                Platform.runLater(() -> IntroController.showError(e.getMessage()));
+            }
         }).start();
         scrollPane.setContent(root);
         root.setRotate(180); // the first one will be the newest commit
         return scrollPane;
     }
 
-    private void getBranchListDetails(ListView<PairBranchCommit> listView) {
-        Collections.reverse(timeline);
+    private void getBranchListDetails() {
+        ScrollPane scrollPane = customScrollPane();
+        VBox root = new VBox();
+        scrollPane.setContent(root);
+        scrollPane.setPadding(new Insets(-5, 0, 0, 0));
+        timeline.sort((o1, o2) -> o2.getCommit().getDate().compareTo(o1.getCommit().getDate()));
         timeline = timeline.stream().distinct().collect(Collectors.toList());
-        Platform.runLater(() -> listView.getItems().addAll(timeline));
+        for (int i = 10, j = 0; j < timeline.size(); i += Settings.COMMIT_TREE_ADD_TO_Y, j++) {
+            Node temp = createBlock(timeline.get(j));
+            root.getChildren().add(temp);
+        }
+
+        Platform.runLater(() -> right.getChildren().add(scrollPane));
+    }
+
+    private Node createBlock(PairBranchCommit pairBranchCommit) {
+        AnchorPane anchorPane = new AnchorPane();
+        Label label = new Label(pairBranchCommit.toString());
+        anchorPane.getChildren().add(label);
+        AnchorPane.setLeftAnchor(label, 3.0);
+        AnchorPane.setTopAnchor(label, 0.0);
+        AnchorPane.setBottomAnchor(label, 0.0);
+        anchorPane.setPrefWidth(Settings.COMMIT_TREE_RECTANGLE_WIDTH_DETAILS);
+        anchorPane.setPrefHeight(Settings.COMMIT_TREE_RECTANGLE_HEIGHT_DETAILS);
+
+        label.setId(Settings.CSS_COMMIT_TREE_LABEL);
+        anchorPane.getStyleClass().add(Settings.MOUSE_HAND_ON_HOVER);
+        return anchorPane;
+    }
+
+    private ScrollPane customScrollPane() {
+        ScrollPane scrollPane = new ScrollPane();
+        AnchorPane.setBottomAnchor(scrollPane, 0.0);
+        AnchorPane.setTopAnchor(scrollPane, 0.0);
+        AnchorPane.setLeftAnchor(scrollPane, 0.0);
+        AnchorPane.setRightAnchor(scrollPane, 0.0);
+        scrollPane.setPadding(new Insets(10));
+
+        return scrollPane;
     }
 
     private PairBranchCommit getNextCommitByTimeLine(Map<Branch, List<PairBranchCommit>> map) { // (theta number of branches)
@@ -133,20 +199,19 @@ public class TreeController {
 
     private List<Node> warpDrawCommitTree(Map<Branch, List<PairBranchCommit>> map) {
         PairBranchCommit current = getNextCommitByTimeLine(map);
-        List<Node> nodeList = new LinkedList<>();
+        List<Node> nodeList = new LinkedList<>(), tempList = new LinkedList<>();
         Map<Commit, Point> commitNodeMap = new HashMap<>();
         Map<Commit, Branch> pointedBranch = model.getPointedBranchesToCommitsMap();
-        List<Branch> branches = model.getCurrentRepository().getAllBranches();
+        List<Branch> branches = model.getCurrentRepository().getAllBranches(expandedTree);
 
         int x = Settings.COMMIT_TREE_START_X, y = Settings.COMMIT_TREE_START_Y;
 
-        for (Branch branch : branches) {
-            pointMap.put(branch, new Point(x, y));
-            if (!colorMap.containsKey(x)) {
-                colorMap.put(x, nextColor());
-            }
-            x += (int) Settings.COMMIT_SPACE_BETWEEN_CIRCLES;
-        }
+        createBranchPointAndColorMap(branches, x, y);
+
+        Platform.runLater(() -> {
+            branchTable.getChildren().clear();
+            branchTable.getChildren().addAll(createBranchLegend());
+        });
 
         Point currentRow = new Point(Settings.COMMIT_TREE_START_X, Settings.COMMIT_TREE_START_Y);
 
@@ -154,18 +219,55 @@ public class TreeController {
             timeline.add(i, current);
             if (!commitNodeMap.containsKey(current.getCommit())) {
                 Point coords = new Point(pointMap.get(current.getBranch()).x, currentRow.y);
-                Node circle = createCircle(coords, current.getCommit(), pointedBranch);
+                Node circle = createCircle(coords, current, pointedBranch);
                 currentRow.setLocation(currentRow.x, currentRow.y + Settings.COMMIT_TREE_ADD_TO_Y);
                 if (!commitNodes.containsKey(current.getCommit())) {
                     commitNodes.put(current.getCommit(), circle);
                     addToColumnMap(circle, coords);
                 }
                 commitNodeMap.put(current.getCommit(), coords);
-                nodeList.add(circle);
+                tempList.add(circle);
             }
         }
 
         nodeList.addAll(wireUpAllNodes(commitNodeMap, branches));
+        nodeList.addAll(tempList);
+        return nodeList;
+    }
+
+    private void createBranchPointAndColorMap(List<Branch> branches, int x, int y) {
+        for (Branch branch : branches) {
+            pointMap.put(branch, new Point(x, y));
+            if (!colorMap.containsKey(x)) {
+                colorMap.put(x, nextColor());
+            }
+            x += (int) Settings.COMMIT_SPACE_BETWEEN_CIRCLES;
+        }
+    }
+
+    private List<Node> createBranchLegend() {
+        List<Node> nodeList = new LinkedList<>();
+
+        for (Map.Entry<Branch, Point> entry : pointMap.entrySet()) {
+            if (!entry.getKey().isHead()) {
+                Color color = colorMap.get(entry.getValue().x);
+                Circle circle = new Circle(Settings.COMMIT_CIRCLE_RADIUS, color);
+                Label label = new Label(entry.getKey().getName());
+                label.setPadding(new Insets(0, 5, 0, 5));
+                Separator separator = new Separator(Orientation.VERTICAL);
+                circle.onMouseClickedProperty().bind(label.onMouseClickedProperty());
+                label.setOnMouseClicked((event -> markAllCommits(entry.getKey())));
+                HBox.setHgrow(label, Priority.ALWAYS);
+                nodeList.add(circle);
+                nodeList.add(label);
+                nodeList.add(separator);
+            }
+        }
+
+        for (Node node : nodeList) {
+            node.getStyleClass().add(Settings.MOUSE_HAND_ON_HOVER);
+        }
+
         return nodeList;
     }
 
@@ -217,23 +319,36 @@ public class TreeController {
         return colorMap.get(srcX);
     }
 
-    private Node createCircle(Point coordinates, Commit data, Map<Commit, Branch> pointedBranches) {
+    private Node createCircle(Point coordinates, PairBranchCommit data, Map<Commit, Branch> pointedBranches) {
         Circle circle = new Circle(coordinates.getX(), coordinates.getY(), Settings.COMMIT_CIRCLE_RADIUS);
+        Color color = colorMapByX(coordinates.x);
         circle.setOnMouseEntered(event -> {
             ((Circle) event.getSource()).toFront();
-            circle.setFill(Settings.getBrighter(Color.valueOf(circle.getFill().toString())));
+            circle.setFill(color.brighter());
         });
         circle.getStyleClass().add(Settings.MOUSE_HAND_ON_HOVER);
-        circle.setOnMouseExited(event -> circle.setFill(colorMapByX(coordinates.x)));
-        circle.setFill(colorMapByX(coordinates.x));
-        ContextMenu contextMenu = createContextMenu(data, pointedBranches.get(data));
+        circle.setOnMouseExited(event -> circle.setFill(color));
+        circle.setFill(color);
+        ContextMenu contextMenu = createContextMenu(data.getCommit(), pointedBranches.get(data.getCommit()));
         circle.setOnMouseClicked((event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 contextMenu.show(circle, event.getScreenX(), event.getScreenY());
             } else if (event.getButton() == MouseButton.PRIMARY) {
-                mainController.updateCommitDiffAndFileTree(data);
+                mainController.updateCommitDiffAndFileTree(data.getCommit());
+                markAllCommits(data.getBranch());
             }
         }));
+
+        if (pointedBranches.containsKey(data.getCommit())) {
+            Utilities.installToolTip(circle, data.getBranch().getName());
+            circle.setStrokeWidth(Settings.COMMIT_CIRCLE_STROKE_WIDTH);
+            if (color.equals(color.darker())) {
+                circle.setStroke(Color.RED);
+            } else {
+                circle.setStroke(color.darker());
+            }
+        }
+
         return circle;
     }
 
@@ -267,20 +382,11 @@ public class TreeController {
                 src.x, dest.y,
                 dest.x, dest.y);
         line.setStroke(colorMapByX(src.x));
-        line.setStrokeWidth(4);
+        line.setStrokeWidth(Settings.COMMIT_TREE_STROKE_WIDTH);
         line.setFill(null);
         line.toBack();
         return line;
     }
-
-    // not working this fucking useless toFront() function!
-/*    private void moveLinesToBackground(List<Node> nodes) {
-        for (Node node : nodes) {
-            if (node instanceof Circle) {
-                node.toFront();
-            }
-        }
-    }*/
 
     public void setStage(Stage stage) {
         this.stage = stage;
@@ -291,16 +397,14 @@ public class TreeController {
     }
 
     public void updateTree() {
-        this.hBox.getChildren().remove(0);
-        this.hBox.getChildren().add(0, buildCommitTree());
+        this.left.getChildren().remove(0);
+        this.left.getChildren().add(0, buildCommitTree(expandedTree));
     }
 
     public void markAllCommits(Branch branch) {
         Point point = pointMap.get(branch);
         List<Node> nodes = nodesInColumn.get(point.getX());
 
-        for (Node node : nodes) {
-            CustomAnimations.commitTreeTransition(node).play();
-        }
+        CustomAnimations.playSeriesAnimations(nodes);
     }
 }

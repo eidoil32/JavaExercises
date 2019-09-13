@@ -516,6 +516,9 @@ public class Repository {
                 }
                 remoteBranches.add(branch);
             } else {
+                if (branches == null) {
+                    branches = new LinkedList<>();
+                }
                 branches.add(branch);
             }
         }
@@ -589,16 +592,20 @@ public class Repository {
 
     public Map<String, Object> getAllCommits() {
         Map<String, Object> objectMap = new HashMap<>();
-        List<Commit> commitList = new LinkedList<>();
-        Map<Commit, Branch> headCommits = new HashMap<>();
+        Set<Commit> commitList = new LinkedHashSet<>();
+        Map<Branch, Commit> headCommits = new HashMap<>();
 
-        for (Branch branch : getActiveBranches()) {
+        for (Branch branch : getAllBranches()) {
             if (!branch.getName().equals(Settings.MAGIT_BRANCH_HEAD)) {
                 if (branch.getCommit() != null) {
-                    headCommits.put(branch.getCommit(), branch);
+                    headCommits.put(branch, branch.getCommit());
                     commitList.addAll(branch.getAllCommits());
                 }
             }
+        }
+
+        for (Commit commit : headCommits.values()) {
+            commitList.remove(commit);
         }
 
         objectMap.put(Settings.KEY_COMMIT_BRANCH_LIST, headCommits);
@@ -661,10 +668,44 @@ public class Repository {
     }
 
     public List<Branch> getAllBranches() {
-        if (branches != null) {
+        if (branches != null && branches.size() > 0) {
             return branches;
         } else {
             return ListUtils.union(remoteBranches, remoteTrackingBranches);
         }
+    }
+
+    public List<Branch> getAllBranches(boolean includeFake) {
+        if (branches != null && branches.size() > 0) {
+            if (includeFake && remoteBranches != null) {
+                return ListUtils.union(ListUtils.union(remoteBranches, branches), remoteTrackingBranches);
+            }
+            return branches;
+        } else {
+            return ListUtils.union(remoteBranches, remoteTrackingBranches);
+        }
+    }
+
+    public void removeBranch(String branchName) {
+        Branch branch = new Branch(branchName);
+        if (branches != null) {
+            if (removeFromList(branch, branches)) { return; }
+        }
+        if (remoteBranches != null) {
+            if (removeFromList(branch, remoteBranches)) { return; }
+        }
+
+        if (remoteTrackingBranches != null) {
+            removeFromList(branch,  remoteTrackingBranches);
+        }
+    }
+
+    private boolean removeFromList(Branch branch, List<Branch> branches) {
+        int index = branches.indexOf(branch);
+        if (index != -1) {
+            branches.remove(index);
+            return true;
+        }
+        return false;
     }
 }

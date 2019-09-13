@@ -1,9 +1,6 @@
 package magit;
 
-import exceptions.MyFileException;
-import exceptions.MyXMLException;
-import exceptions.RepositoryException;
-import exceptions.eErrorCodes;
+import exceptions.*;
 import settings.Settings;
 import xml.basic.MagitRepository;
 import xml.basic.MagitSingleBranch;
@@ -76,6 +73,9 @@ public class Branch {
         if (commitID.equals(Settings.EMPTY_STRING)) {
             Branch remote = new Branch(singleBranch.getName(), null, repository.getBranchesPath().toString());
             if (singleBranch.isTracking()) {
+                if (checkIfRemoteBranchExists(singleBranch.getTrackingAfter(), xmlRepository.getMagitBranches().getMagitSingleBranch())) {
+                    throw new MyXMLException(eErrorCodesXML.BRANCH_TRACKING_AFTER_NONE_EXISTS, null);
+                }
                 return new RemoteTrackingBranch(remote, repository.getBranchesPath().toString(), trackingName);
             } else {
                 return remote;
@@ -95,6 +95,9 @@ public class Branch {
         PrintWriter writer = new PrintWriter(new File(repository.getBranchesPath() + File.separator + singleBranch.getName()));
         writer.write(pointedCommit.getSHA_ONE());
         if (singleBranch.isTracking()) {
+            if (checkIfRemoteBranchExists(singleBranch.getTrackingAfter(), xmlRepository.getMagitBranches().getMagitSingleBranch())) {
+                throw new MyXMLException(eErrorCodesXML.BRANCH_TRACKING_AFTER_NONE_EXISTS, null);
+            }
             temp = new RemoteTrackingBranch(temp, repository.getBranchesPath().toString(), trackingName);
             writer.write(System.lineSeparator() + Settings.IS_TRACKING_REMOTE_BRANCH);
             PrintWriter remoteBranchWriter = new PrintWriter(new File(repository.getBranchesPath() + File.separator + singleBranch.getTrackingAfter()));
@@ -106,6 +109,19 @@ public class Branch {
 
         writer.close();
         return temp;
+    }
+
+    private static boolean checkIfRemoteBranchExists(String trackingAfterName, List<MagitSingleBranch> branches) {
+        boolean found = false;
+
+        for (MagitSingleBranch branch : branches) {
+            if (branch.getName().equals(trackingAfterName) && branch.isIsRemote()) {
+                found = true;
+                break;
+            }
+        }
+
+        return !found;
     }
 
     public void setCommit(Commit commit, String pathToBranches) throws RepositoryException {
@@ -170,7 +186,8 @@ public class Branch {
         this.name = name;
     }
 
-    public String consoleToString() {
+    // for console UI - change toString to this function:
+/*    public String consoleToString() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Settings.language.getString("BRANCH_NAME_HINT")).append(name).append(System.lineSeparator());
         if (commit != null) {
@@ -180,7 +197,7 @@ public class Branch {
             stringBuilder.append(Settings.language.getString("BRANCH_NONE_POINT_COMMIT")).append(System.lineSeparator());
         }
         return stringBuilder.toString();
-    }
+    }*/
 
     public String getName() {
         return name;
@@ -214,7 +231,7 @@ public class Branch {
         File branchFile = new File(branchesPath + File.separator + newName);
         branchFile.createNewFile();
         PrintWriter writer = new PrintWriter(branchFile);
-        writer.write(this.SHA_ONE);
+        writer.write(this.SHA_ONE != null ? this.SHA_ONE : Settings.EMPTY_COMMIT);
         writer.close();
 
         Branch branch = new Branch(this);
