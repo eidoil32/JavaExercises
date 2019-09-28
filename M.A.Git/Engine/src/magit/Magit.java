@@ -327,7 +327,7 @@ public class Magit {
         }
     }
 
-    public void basicCheckXML(MagitRepository magitRepository) throws MyXMLException {
+    public static void basicCheckXML(MagitRepository magitRepository) throws MyXMLException {
         List<MagitBlob> blobs = magitRepository.getMagitBlobs().getMagitBlob();
         List<MagitSingleFolder> folders = magitRepository.getMagitFolders().getMagitSingleFolder();
         List<MagitSingleCommit> commits = magitRepository.getMagitCommits().getMagitSingleCommit();
@@ -695,12 +695,26 @@ public class Magit {
             if (temp != null) {
                 for (Map.Entry<BasicFile, Blob> entry : temp.getMap().entrySet()) {
                     Blob tempBlob = entry.getValue();
-                    merge.addToMap(tempBlob);
+                    if (merge.getMap().containsKey(tempBlob) && tempBlob.getType() == eFileTypes.FOLDER) {
+                        addAllToMap((Folder) merge.getMap().get(tempBlob), (Folder) tempBlob);
+                    } else {
+                        merge.addToMap(tempBlob);
+                    }
                 }
             }
         }
 
         return merge;
+    }
+
+    private void addAllToMap(Folder merge, Folder value) {
+        for (Map.Entry<BasicFile, Blob> entry : value.getBlobMap().getMap().entrySet()) {
+            if (merge.getBlobMap().getMap().containsKey(entry.getValue()) && entry.getValue().getType() == eFileTypes.FOLDER) {
+                addAllToMap((Folder) merge.getBlobMap().getMap().get(entry.getValue()), (Folder) entry.getValue());
+            } else {
+                merge.getBlobMap().addToMap(entry.getValue());
+            }
+        }
     }
 
     private List<BlobMap> calculateChanges(BlobMap... values) {
@@ -1107,15 +1121,33 @@ public class Magit {
 
     private void convertLocalBranchToRTB(Branch branch, String remoteRepositoryName) throws IOException {
         RemoteTrackingBranch remoteTrackingBranch =
-                new RemoteTrackingBranch(branch, currentRepository.getBranchesPath().toString(),  null);
+                new RemoteTrackingBranch(branch, currentRepository.getBranchesPath().toString(), null);
 
         currentRepository.addBranch(remoteTrackingBranch);
         currentRepository.removeBranch(branch.getName());
         branch.setRemote(true);
         branch.setName(remoteRepositoryName + File.separator + branch.getName());
         File branchFile = new File(currentRepository.getBranchesPath() + File.separator + branch.getName());
-        try (PrintWriter writer = new PrintWriter(branchFile)){
+        try (PrintWriter writer = new PrintWriter(branchFile)) {
             writer.write(branch.getCommit().getSHA_ONE());
         }
+    }
+
+    public Map<String, List<String>> createRepositoryJson() {
+        Map<String, List<String>> result = new HashMap<>();
+
+        result.put(Settings.WSA_JSON_ACTIVE_BRANCH, createSingleItemList(currentBranch.getName()));
+        result.put(Settings.WSA_JSON_CURRENT_PATH, createSingleItemList(rootFolder.toString()));
+        if (remoteRepository != null) {
+            result.put(Settings.WSA_REMOTE_REPOSITORY_NAME, createSingleItemList(remoteRepository.getCurrentRepository().getName()));
+        }
+
+        return result;
+    }
+
+    private List<String> createSingleItemList(String item) {
+        List<String> temp = new LinkedList<>();
+        temp.add(item);
+        return temp;
     }
 }

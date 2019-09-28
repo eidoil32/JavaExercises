@@ -69,7 +69,7 @@
     -fx-border-radius    : 0;
     -fx-background-insets: 5;
     -fx-background-radius: 5px;
-    -fx-padding          : 12 30 12 30;
+    -fx-padding          : 8 30 8 30;
     -fx-font-family      : "Roboto Light";
     -fx-font-size        : 12px;
     -fx-font-style       : normal;
@@ -273,4 +273,7 @@
 }
 .hands-on:hover {
     -fx-cursor: hand;
+}
+#commit-details-label:hover {
+    -fx-text-fill: red;
 }

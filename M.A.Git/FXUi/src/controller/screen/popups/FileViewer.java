@@ -41,7 +41,7 @@ public class FileViewer {
                 try {
                     FXMLLoader loader = new FXMLLoader();
                     loader.setResources(Settings.language);
-                    loader.setLocation(sanjer.getResource(Settings.FXML_FILE_VIEWER));
+                    loader.setLocation(FileViewer.class.getClassLoader().getResource(Settings.FXML_FILE_VIEWER));
                     Parent root = loader.load();
                     FileViewer fileViewer = loader.getController();
                     fileViewer.update(item.getValue().getFile());

@@ -45,7 +45,7 @@ public class SettingsController {
     }
 
     private void editCustomCSSFile() {
-        InputStream in = getClass().getResourceAsStream(Settings.FXML_THEME_CUSTOM_CSS_FILE);
+        InputStream in = getClass().getClassLoader().getResourceAsStream(Settings.FXML_THEME_CUSTOM_CSS_FILE);
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         String line;
         try {
@@ -64,7 +64,7 @@ public class SettingsController {
             }
             PrintWriter writer =
                     new PrintWriter(
-                            new File(this.getClass().getResource(Settings.FXML_THEME_CUSTOM_CSS_FILE).getPath()));
+                            new File(Settings.FXML_THEME_CUSTOM_EXTERNAL_CSS_FILE));
             writer.write(sb.toString());
             writer.close();
         } catch (IOException e) {

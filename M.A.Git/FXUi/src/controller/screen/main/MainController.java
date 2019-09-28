@@ -170,7 +170,7 @@ public class MainController {
             Pane root;
             try {
                 FXMLLoader loader = new FXMLLoader();
-                URL mainFXML = MainController.class.getResource(Settings.FXML_TREE_WINDOW);
+                URL mainFXML = getClass().getClassLoader().getResource(Settings.FXML_TREE_WINDOW);
                 loader.setLocation(mainFXML);
                 loader.setResources(Settings.language);
                 root = loader.load();
@@ -192,7 +192,6 @@ public class MainController {
                     isTreeAlreadyShown = false;
                 });
                 primaryStage.setOnHiding((event -> stage.close()));
-
             } catch (IOException e) {
                 IntroController.showError(e.getMessage());
             }
@@ -551,7 +550,7 @@ public class MainController {
         Stage stage = new Stage();
         Pane root;
         FXMLLoader loader = new FXMLLoader();
-        URL mainFXML = MainController.class.getResource(Settings.FXML_SELECT_POPUP);
+        URL mainFXML = MainController.class.getClassLoader().getResource(Settings.FXML_SELECT_POPUP);
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
         root = loader.load();
@@ -580,7 +579,7 @@ public class MainController {
         try {
             int smaller = 0;
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = MainController.class.getResource(Settings.FXML_DIALOG_BOX);
+            URL mainFXML = MainController.class.getClassLoader().getResource(Settings.FXML_DIALOG_BOX);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -670,7 +669,7 @@ public class MainController {
         Pane root;
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = MainController.class.getResource(Settings.FXML_MERGE_WINDOW);
+            URL mainFXML = MainController.class.getClassLoader().getResource(Settings.FXML_MERGE_WINDOW);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -689,7 +688,6 @@ public class MainController {
             stage.setScene(new MyScene(root, Settings.MAGIT_UI_MERGE_WINDOW_WIDTH, Settings.MAGIT_UI_MERGE_WINDOW_HEIGHT));
             stage.initOwner(primaryStage);
             stage.initModality(Modality.WINDOW_MODAL);
-
             stage.show();
         } catch (IOException e) {
             IntroController.showError(e.getMessage());
@@ -808,7 +806,7 @@ public class MainController {
         Pane root;
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = MainController.class.getResource(Settings.FXML_SMART_POPUP_BOX);
+            URL mainFXML = MainController.class.getClassLoader().getResource(Settings.FXML_SMART_POPUP_BOX);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
