@@ -7,13 +7,10 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import magit.Magit;
 import settings.Settings;
-
-import java.io.*;
 
 public class SettingsController {
     private MainController mainController;

@@ -7,118 +7,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Engine/src/usermanager/User.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Engine/src/usermanager/UserManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/MyWebException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/LoadRepositoryServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/Preferences.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/RepositoriesManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/UsersServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/LoginPage.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/MainApplication.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/RegisterUser.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/StartServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/WEB-INF/web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/footer.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/header.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/menu.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/modals.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backup_file.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/css/bootstrap.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/css/font-awesome.min.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/css/templatemo-style.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/FontAwesome.otf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.eot" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.svg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.woff" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.woff2" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/images/checkbox-radio-sheet.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/images/logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/images/logo_white.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/data/jquery.vmap.sampledata.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.packed.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/jqvmap.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.africa.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.asia.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.australia.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.europe.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.north-america.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.south-america.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/readme.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.algeria.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.brazil.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.europe.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.france.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.germany.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.russia.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.usa.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.world.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/bootstrap-filestyle.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/bootstrap.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/bootstrap.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/jquery-2.0.3.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/jquery-migrate-1.2.1.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/loginpage.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/mainpage.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/preferences.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/repositories.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/signup-page.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/users.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/main.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/my-repository.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/preferences.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/signup.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/single-repository.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/users.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/external/gson-2.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/theme/custom.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/cssdialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cssdialects.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/UserRepositoriesServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/Engine.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Engine.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/utils/eConflictChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/eConflictChecker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/FXUi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/FXUi.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/intro/IntroController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/intro/IntroController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SettingsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/BranchManagerUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/BranchManagerUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/MagitUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/MagitUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/Program.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/SettingsUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/SettingsUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/branchManager.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/branch_manager.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/dialogBox.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/dialog_box.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/fileView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/file_view.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/mergeWindow.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/merge_window.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/settings.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/settings.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/custom.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/treeWindow.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/tree_window.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/M.A.Git.iml" beforeDir="false" afterPath="$PROJECT_DIR$/M.A.Git.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/META-INF/FXUi.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/controller/ILoader.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/BranchManagerUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/MagitUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/SettingsUI.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/utils/Utilities.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/pages/UsersServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/UsersServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/js/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/users.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/users.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -195,7 +98,7 @@
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/external/gson-2.1.jar!/" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/FXUi" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
@@ -255,7 +158,7 @@
     </configuration>
     <configuration name="Tomcat 8.5.46" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 8.5.46" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
       <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/WebUI_war_exploded" />
-      <option name="UPDATING_POLICY" value="update-resources" />
+      <option name="UPDATING_POLICY" value="restart-server" />
       <deployment>
         <artifact name="WebUI:war exploded">
           <settings>
@@ -430,7 +333,7 @@
       <workItem from="1569602329670" duration="120000" />
       <workItem from="1569602476647" duration="1136000" />
       <workItem from="1569607957156" duration="1440000" />
-      <workItem from="1569676601552" duration="735000" />
+      <workItem from="1569676601552" duration="4270000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -579,7 +482,14 @@
       <option name="project" value="LOCAL" />
       <updated>1568374141353</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Start working on Web ui">
+      <created>1569677466976</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1569677466976</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -635,6 +545,7 @@
     <MESSAGE value="add branch and commit list next to tree" />
     <MESSAGE value="Fix push &amp; pull - finally finished collaboration functions. &#10;Move commit's tree to other window (popup without top-bar)&#10;Adding new animations" />
     <MESSAGE value="Add new Css with color picker for select custom theme.&#10;Adding Push branch to remote repository feature." />
-    <option name="LAST_COMMIT_MESSAGE" value="Add new Css with color picker for select custom theme.&#10;Adding Push branch to remote repository feature." />
+    <MESSAGE value="Start working on Web ui" />
+    <option name="LAST_COMMIT_MESSAGE" value="Start working on Web ui" />
   </component>
 </project>
