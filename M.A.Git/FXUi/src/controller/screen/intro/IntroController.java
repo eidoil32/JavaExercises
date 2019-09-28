@@ -29,10 +29,8 @@ import magit.utils.MyScene;
 import magit.utils.Utilities;
 import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
-import utils.FileManager;
 import xml.basic.MagitRepository;
 
-import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -118,7 +116,7 @@ public class IntroController {
         try {
             StringProperty repositoryName = new SimpleStringProperty();
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = Program.class.getResource(Settings.FXML_DIALOG_BOX);
+            URL mainFXML = Program.class.getClassLoader().getResource(Settings.FXML_DIALOG_BOX);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -216,7 +214,8 @@ public class IntroController {
                     try {
                         updateProgress(1, loadXMLLevels);
                         InputStream inputStream = new FileInputStream(file);
-                        MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
+                        //MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
+                        MagitRepository magitRepository = new MagitRepository();
                         updateProgress(2, loadXMLLevels);
                         model.basicCheckXML(magitRepository);
                         updateProgress(3, loadXMLLevels);
@@ -234,9 +233,10 @@ public class IntroController {
                         } else {
                             Platform.runLater(() -> showError(e.getMessage()));
                         }
-                    } catch (JAXBException e) {
-                        Platform.runLater(() -> showError(Settings.language.getString("XML_PARSE_FAILED")));
                     }
+                    /*catch (JAXBException e) {
+                        Platform.runLater(() -> showError(Settings.language.getString("XML_PARSE_FAILED")));
+                    }*/
                 }
                 updateProgress(6, loadXMLLevels);
             }

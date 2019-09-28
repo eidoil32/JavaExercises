@@ -29,7 +29,7 @@ public class BranchManagerUI {
         FXMLLoader loader = new FXMLLoader();
 
         // load main fxml
-        URL mainFXML = Program.class.getResource(Settings.FXML_BRANCH_MANAGER);
+        URL mainFXML = Program.class.getClassLoader().getResource(Settings.FXML_BRANCH_MANAGER);
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
         Pane root = loader.load();

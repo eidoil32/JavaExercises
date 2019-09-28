@@ -2,60 +2,123 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="Engine:jar" />
-      <artifact name="FXUi:jar" />
-      <artifact name="Languages" />
-      <artifact name="Miscellaneous:jar" />
+      <artifact name="WebUI:war exploded" />
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Engine/src/utils/CustomWrapper.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/img/expand.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/img/expand_pressed.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/custom.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FXUi/src/magit/tasks/PushBranchTask.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/src/usermanager/User.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/src/usermanager/UserManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/MyWebException.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/LoadRepositoryServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/Preferences.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/RepositoriesManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/UsersServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/LoginPage.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/MainApplication.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/RegisterUser.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/StartServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/WEB-INF/web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/footer.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/header.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/menu.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/modals.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/backup_file.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/css/bootstrap.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/css/font-awesome.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/css/templatemo-style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/FontAwesome.otf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.eot" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.ttf" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.woff" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/fonts/fontawesome-webfont.woff2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/images/checkbox-radio-sheet.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/images/logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/images/logo_white.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/data/jquery.vmap.sampledata.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.packed.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/jqvmap.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.africa.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.asia.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.australia.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.europe.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.north-america.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.south-america.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/readme.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.algeria.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.brazil.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.europe.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.france.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.germany.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.russia.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.usa.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.world.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/bootstrap-filestyle.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/bootstrap.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/bootstrap.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/jquery-2.0.3.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/jquery-migrate-1.2.1.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/loginpage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/mainpage.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/preferences.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/repositories.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/signup-page.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/users.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/main.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/my-repository.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/preferences.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/signup.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/single-repository.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/users.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/external/gson-2.1.jar" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/theme/custom.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/cssdialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/cssdialects.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Blob.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Blob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Branch.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Branch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Commit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/Engine.iml" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/Engine.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/RemoteTrackingBranch.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/RemoteTrackingBranch.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Repository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/utils/eConflictChecker.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/eConflictChecker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/FXUi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/FXUi.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/intro/IntroController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/intro/IntroController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainTableController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainTableController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/OpenedChangesController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/OpenedChangesController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/BranchManagerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/BranchManagerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/DialogController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/DialogController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SettingsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SmartPopUpController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SmartPopUpController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/magit.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/magit.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/BranchManagerUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/BranchManagerUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/MagitUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/MagitUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/Program.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/Program.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/SettingsUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/SettingsUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/branchManager.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/branch_manager.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/dialogBox.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/dialog_box.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/fileView.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/file_view.fxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/mergeWindow.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/merge_window.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/settings.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/settings.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/black.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/white.css" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/white.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/treeWindow.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/treeWindow.fxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/tasks/MergeTask.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/tasks/MergeTask.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/utils/CustomAnimations.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/utils/CustomAnimations.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/utils/Utilities.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/utils/Utilities.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/custom.css" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/theme/custom.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/magit/resources/treeWindow.fxml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/magit/resources/tree_window.fxml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/M.A.Git.iml" beforeDir="false" afterPath="$PROJECT_DIR$/M.A.Git.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodesXML.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodesXML.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Blob.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Blob.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Branch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Branch.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/utils/Utilities.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/FXUi/magit/utils/Utilities.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FXUi/META-INF/FXUi.kotlin_module" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FXUi/controller/ILoader.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/BranchManagerUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/MagitUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/SettingsUI.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/FXUi/magit/utils/Utilities.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodesXML.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodesXML.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -96,6 +159,7 @@
         <option value="XML Properties File" />
         <option value="Enum" />
         <option value="Interface" />
+        <option value="HTML File" />
         <option value="Class" />
       </list>
     </option>
@@ -106,12 +170,19 @@
         <option value="-" />
       </list>
     </option>
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$/.." value="ido" />
       </map>
     </option>
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="LogFilters">
+    <option name="FILTER_ERRORS" value="false" />
+    <option name="FILTER_WARNINGS" value="false" />
+    <option name="FILTER_INFO" value="true" />
+    <option name="FILTER_DEBUG" value="true" />
+    <option name="CUSTOM_FILTER" />
   </component>
   <component name="ProjectId" id="1Ozl0sQJwaBkJM9O7wljOjh22NT" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
@@ -119,18 +190,19 @@
   </component>
   <component name="PropertiesComponent">
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
     <property name="extract.method.default.visibility" value="private" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../../testing/CommitTreePrototype/CommitTreePrototype" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/external/gson-2.1.jar!/" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="project.structure.last.edited" value="Artifacts" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
+    <property name="settings.editor.selected.configurable" value="preferences.applicationServers" />
   </component>
   <component name="RecentsManager">
     <key name="CreateClassDialog.RecentsKey">
@@ -138,6 +210,7 @@
       <recent name="controller" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\external" />
       <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resource" />
       <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\controller\resource" />
       <recent name="D:\Projects\Java\JavaExercises\M.A.Git\Engine\src\magit" />
@@ -166,20 +239,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Program">
-    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="magit.ui.Main" />
-      <module name="Ui" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="magit.ui.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Tomcat Server.Tomcat 8.5.46">
     <configuration name="Program" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="magit.Program" />
       <module name="FXUi" />
@@ -193,15 +253,94 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Tomcat 8.5.46" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 8.5.46" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
+      <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/WebUI_war_exploded" />
+      <option name="UPDATING_POLICY" value="update-resources" />
+      <deployment>
+        <artifact name="WebUI:war exploded">
+          <settings>
+            <option name="CONTEXT_PATH" value="/WebUI_war_exploded" />
+          </settings>
+        </artifact>
+      </deployment>
+      <server-settings>
+        <option name="BASE_DIRECTORY_NAME" value="Unnamed_M_A_Git" />
+      </server-settings>
+      <predefined_log_file enabled="true" id="Tomcat" />
+      <predefined_log_file enabled="true" id="Tomcat Catalina" />
+      <predefined_log_file id="Tomcat Manager" />
+      <predefined_log_file id="Tomcat Host Manager" />
+      <predefined_log_file id="Tomcat Localhost Access" />
+      <RunnerSettings RunnerId="Debug">
+        <option name="DEBUG_PORT" value="50940" />
+      </RunnerSettings>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Debug">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Run">
+        <option name="USE_ENV_VARIABLES" value="true" />
+        <STARTUP>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </STARTUP>
+        <SHUTDOWN>
+          <option name="USE_DEFAULT" value="true" />
+          <option name="SCRIPT" value="" />
+          <option name="VM_PARAMETERS" value="" />
+          <option name="PROGRAM_PARAMETERS" value="" />
+        </SHUTDOWN>
+      </ConfigurationWrapper>
+      <method v="2">
+        <option name="Make" enabled="true" />
+        <option name="BuildArtifacts" enabled="true">
+          <artifact name="WebUI:war exploded" />
+        </option>
+      </method>
+    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Program" />
-        <item itemvalue="Application.Main" />
-        <item itemvalue="Application.Program" />
-        <item itemvalue="Application.Main" />
-        <item itemvalue="Application.Program" />
       </list>
     </recent_temporary>
+  </component>
+  <component name="ServiceViewManager">
+    <option name="allServicesViewState">
+      <serviceView>
+        <treeState>
+          <expand />
+          <select />
+        </treeState>
+      </serviceView>
+    </option>
   </component>
   <component name="StructureViewFactory">
     <option name="ACTIVE_ACTIONS" value=",ALPHA_COMPARATOR" />
@@ -269,7 +408,29 @@
       <workItem from="1568013244011" duration="17810000" />
       <workItem from="1568109204105" duration="13512000" />
       <workItem from="1568208493536" duration="7643000" />
-      <workItem from="1568290552032" duration="13117000" />
+      <workItem from="1568290552032" duration="14321000" />
+      <workItem from="1568447964785" duration="8212000" />
+      <workItem from="1568472067640" duration="1849000" />
+      <workItem from="1568543183799" duration="3186000" />
+      <workItem from="1569057571868" duration="147000" />
+      <workItem from="1569057799544" duration="528000" />
+      <workItem from="1569058345125" duration="40000" />
+      <workItem from="1569063177948" duration="2347000" />
+      <workItem from="1569072855651" duration="5289000" />
+      <workItem from="1569229679861" duration="2167000" />
+      <workItem from="1569244604398" duration="6230000" />
+      <workItem from="1569400739722" duration="2878000" />
+      <workItem from="1569403781877" duration="1175000" />
+      <workItem from="1569404968442" duration="4000" />
+      <workItem from="1569405405413" duration="2838000" />
+      <workItem from="1569415494881" duration="13467000" />
+      <workItem from="1569514947457" duration="855000" />
+      <workItem from="1569525425346" duration="5222000" />
+      <workItem from="1569583379612" duration="12114000" />
+      <workItem from="1569602329670" duration="120000" />
+      <workItem from="1569602476647" duration="1136000" />
+      <workItem from="1569607957156" duration="1440000" />
+      <workItem from="1569676601552" duration="735000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -411,7 +572,14 @@
       <option name="project" value="LOCAL" />
       <updated>1567954099714</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="Add new Css with color picker for select custom theme.&#10;Adding Push branch to remote repository feature.">
+      <created>1568374141353</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1568374141353</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -425,6 +593,20 @@
             <State>
               <option name="COLUMN_ORDER" />
             </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="RECENT_FILTERS">
+      <map>
+        <entry key="Branch">
+          <value>
+            <list />
+          </value>
+        </entry>
+        <entry key="User">
+          <value>
+            <list />
           </value>
         </entry>
       </map>
@@ -452,37 +634,7 @@
     <MESSAGE value="Fix bugs in clone repository, export/import to xml now look like it working well. add option to create branch and choose him the pointed commit sha-1 from the commits that available in the system." />
     <MESSAGE value="add branch and commit list next to tree" />
     <MESSAGE value="Fix push &amp; pull - finally finished collaboration functions. &#10;Move commit's tree to other window (popup without top-bar)&#10;Adding new animations" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix push &amp; pull - finally finished collaboration functions. &#10;Move commit's tree to other window (popup without top-bar)&#10;Adding new animations" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java</url>
-          <line>256</line>
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java</url>
-          <line>125</line>
-          <option name="timeStamp" value="7" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java</url>
-          <line>127</line>
-          <option name="timeStamp" value="8" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/FXUi/src/magit/tasks/CommitDataTask.java</url>
-          <line>29</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
-  </component>
-  <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/M_A_Git$IntroUI.ic" NAME="IntroUI Coverage Results" MODIFIED="1566297313958" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false">
-      <FILTER>utils.*</FILTER>
-    </SUITE>
+    <MESSAGE value="Add new Css with color picker for select custom theme.&#10;Adding Push branch to remote repository feature." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add new Css with color picker for select custom theme.&#10;Adding Push branch to remote repository feature." />
   </component>
 </project>

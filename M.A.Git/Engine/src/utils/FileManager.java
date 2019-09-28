@@ -117,10 +117,10 @@ public class FileManager {
         }
     }
 
-    public static MagitRepository deserializeFrom(InputStream in) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Settings.XML_LOAD_PACKAGE);
-        Unmarshaller u = jc.createUnmarshaller();
-        return (MagitRepository) u.unmarshal(in);
+    public static MagitRepository deserializeFrom(StringReader stringReader) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Settings.XML_LOAD_PACKAGE);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        return (MagitRepository) unmarshaller.unmarshal(stringReader);
     }
 
     public static File unZipFile(File file, String pathToTempFolder) {

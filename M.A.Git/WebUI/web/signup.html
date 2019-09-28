@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+	    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+	    <meta name="viewport" content="width=device-width, initial-scale=1">  
+	    <title>M.A.Git - Registration</title>
+        <meta name="description" content="">
+        <meta name="author" content="templatemo">
+	    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,400italic,700' rel='stylesheet' type='text/css'>
+	    <link href="css/font-awesome.min.css" rel="stylesheet">
+	    <link href="css/bootstrap.min.css" rel="stylesheet">
+	    <link href="css/templatemo-style.css" rel="stylesheet">
+	</head>
+	<body class="light-gray-bg">
+		<div class="templatemo-content-widget templatemo-login-widget white-bg" style="margin-top: 50px;">
+			<header class="text-center">
+				<img src="images/logo.png" style="width: 300px; height:auto;"/>
+	        </header>
+	        <div id="errorblock" class="alert alert-danger" style="display:none;">
+				<p id="message">
+					
+				</p>
+			</div>
+	        <form id="loginForm" action="register" method="POST" class="templatemo-login-form">
+				<p><b>Welcome!</b> Please enter username and password to complete your registration.</p>
+	        	<div class="form-group">
+	        		<div class="input-group">
+		        		<div class="input-group-addon"><i class="fa fa-user fa-fw"></i></div>	        		
+		              	<input type="text" id="username" name="username" class="form-control" placeholder="Username" required>
+		          	</div>	
+	        	</div>
+	        	<div class="form-group">
+	        		<div class="input-group">
+		        		<div class="input-group-addon"><i class="fa fa-key fa-fw"></i></div>	        		
+		              	<input type="password" id="password" name="password" class="form-control" placeholder="******" required>         
+		          	</div>	
+	        	</div>	          	
+				<div class="form-group">
+					<button type="submit" class="templatemo-blue-button width-100">Sign-Up</button>
+				</div>
+	        </form>
+		</div>
+		<script src="js/jquery-2.0.3.min.js"></script>      <!-- jQuery -->
+   		<script src="js/jquery-migrate-1.2.1.min.js"></script> <!--  jQuery Migrate Plugin -->
+    	<script type="text/javascript" src="js/templatemo-script.js"></script> 
+		<script type="text/javascript" src="js/signup-page.js"></script> 
+	</body>
+</html>

@@ -4,10 +4,8 @@ import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.net.URL;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Settings {
@@ -25,8 +23,8 @@ public class Settings {
             MAGIT_UI_MIN_WIDTH = 900,
             MAGIT_UI_SELECT_POPUP_HEIGHT = 150,
             MAGIT_UI_SELECT_POPUP_WIDTH = 350,
-            MAGIT_UI_SETTINGS_MIN_HEIGHT = 250,
-            MAGIT_UI_SETTINGS_MIN_WIDTH = 600,
+            MAGIT_UI_SETTINGS_MIN_HEIGHT = 300,
+            MAGIT_UI_SETTINGS_MIN_WIDTH = 650,
             MAGIT_UI_SMART_POPUP_MAX_HEIGHT = 250,
             MAGIT_UI_SMART_POPUP_MAX_WIDTH = 600,
             MAGIT_UI_TREE_WINDOW_HEIGHT = 700,
@@ -124,26 +122,29 @@ public class Settings {
             RESOURCE_THEME_PACKAGE = "theme",
             IMAGE_PACKAGE = "img",
             IMAGE_PNG_TYPE = ".png",
-            RESOURCE_ROOT_FOLDER = RESOURCE_SEPARATOR + RESOURCE_MAGIT_PACKAGE + RESOURCE_SEPARATOR + RESOURCE_RESOURCES_PACKAGE + RESOURCE_SEPARATOR,
-            RESOURCE_IMAGE_PACKAGE = RESOURCE_ROOT_FOLDER + RESOURCE_SEPARATOR + IMAGE_PACKAGE + RESOURCE_SEPARATOR,
+            RESOURCE_ROOT_FOLDER = RESOURCE_MAGIT_PACKAGE + RESOURCE_SEPARATOR + RESOURCE_RESOURCES_PACKAGE + RESOURCE_SEPARATOR,
+            RESOURCE_IMAGE_PACKAGE = RESOURCE_ROOT_FOLDER + IMAGE_PACKAGE + RESOURCE_SEPARATOR,
             THEME_ROOT_FOLDER = RESOURCE_ROOT_FOLDER + RESOURCE_THEME_PACKAGE + RESOURCE_SEPARATOR,
             FXML_SELECT_POPUP = RESOURCE_ROOT_FOLDER + "select_popup.fxml",
             FXML_SETTINGS_WINDOW = RESOURCE_ROOT_FOLDER + "settings.fxml",
             FXML_APPLICATION = RESOURCE_ROOT_FOLDER + "magit.fxml",
             FXML_SMART_POPUP_BOX = RESOURCE_ROOT_FOLDER + "smart_popup.fxml",
-            FXML_DIALOG_BOX = RESOURCE_ROOT_FOLDER + "dialogBox.fxml",
+            FXML_DIALOG_BOX = RESOURCE_ROOT_FOLDER + "dialog_box.fxml",
             FXML_INTRO_WINDOW = RESOURCE_ROOT_FOLDER + "magit_intro.fxml",
-            FXML_BRANCH_MANAGER = RESOURCE_ROOT_FOLDER + "branchManager.fxml",
-            FXML_MERGE_WINDOW = RESOURCE_ROOT_FOLDER + "mergeWindow.fxml",
-            FXML_FILE_VIEWER = RESOURCE_ROOT_FOLDER + "fileView.fxml",
+            FXML_BRANCH_MANAGER = RESOURCE_ROOT_FOLDER + "branch_manager.fxml",
+            FXML_MERGE_WINDOW = RESOURCE_ROOT_FOLDER + "merge_window.fxml",
+            FXML_FILE_VIEWER = RESOURCE_ROOT_FOLDER + "file_view.fxml",
             FXML_TREE_VIEW_FILE = RESOURCE_IMAGE_PACKAGE + "file.png",
-            FXML_TREE_WINDOW = RESOURCE_ROOT_FOLDER + "treeWindow.fxml",
+            FXML_TREE_WINDOW = RESOURCE_ROOT_FOLDER + "tree_window.fxml",
             FXML_TREE_VIEW_FOLDER = RESOURCE_IMAGE_PACKAGE + "folder.png",
             FXML_CLOSE_BUTTON_HOVER_IMG = RESOURCE_IMAGE_PACKAGE + "close_pressed.png",
             FXML_CLOSE_BUTTON_IMG = RESOURCE_IMAGE_PACKAGE + "close.png",
             FXML_EXPAND_BUTTON_IMG = RESOURCE_IMAGE_PACKAGE + "expand.png",
             FXML_EXPAND_BUTTON_HOVER_IMG = RESOURCE_IMAGE_PACKAGE + "expand_pressed.png",
             FXML_THEME_WHITE_CSS_FILE = THEME_ROOT_FOLDER + "white.css",
+            FXML_THEME_CUSTOM_EXTERNAL_CSS_FILE =
+                    new File(new File("").getAbsolutePath() + RESOURCE_SEPARATOR + RESOURCE_THEME_PACKAGE
+                            + RESOURCE_SEPARATOR + "custom.css").toString(),
             FXML_THEME_CUSTOM_CSS_FILE = THEME_ROOT_FOLDER + "custom.css";
 
     // css macros
@@ -169,14 +170,91 @@ public class Settings {
     public static final boolean ALLOW_REVERSE = true;
     public static Duration ANIMATION_DURATION = Duration.millis(0);
     public static Color CURRENT_THEME_COLOR = Color.WHITE;
+    private static List<String> file_locations = new LinkedList<>();
 
     // simple function to get brighter color of input color
     public static Color getBrighter(Color current) {
         return current.brighter();
     }
 
+    public static final char[] special_chars = new char[] {'<','>',':','\"','|','?','*'};
+
+    // WSA == Web Session Attributes - used for keys for session map
+    public static final String
+            COOKIE_USER_LOGGED_IN = "USER_ID",
+            WSA_JSON_ACTIVE_BRANCH = "WSA_JSON_ACTIVE_BRANCH",
+            WSA_JSON_CURRENT_PATH = "WSA_JSON_CURRENT_PATH",
+            WSA_REMOTE_REPOSITORY_NAME = "WSA_REMOTE_REPOSITORY_NAME",
+            WSA_REPOSITORIES= "WSA_REPOSITORIES",
+            WSA_USER = "WSA_USER";
+
+    public static final String
+            SERVER_DATABASE = "c:" + File.separator + "magit-ex3",
+            USERS_FOLDER = SERVER_DATABASE + File.separator + "users";
+
+    public static boolean SERVER_STATUS;
+
     public static void setup() {
         themeManager.put(THEME_WHITE, FXML_THEME_WHITE_CSS_FILE);
-        themeManager.put(THEME_CUSTOM, FXML_THEME_CUSTOM_CSS_FILE);
+        themeManager.put(THEME_CUSTOM, new File(FXML_THEME_CUSTOM_EXTERNAL_CSS_FILE).toURI().toString());
+
+        addToList(FXML_SELECT_POPUP,
+                FXML_SETTINGS_WINDOW,
+                FXML_APPLICATION,
+                FXML_SMART_POPUP_BOX,
+                FXML_DIALOG_BOX,
+                FXML_INTRO_WINDOW,
+                FXML_BRANCH_MANAGER,
+                FXML_MERGE_WINDOW,
+                FXML_FILE_VIEWER,
+                FXML_TREE_VIEW_FILE,
+                FXML_TREE_WINDOW,
+                FXML_TREE_VIEW_FOLDER,
+                FXML_CLOSE_BUTTON_HOVER_IMG,
+                FXML_CLOSE_BUTTON_IMG,
+                FXML_EXPAND_BUTTON_IMG,
+                FXML_EXPAND_BUTTON_HOVER_IMG,
+                FXML_THEME_WHITE_CSS_FILE,
+                FXML_THEME_CUSTOM_CSS_FILE);
+    }
+
+    private static void addToList(String... values) {
+        file_locations.addAll(Arrays.asList(values));
+    }
+
+    public static boolean testPaths() {
+        boolean check = true;
+        Date now = new Date();
+
+        System.out.println("Welcome to M.A.Git - JavaFX application");
+        System.out.println("System check: Checking resource files...");
+
+        for (String file_location : file_locations) {
+            URL url = Settings.class.getResource(file_location);
+            if (url != null) {
+                System.out.println("Error, the resource file '" + url + "' not found!");
+                check = false;
+            }
+        }
+
+
+        System.out.println("System check: Checking external custom css file..");
+        if (!new File(FXML_THEME_CUSTOM_EXTERNAL_CSS_FILE).exists()) {
+            System.out.println("Error, external css file not found!");
+            check = false;
+        }
+
+        double seconds = (double) (new Date().getTime() - now.getTime()) / 1000;
+        System.out.println(String.format("System check: System scanning finish in %.3f seconds..", seconds));
+
+        if (!check) {
+            System.out.println("System check: Scanning system files finish unsuccessfully.");
+            System.out.println("Open M.A.Git canceled.");
+        } else {
+            System.out.println("System check: Scanning system files finish successfully,  enjoy your M.A.Git!");
+            System.out.println("Starting M.A.Git...");
+        }
+
+        return check;
     }
 }

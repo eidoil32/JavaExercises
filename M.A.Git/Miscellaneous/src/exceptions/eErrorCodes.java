@@ -47,7 +47,13 @@ public enum eErrorCodes {
     NOTHING_NEW(Settings.language.getString("NOTHING_NEW")),
     CANNOT_DELETE_ACTIVE_BRANCH(Settings.language.getString("CANNOT_DELETE_ACTIVE_BRANCH")),
     XML_PARSE_FAILED(Settings.language.getString("XML_PARSE_FAILED")),
-    PARSE_BLOB_TO_FOLDER_FAILED(Settings.language.getString("PARSE_BLOB_TO_FOLDER_FAILED"));
+    PARSE_BLOB_TO_FOLDER_FAILED(Settings.language.getString("PARSE_BLOB_TO_FOLDER_FAILED")),
+
+    // Web exceptions
+    // TODO: add all string to languages
+    USER_ALREADY_EXIST(Settings.language.getString("USER_ALREADY_EXIST")),
+    PASSWORD_TOO_SHORT(Settings.language.getString("PASSWORD_TOO_SHORT")),
+    USER_PASSWORD_WRONG(Settings.language.getString("USER_PASSWORD_WRONG"));
 
     private String message;
 

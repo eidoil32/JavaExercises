@@ -7,6 +7,7 @@ import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
+import javafx.geometry.Pos;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -67,17 +68,17 @@ public class TreeController {
     }
 
     public void initialize() {
-        close.imageProperty().bind(
-                Bindings.when(close.hoverProperty())
-                        .then(new Image(Settings.FXML_CLOSE_BUTTON_HOVER_IMG))
-                        .otherwise(new Image(Settings.FXML_CLOSE_BUTTON_IMG))
-        );
+            close.imageProperty().bind(
+                    Bindings.when(close.hoverProperty())
+                            .then(new Image(Settings.FXML_CLOSE_BUTTON_HOVER_IMG))
+                            .otherwise(new Image(Settings.FXML_CLOSE_BUTTON_IMG))
+            );
 
-        expandTree.imageProperty().bind(
-                Bindings.when(expandTree.hoverProperty())
-                        .then(new Image(Settings.FXML_EXPAND_BUTTON_HOVER_IMG))
-                        .otherwise(new Image(Settings.FXML_EXPAND_BUTTON_IMG))
-        );
+            expandTree.imageProperty().bind(
+                    Bindings.when(expandTree.hoverProperty())
+                            .then(new Image(Settings.FXML_EXPAND_BUTTON_HOVER_IMG))
+                            .otherwise(new Image(Settings.FXML_EXPAND_BUTTON_IMG))
+            );
 
         close.getStyleClass().add(Settings.MOUSE_HAND_ON_HOVER);
         expandTree.getStyleClass().add(Settings.MOUSE_HAND_ON_HOVER);
@@ -254,6 +255,9 @@ public class TreeController {
                 Circle circle = new Circle(Settings.COMMIT_CIRCLE_RADIUS, color);
                 Label label = new Label(entry.getKey().getName());
                 label.setPadding(new Insets(0, 5, 0, 5));
+                AnchorPane.setTopAnchor(label, 0.0);
+                AnchorPane.setBottomAnchor(label, 0.0);
+                label.setAlignment(Pos.TOP_LEFT);
                 Separator separator = new Separator(Orientation.VERTICAL);
                 circle.onMouseClickedProperty().bind(label.onMouseClickedProperty());
                 label.setOnMouseClicked((event -> markAllCommits(entry.getKey())));

@@ -1,7 +1,7 @@
 package magit;
 
-import controller.screen.main.MainController;
 import controller.screen.intro.IntroController;
+import controller.screen.main.MainController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
@@ -36,7 +36,7 @@ public class MagitUI {
         FXMLLoader loader = new FXMLLoader();
 
         // load main fxml
-        URL mainFXML = Program.class.getResource(Settings.FXML_APPLICATION);
+        URL mainFXML = Program.class.getClassLoader().getResource(Settings.FXML_APPLICATION);
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
         Pane root = loader.load();

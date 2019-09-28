@@ -38,7 +38,7 @@ public class SettingsUI {
         FXMLLoader loader = new FXMLLoader();
 
         // load main fxml
-        URL mainFXML = Program.class.getResource(Settings.FXML_SETTINGS_WINDOW);
+        URL mainFXML = Program.class.getClassLoader().getResource(Settings.FXML_SETTINGS_WINDOW);
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
 

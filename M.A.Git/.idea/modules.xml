@@ -3,10 +3,10 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Engine/Engine.iml" filepath="$PROJECT_DIR$/Engine/Engine.iml" />
-      <module fileurl="file://$PROJECT_DIR$/FXUi/FXUi.iml" filepath="$PROJECT_DIR$/FXUi/FXUi.iml" />
       <module fileurl="file://$PROJECT_DIR$/Languages/Languages.iml" filepath="$PROJECT_DIR$/Languages/Languages.iml" />
       <module fileurl="file://$PROJECT_DIR$/M.A.Git.iml" filepath="$PROJECT_DIR$/M.A.Git.iml" />
       <module fileurl="file://$PROJECT_DIR$/Miscellaneous/Miscellaneous.iml" filepath="$PROJECT_DIR$/Miscellaneous/Miscellaneous.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WebUI/WebUI.iml" filepath="$PROJECT_DIR$/WebUI/WebUI.iml" />
     </modules>
   </component>
 </project>
