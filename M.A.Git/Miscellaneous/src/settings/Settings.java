@@ -186,6 +186,7 @@ public class Settings {
             WSA_JSON_CURRENT_PATH = "WSA_JSON_CURRENT_PATH",
             WSA_REMOTE_REPOSITORY_NAME = "WSA_REMOTE_REPOSITORY_NAME",
             WSA_REPOSITORIES= "WSA_REPOSITORIES",
+            WSA_USER_NAME = "WSA_USER_NAME",
             WSA_USER = "WSA_USER";
 
     public static final String

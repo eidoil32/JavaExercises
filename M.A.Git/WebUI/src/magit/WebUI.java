@@ -53,7 +53,22 @@ public class WebUI implements ServletContextListener {
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        System.out.println("Stopping application");
+        System.out.println("Start deleting files...");
+        deleteFolder(new File(Settings.SERVER_DATABASE));
+        System.out.println("Finish deleting files, good bye!");
     }
 
+    private void deleteFolder(File root_folder) {
+        File[] files = root_folder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (file.isDirectory()) {
+                    deleteFolder(file);
+                } else {
+                    file.delete();
+                }
+            }
+        }
+        root_folder.delete();
+    }
 }

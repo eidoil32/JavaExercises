@@ -29,8 +29,10 @@ import magit.utils.MyScene;
 import magit.utils.Utilities;
 import org.apache.commons.io.FilenameUtils;
 import settings.Settings;
+import utils.FileManager;
 import xml.basic.MagitRepository;
 
+import javax.xml.bind.JAXBException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -214,10 +216,9 @@ public class IntroController {
                     try {
                         updateProgress(1, loadXMLLevels);
                         InputStream inputStream = new FileInputStream(file);
-                        //MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
-                        MagitRepository magitRepository = new MagitRepository();
+                        MagitRepository magitRepository = FileManager.deserializeFrom(inputStream);
                         updateProgress(2, loadXMLLevels);
-                        model.basicCheckXML(magitRepository);
+                        Magit.basicCheckXML(magitRepository);
                         updateProgress(3, loadXMLLevels);
                         model.setCurrentRepository(Repository.XML_RepositoryFactory(magitRepository));
                         updateProgress(4, loadXMLLevels);
@@ -234,9 +235,9 @@ public class IntroController {
                             Platform.runLater(() -> showError(e.getMessage()));
                         }
                     }
-                    /*catch (JAXBException e) {
+                    catch (JAXBException e) {
                         Platform.runLater(() -> showError(Settings.language.getString("XML_PARSE_FAILED")));
-                    }*/
+                    }
                 }
                 updateProgress(6, loadXMLLevels);
             }

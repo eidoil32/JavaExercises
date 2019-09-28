@@ -13,7 +13,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -33,9 +32,7 @@ import magit.utils.Utilities;
 import settings.Settings;
 import utils.PairBranchCommit;
 
-import java.awt.*;
 import java.util.List;
-import java.util.*;
 import java.util.stream.Collectors;
 
 public class TreeController {

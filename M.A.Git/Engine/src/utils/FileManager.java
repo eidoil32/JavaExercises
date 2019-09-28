@@ -123,6 +123,12 @@ public class FileManager {
         return (MagitRepository) unmarshaller.unmarshal(stringReader);
     }
 
+    public static MagitRepository deserializeFrom(InputStream stringReader) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Settings.XML_LOAD_PACKAGE);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        return (MagitRepository) unmarshaller.unmarshal(stringReader);
+    }
+
     public static File unZipFile(File file, String pathToTempFolder) {
         File dir = new File(pathToTempFolder);
         // create output directory if it doesn't exist
