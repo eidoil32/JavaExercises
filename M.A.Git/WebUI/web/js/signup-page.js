@@ -4,6 +4,7 @@ $(function() { // onload...do
 
         $.ajax({
             data: parameters,
+			async: true, 
             url: this.action,
             timeout: 2000,
             error: function() {
@@ -11,7 +12,7 @@ $(function() { // onload...do
             },
             success: function(data) {
               if (data == "success") {
-                location.href = "main.html";
+                location.href = "index.html";
               } else {
                 var x = document.getElementById("errorblock");
                 x.style.display = "block";

@@ -21,9 +21,9 @@ public class StartServlet extends HttpServlet {
         User user = (User) session.getAttribute(Settings.WSA_USER);
         String page;
         if (user == null) {
-            page = "/login.html";
+            page = Settings.PAGE_LOGIN;
         } else {
-            page = "/main.html";
+            page = Settings.PAGE_INDEX;
         }
 
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(page);

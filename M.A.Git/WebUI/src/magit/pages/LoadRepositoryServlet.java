@@ -5,7 +5,6 @@ import exceptions.MyXMLException;
 import exceptions.RepositoryException;
 import magit.Magit;
 import magit.Repository;
-import magit.WebUI;
 import settings.Settings;
 import usermanager.User;
 import utils.FileManager;
@@ -29,17 +28,24 @@ import java.util.Scanner;
 @WebServlet(name = "LoadRepositoryServlet", urlPatterns = {"/load-repository"})
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, maxFileSize = 1024 * 1024 * 5, maxRequestSize = 1024 * 1024 * 5 * 5)
 public class LoadRepositoryServlet extends HttpServlet {
+    private static final String RESPONSE_FILE_UPLOAD = "file_upload=",
+                                FILE_UPLOAD_SUCCESSFULLY = RESPONSE_FILE_UPLOAD + "success";
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         // need to do something?
-        response.sendRedirect("fileupload/form.html");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        response.setContentType("application/json");
+        response.setContentType(Settings.APPLICATION_RESPONSE_TYPE);
         Collection<Part> parts = request.getParts();
         StringBuilder fileContent = new StringBuilder();
+        String url = request.getHeader(Settings.URL_REFERER);
+        if (url.contains(Settings.GET_URL_PARAMETERS_ADDON)) {
+            url += Settings.GET_URL_PARAMETERS_ADDON_PLUS;
+        } else {
+            url += Settings.GET_URL_PARAMETERS_ADDON;
+        }
 
         for (Part part : parts) {
             if (part.getName().equals("field_path"))
@@ -49,14 +55,26 @@ public class LoadRepositoryServlet extends HttpServlet {
             MagitRepository magitRepository = FileManager.deserializeFrom(new StringReader(fileContent.toString()));
             Magit.basicCheckXML(magitRepository);
             Magit magit = new Magit();
-            magit.setCurrentRepository(Repository.XML_RepositoryFactory(magitRepository));
             User user = (User) request.getSession().getAttribute(Settings.WSA_USER);
-            WebUI.createRepositoryData(user, request, magit);
-        } catch (JAXBException | RepositoryException | MyFileException | MyXMLException e) {
-            response.sendRedirect("main.html?file_upload=failed");
+            Integer numOfRepositories = user.countRepositories();
+            numOfRepositories = (numOfRepositories == null) ? 0 : numOfRepositories + 1;
+            magit.setCurrentRepository(Repository.RepositoryFactory_Web(
+                    magitRepository,
+                    String.format(Settings.USERS_REPOSITORY_FOLDER, user.getName(), numOfRepositories)));
+            magit.afterXMLLayout();
+            request.getSession().setAttribute(Settings.WSA_REPOSITORIES_NUMBER, numOfRepositories);
+            response.sendRedirect(url + FILE_UPLOAD_SUCCESSFULLY);
+        } catch (JAXBException e) {
+            response.sendRedirect(url + RESPONSE_FILE_UPLOAD + Settings.INVALID_XML_FILE);
+        } catch (RepositoryException | MyFileException | MyXMLException e) {
+            response.sendRedirect(url + RESPONSE_FILE_UPLOAD + replaceSpacesWithUnderline(e.getMessage()));
         }
+    }
 
-        response.sendRedirect("main.html?file_upload=success");
+    private String replaceSpacesWithUnderline(String message) {
+        message = message.replaceAll(" ", "_");
+        message = message.replaceAll(":", "");
+        return message;
     }
 
     private String readFromInputStream(InputStream inputStream) {

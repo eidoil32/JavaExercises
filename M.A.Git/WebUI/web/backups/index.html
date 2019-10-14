@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>M.A.Git</title>
+    <meta name="description" content="">
+    <meta name="author" content="templatemo">
+    <link href="css/font-awesome.min.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/templatemo-style.css" rel="stylesheet">
+</head>
+
+<body>
+    <!-- Left column -->
+    <div class="templatemo-flex-row">
+        <div class="templatemo-sidebar">
+            <header class="templatemo-site-header">
+                <a href="main.html">
+                    <img src="images/logo_white.png" style="width: 200px; height:auto; background-color: #1F2124;" />
+                </a>
+            </header>
+            <div class="mobile-menu-icon">
+                <i class="fa fa-bars"></i>
+            </div>
+            <nav class="templatemo-left-nav">
+                <ul>
+                    <!-- to select menu need to add: class="active" -->
+                    <li><a href="#" onclick="selectMenuItem(this, 'my-repository.html');" id="menu-my-repositories"><i class="fa fa-home fa-fw"></i>My repositories</a></li>
+                    <!-- open a model window -->
+                    <li>
+                        <a href="#" onclick="selectMenuItem(this, null);" data-toggle="modal" data-target="#load-repository">
+                            <i class="fa fa-upload fa-fw" id="load-repository_a"></i>Load repository
+                        </a>
+                    </li>
+                    <li><a href="#" onclick="selectMenuItem(this, 'preferences.html');" id="menu-preferences"><i class="fa fa-sliders fa-fw"></i>Preferences</a></li>
+                    <li><a href="#" onclick="selectMenuItem(this, 'users.html');" id="menu-users"><i class="fa fa-users fa-fw"></i>Users</a></li>
+                    <li><a href="login?signout=true"><i class="fa fa-sign-out fa-fw"></i>Sign Out</a></li>
+                </ul>
+            </nav>
+        </div>
+        <!-- Main content -->
+        <div class="templatemo-content col-1 light-gray-bg" style="min-height: 100vh">
+            <div id="div_message_error" class="alert alert-danger" style="display:none;">
+                <p id="message_error">
+
+                </p>
+            </div>
+            <div id="div_message_success" class="alert alert-success" style="display:none;">
+                <p id="message_success">
+
+                </p>
+            </div>
+            <div id="page-content">
+            </div>
+            <!-- Second row ends -->
+            <footer class="text-center">
+                Ido Hayun - M.A.Git - 2019
+            </footer>
+        </div>
+    </div>
+    <!-- Add modal contents -->
+    <div id="modal-popups"></div>
+    <!-- JS -->
+    <script src="js/jquery-1.11.2.min.js"></script>
+    <!-- jQuery -->
+    <script src="js/jquery-migrate-1.2.1.min.js"></script>
+    <!--  jQuery Migrate Plugin -->
+    <script src="js/bootstrap.js"></script>
+    <!-- Bootstrap scripts -->
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript" src="js/templatemo-script.js"></script>
+</body>
+
+</html>

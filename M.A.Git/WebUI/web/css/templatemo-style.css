@@ -1,11 +1,4 @@
 /*
-
-Visual Admin Template
-
-https://templatemo.com/tm-455-visual-admin
-
-
-
 TABLE OF CONTENT
 	1. Universal Styles
 	2. Left Column
@@ -187,6 +180,10 @@ footer { padding: 15px; }
 	transition: all 0.3s ease;
 }
 .templatemo-left-nav .fa { margin-right: 15px; }
+
+/*.myCustomTableRow :hover {
+	background-color: yellow;
+}*/
 
 /* 3. Right Column
 ------------------------------*/

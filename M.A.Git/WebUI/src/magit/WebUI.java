@@ -9,19 +9,20 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.File;
-import java.util.List;
+import java.util.Set;
 
 @WebListener
 public class WebUI implements ServletContextListener {
     private static UserManager userManager = new UserManager();
 
-    synchronized public static void createRepositoryData(User user, HttpServletRequest request, Magit magit) {
+    synchronized public static void createRepositoryData(User user, HttpServletRequest request, Magit magit, int repository_count) {
         File userFolder = new File(Settings.USERS_FOLDER + File.separator + user);
-
+        request.getSession().setAttribute(Settings.WSA_REPOSITORIES_NUMBER, repository_count);
     }
 
-    synchronized public static List<User> getUsers() {
+    synchronized public static Set<User> getUsers() {
         return userManager.getUsers();
     }
 
@@ -39,12 +40,9 @@ public class WebUI implements ServletContextListener {
         return userManager.checkUserAlreadyExist(username);
     }
 
-    synchronized public static void addUser(String username, String password, String sessionID) throws MyWebException {
-        userManager.addUser(username, password, sessionID);
-    }
-
-    synchronized public static void updateID(User user, String id) {
-        userManager.updateID(user, id);
+    synchronized public static void addUser(String username, String password, HttpSession session) throws MyWebException {
+        User user = userManager.addUser(username, password);
+        session.setAttribute(Settings.WSA_USER, user);
     }
 
     synchronized public static User findUser(String username) {

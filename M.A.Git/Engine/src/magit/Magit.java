@@ -1133,14 +1133,17 @@ public class Magit {
         }
     }
 
-    public Map<String, List<String>> createRepositoryJson() {
-        Map<String, List<String>> result = new HashMap<>();
+    public Map<String, String> createRepositoryJson() {
+        Map<String, String> result = new HashMap<>();
 
-        result.put(Settings.WSA_JSON_ACTIVE_BRANCH, createSingleItemList(currentBranch.getName()));
-        result.put(Settings.WSA_JSON_CURRENT_PATH, createSingleItemList(rootFolder.toString()));
-        if (remoteRepository != null) {
-            result.put(Settings.WSA_REMOTE_REPOSITORY_NAME, createSingleItemList(remoteRepository.getCurrentRepository().getName()));
-        }
+        result.put(Settings.WSA_REPOSITORY_NAME, currentRepository.getName());
+        result.put(Settings.WSA_JSON_ACTIVE_BRANCH, currentBranch.getName());
+        result.put(Settings.WSA_JSON_CURRENT_PATH, rootFolder.toString());
+        result.put(Settings.WSA_JSON_NUM_OF_BRANCHES, Integer.toString(getCurrentRepository().getBranches().size() - 1)); // minus 1 because HEAD branch
+        Commit lastCommit = currentRepository.getLastCommit();
+        result.put(Settings.WSA_JSON_LAST_COMMIT_DATA,
+                new SimpleDateFormat(Settings.DATE_FORMAT).format(lastCommit.getDate()));
+        result.put(Settings.WSA_JSON_LAST_COMMIT_COMMENT, lastCommit.getComment());
 
         return result;
     }
@@ -1149,5 +1152,20 @@ public class Magit {
         List<String> temp = new LinkedList<>();
         temp.add(item);
         return temp;
+    }
+
+    public Map<String, List<String>> getRepositoryMap() throws IOException {
+        Map<String, List<String>> result = new HashMap<>();
+
+        result.put(Settings.WSA_REPOSITORY_NAME, createSingleItemList(currentRepository.getName()));
+        List<Branch> branches = currentRepository.getActiveBranches();
+        result.put(Settings.WSA_SINGLE_REPOSITORY_BRANCHES,
+                branches.stream()
+                        .filter(branch -> !branch.getName().equals(Settings.MAGIT_BRANCH_HEAD))
+                        .map(Branch::getName)
+                        .collect(Collectors.toList()));
+        result.put(Settings.WSA_SINGLE_REPOSITORY_HEAD_BRANCH, createSingleItemList(currentRepository.getActiveBranch().getName()));
+
+        return result;
     }
 }

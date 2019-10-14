@@ -2,7 +2,6 @@ package magit.pages;
 
 import com.google.gson.Gson;
 import magit.WebUI;
-import settings.Settings;
 import usermanager.User;
 
 import javax.servlet.ServletException;
@@ -12,21 +11,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 @WebServlet(name = "UsersListServlet", urlPatterns = {"/users"})
 public class UsersServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
-        Map<String, String> result = new HashMap<>();
+        List<String> result = new LinkedList<>();
         Gson converter = new Gson();
 
-        List<User> users = WebUI.getUsers();
+        Set<User> users = WebUI.getUsers();
         for (User user : users) {
-            result.put(Settings.WSA_USER_NAME, user.getName());
+            result.add(user.getName());
         }
 
         String json = converter.toJson(result);

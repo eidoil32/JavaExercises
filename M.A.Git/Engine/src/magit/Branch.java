@@ -68,24 +68,23 @@ public class Branch {
 
     public static Branch XML_Parser(MagitSingleBranch singleBranch, Repository repository, MagitRepository xmlRepository, String commitID)
             throws IOException, RepositoryException, MyXMLException, MyFileException {
-        String trackingName = xmlRepository.getMagitRemoteReference() != null ? xmlRepository.getMagitRemoteReference().getName() : null;
 
         if (commitID.equals(Settings.EMPTY_STRING)) {
-            Branch remote = new Branch(singleBranch.getName(), null, repository.getBranchesPath().toString());
-            if (singleBranch.isTracking()) {
-                if (checkIfRemoteBranchExists(singleBranch.getTrackingAfter(), xmlRepository.getMagitBranches().getMagitSingleBranch())) {
-                    throw new MyXMLException(eErrorCodesXML.BRANCH_TRACKING_AFTER_NONE_EXISTS, null);
-                }
-                return new RemoteTrackingBranch(remote, repository.getBranchesPath().toString(), trackingName);
-            } else {
-                return remote;
-            }
+            return new Branch(singleBranch.getName(), null, repository.getBranchesPath().toString());
+//            if (singleBranch.isTracking()) {
+//                if (checkIfRemoteBranchExists(singleBranch.getTrackingAfter(), xmlRepository.getMagitBranches().getMagitSingleBranch())) {
+//                    throw new MyXMLException(eErrorCodesXML.BRANCH_TRACKING_AFTER_NONE_EXISTS, null);
+//                }
+//                return new RemoteTrackingBranch(remote, repository.getBranchesPath().toString(), trackingName);
+//            } else {
+//                return remote;
+//            }
         }
 
         MagitSingleCommit pointedMagitCommit = Commit.XML_FindMagitCommit(xmlRepository.getMagitCommits().getMagitSingleCommit(), commitID);
         MagitSingleFolder pointedRootFolder = Folder.findRootFolder(xmlRepository.getMagitFolders().getMagitSingleFolder(), pointedMagitCommit.getRootFolder().getId());
-        Folder rootFolder = Folder.XML_Parser(pointedRootFolder, xmlRepository, null, xmlRepository.getLocation());
-        Commit pointedCommit = new Commit().XML_Parser(xmlRepository, pointedMagitCommit, rootFolder);
+        Folder rootFolder = Folder.XML_Parser(pointedRootFolder, xmlRepository, null, repository.getCurrentPath().toString());
+        Commit pointedCommit = new Commit().XML_Parser(xmlRepository, pointedMagitCommit, rootFolder, repository.getCurrentPath().toString());
 
         if (singleBranch.getName().equals(xmlRepository.getMagitBranches().getHead())) {
             repository.setRootFolder(rootFolder);
@@ -94,16 +93,16 @@ public class Branch {
         Branch temp = new Branch(singleBranch.getName(), pointedCommit, repository.getBranchesPath().toString());
         PrintWriter writer = new PrintWriter(new File(repository.getBranchesPath() + File.separator + singleBranch.getName()));
         writer.write(pointedCommit.getSHA_ONE());
-        if (singleBranch.isTracking()) {
-            if (checkIfRemoteBranchExists(singleBranch.getTrackingAfter(), xmlRepository.getMagitBranches().getMagitSingleBranch())) {
-                throw new MyXMLException(eErrorCodesXML.BRANCH_TRACKING_AFTER_NONE_EXISTS, null);
-            }
-            temp = new RemoteTrackingBranch(temp, repository.getBranchesPath().toString(), trackingName);
-            writer.write(System.lineSeparator() + Settings.IS_TRACKING_REMOTE_BRANCH);
-            PrintWriter remoteBranchWriter = new PrintWriter(new File(repository.getBranchesPath() + File.separator + singleBranch.getTrackingAfter()));
-            remoteBranchWriter.write(pointedCommit.getSHA_ONE());
-            remoteBranchWriter.close();
-        }
+//        if (singleBranch.isTracking()) {
+//            if (checkIfRemoteBranchExists(singleBranch.getTrackingAfter(), xmlRepository.getMagitBranches().getMagitSingleBranch())) {
+//                throw new MyXMLException(eErrorCodesXML.BRANCH_TRACKING_AFTER_NONE_EXISTS, null);
+//            }
+//            temp = new RemoteTrackingBranch(temp, repository.getBranchesPath().toString(), trackingName);
+//            writer.write(System.lineSeparator() + Settings.IS_TRACKING_REMOTE_BRANCH);
+//            PrintWriter remoteBranchWriter = new PrintWriter(new File(repository.getBranchesPath() + File.separator + singleBranch.getTrackingAfter()));
+//            remoteBranchWriter.write(pointedCommit.getSHA_ONE());
+//            remoteBranchWriter.close();
+//        }
 
         temp.setRemote(singleBranch.isIsRemote());
 

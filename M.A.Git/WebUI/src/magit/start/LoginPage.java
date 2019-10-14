@@ -21,7 +21,12 @@ public class LoginPage extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (request.getParameter("signout") != null) {
             userSignedOut(request, response);
+        } else {
+            userLogin(request, response);
         }
+    }
+
+    private void userLogin(HttpServletRequest request, HttpServletResponse response) {
         String username = request.getParameter("username"),
                 password = request.getParameter("password");
 
@@ -30,7 +35,6 @@ public class LoginPage extends HttpServlet {
         if (WebUI.checkUserAlreadyExist(username)) {
             User user = WebUI.findUser(username);
             if (user.credentials(password)) {
-                WebUI.updateID(user, session.getId());
                 session.setAttribute(Settings.WSA_USER, user);
                 printError(response, "success");
             } else {
@@ -45,10 +49,9 @@ public class LoginPage extends HttpServlet {
         try {
             User user = (User) request.getSession().getAttribute(Settings.WSA_USER);
             if (user != null) {
-                WebUI.updateID(user, null);
                 request.getSession().removeAttribute(Settings.WSA_USER);
             }
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher("/login.html");
+            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(Settings.PAGE_LOGIN);
             dispatcher.forward(request, response);
         } catch (IOException | ServletException ignored) {
         }
