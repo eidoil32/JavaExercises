@@ -63,7 +63,7 @@ public class Commit implements CommitRepresentative {
         }
     }
 
-    public Commit XML_Parser(MagitRepository xmlMagit, MagitSingleCommit commit, Folder rootFolder)
+    public Commit XML_Parser(MagitRepository xmlMagit, MagitSingleCommit commit, Folder rootFolder, String repositoryRootFolder)
             throws MyXMLException, MyFileException, IOException {
         Commit temp = new Commit();
 
@@ -78,7 +78,7 @@ public class Commit implements CommitRepresentative {
 
         temp.comment = commit.getMessage();
         temp.rootFolderSHA_ONE = rootFolder.getSHA_ONE();
-        String pathToObject = xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER + File.separator + Settings.OBJECT_FOLDER;
+        String pathToObject = repositoryRootFolder + File.separator + Settings.MAGIT_FOLDER + File.separator + Settings.OBJECT_FOLDER;
         zipAllChainOfInherit(rootFolder, Paths.get(pathToObject));
 
         if (commit.getPrecedingCommits() != null) {
@@ -89,13 +89,13 @@ public class Commit implements CommitRepresentative {
                 for (PrecedingCommits.PrecedingCommit precedingCommit : prevCommits) {
                     MagitSingleCommit tempCommit = XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), precedingCommit.getId());
                     MagitSingleFolder tempFolder = Folder.findRootFolder(xmlMagit.getMagitFolders().getMagitSingleFolder(), tempCommit.getRootFolder().getId());
-                    temp.addPrevCommit(XML_Parser(xmlMagit, tempCommit, Folder.XML_Parser(tempFolder, xmlMagit, null, xmlMagit.getLocation())));
+                    temp.addPrevCommit(XML_Parser(xmlMagit, tempCommit, Folder.XML_Parser(tempFolder, xmlMagit, null, repositoryRootFolder), repositoryRootFolder));
                 }
             }
         }
         temp.calcContent();
         temp.SHA_ONE = DigestUtils.sha1Hex(temp.content);
-        createCommitFile(temp, xmlMagit.getLocation());
+        createCommitFile(temp, repositoryRootFolder);
         return temp;
     }
 

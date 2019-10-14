@@ -182,16 +182,41 @@ public class Settings {
     // WSA == Web Session Attributes - used for keys for session map
     public static final String
             COOKIE_USER_LOGGED_IN = "USER_ID",
+            INVALID_XML_FILE = "invalid_xml_file",
             WSA_JSON_ACTIVE_BRANCH = "WSA_JSON_ACTIVE_BRANCH",
+            WSA_REPOSITORY_NAME = "WSA_REPOSITORY_NAME",
+            WSA_SINGLE_REPOSITORY_BRANCHES = "WSA_SINGLE_REPOSITORY_BRANCHES",
+            WSA_SINGLE_REPOSITORY_HEAD_BRANCH = "WSA_SINGLE_REPOSITORY_HEAD_BRANCH",
             WSA_JSON_CURRENT_PATH = "WSA_JSON_CURRENT_PATH",
             WSA_REMOTE_REPOSITORY_NAME = "WSA_REMOTE_REPOSITORY_NAME",
             WSA_REPOSITORIES= "WSA_REPOSITORIES",
             WSA_USER_NAME = "WSA_USER_NAME",
+            WSA_SINGLE_REPOSITORY_OWNER_NAME = "WSA_SINGLE_REPOSITORY_OWNER_NAME",
+            WSA_JSON_LAST_COMMIT_COMMENT = "WSA_JSON_LAST_COMMIT_COMMANT",
+            WSA_JSON_LAST_COMMIT_DATA = "WSA_JSON_LAST_COMMIT_DATA",
+            WSA_JSON_NUM_OF_BRANCHES = "WSA_JSON_NUM_OF_BRANCHES",
+            WSA_REPOSITORIES_NUMBER = "WSA_REPOSITORIES_NUMBER",
+            WSA_USERNAME_KEY = "username",
+            WSA_REPOSITORY_LOCATION = "WSA_REPOSITORY_LOCATION",
+            WSA_REPOSITORY_ID = "repo_id",
+            NULL_STRING = "null",
             WSA_USER = "WSA_USER";
 
     public static final String
+            GET_URL_PARAMETERS_ADDON = "?",
+            GET_URL_PARAMETERS_ADDON_PLUS = "&",
+            URL_REFERER = "referer",
+            APPLICATION_RESPONSE_TYPE = "application/json",
             SERVER_DATABASE = "c:" + File.separator + "magit-ex3",
-            USERS_FOLDER = SERVER_DATABASE + File.separator + "users";
+            USERS_FOLDER = SERVER_DATABASE + File.separator + "users",
+            USERS_REPOSITORY_ROOT_FOLDER = USERS_FOLDER + File.separator + "%s" + File.separator + "repositories", // argument user name
+            USERS_REPOSITORY_FOLDER = USERS_REPOSITORY_ROOT_FOLDER + File.separator + "repository_%s"; // argument repository number
+
+    public static final String
+            PAGE_LOGIN = "/login.html",
+            PAGE_SIGNUP = "/signup.html",
+            PAGE_INDEX = "/index.html";
+
 
     public static boolean SERVER_STATUS;
 

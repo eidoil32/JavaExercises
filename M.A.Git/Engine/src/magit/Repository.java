@@ -39,9 +39,9 @@ public class Repository {
         this.SHA_ONE = null;
     }
 
+    // values[0] true == is old repository
     public Repository(Path repoNamePath, String currentUser, String trackingName, boolean... values) throws IOException, RepositoryException {
         this(repoNamePath, values[0], currentUser, trackingName);
-
     }
 
 
@@ -102,7 +102,7 @@ public class Repository {
         return remoteTrackingBranches;
     }
 
-    private Repository(String repositoryPath) throws IOException {
+    public Repository(String repositoryPath) throws IOException {
         this.currentPath = Paths.get(repositoryPath);
         initialisePaths();
         createRepositoryFolders();
@@ -117,15 +117,44 @@ public class Repository {
         new File(repoNamePath.toString()).createNewFile();
     }
 
+    public static Repository RepositoryFactory_Web(MagitRepository magitRepository, String baseFolder)
+            throws IOException, MyXMLException, RepositoryException, MyFileException {
+        Repository repository = new Repository(baseFolder);
+        repository.setName(magitRepository.getName());
+        String headName = magitRepository.getMagitBranches().getHead();
+
+        List<MagitSingleBranch> branches = magitRepository.getMagitBranches().getMagitSingleBranch();
+        Branch tempHead = null;
+
+        for (MagitSingleBranch branch : branches) {
+            String commitID = branch.getPointedCommit().getId();
+            Branch temp = Branch.XML_Parser(branch, repository, magitRepository, commitID);
+            if (branch.getName().equals(headName)) {
+                tempHead = new Branch(true, temp);
+                repository.addBranch(tempHead);
+                repository.updateHeadFile(branch.getName());
+                repository.lastCommit = temp.getCommit();
+            }
+            repository.addBranch(temp);
+        }
+
+        if (tempHead == null) {
+            throw new MyXMLException(eErrorCodesXML.HEAD_POINT_TO_NONSEXIST_BRANCH, headName);
+        }
+
+        return repository;
+
+    }
+
     public static Repository XML_RepositoryFactory(MagitRepository xmlMagit)
             throws IOException, MyXMLException, RepositoryException, MyFileException {
-
-        if (new File(xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER).exists()) {
-            throw new MyXMLException(eErrorCodesXML.ALREADY_EXIST_FOLDER, xmlMagit.getLocation());
+        return null;
+/*        if (new File(xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER).exists()) {
+            throw new MyXMLException(eErrorCodesXML.ALREADY_EXIST_FOLDER, new File(xmlMagit.getLocation()).getName());
         } else if (new File(xmlMagit.getLocation()).exists()) {
             File target = new File(xmlMagit.getLocation());
             if (Files.list(target.toPath()).findFirst().isPresent())
-                throw new MyXMLException(eErrorCodesXML.TARGET_FOLDER_NOT_EMPTY, xmlMagit.getLocation());
+                throw new MyXMLException(eErrorCodesXML.TARGET_FOLDER_NOT_EMPTY, new File(xmlMagit.getLocation()).getName());
         }
 
         Repository repository = new Repository(xmlMagit.getLocation());
@@ -168,7 +197,7 @@ public class Repository {
             throw new MyXMLException(eErrorCodesXML.HEAD_POINT_TO_NONSEXIST_BRANCH, headName);
         }
 
-        return repository;
+        return repository;*/
     }
 
     public void updateHeadFile(String branchName) throws FileNotFoundException {
@@ -282,6 +311,10 @@ public class Repository {
         map.put(MapKeys.LIST_DELETED, new ArrayList<>());
 
         return map;
+    }
+
+    public Path getCurrentPath() {
+        return currentPath;
     }
 
     public void scanBetweenMaps(Map<BasicFile, Blob> newFiles, Map<BasicFile, Blob> oldFiles, Map<MapKeys, List<BasicFile>> repository) throws RepositoryException {
@@ -689,14 +722,18 @@ public class Repository {
     public void removeBranch(String branchName) {
         Branch branch = new Branch(branchName);
         if (branches != null) {
-            if (removeFromList(branch, branches)) { return; }
+            if (removeFromList(branch, branches)) {
+                return;
+            }
         }
         if (remoteBranches != null) {
-            if (removeFromList(branch, remoteBranches)) { return; }
+            if (removeFromList(branch, remoteBranches)) {
+                return;
+            }
         }
 
         if (remoteTrackingBranches != null) {
-            removeFromList(branch,  remoteTrackingBranches);
+            removeFromList(branch, remoteTrackingBranches);
         }
     }
 

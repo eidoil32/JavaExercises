@@ -5,13 +5,14 @@ $(function() { // onload...do
         $.ajax({
             data: parameters,
             url: this.action,
+			async: true, 
             timeout: 2000,
             error: function() {
                 console.error("Error from server!");
             },
             success: function(data) {
               if (data == "success") {
-                location.href = "main.html";
+                location.href = "index.html";
               } else {
                 var x = document.getElementById("errorblock");
                 x.style.display = "block";

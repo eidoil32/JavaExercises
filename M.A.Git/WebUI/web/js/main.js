@@ -3,6 +3,7 @@ $(function() { // onload...do
         data: {x: "username"},
         url: "mainPage",
         timeout: 2000,
+		async: true, 
         error: function() {
             console.error("Error from server!");
         },

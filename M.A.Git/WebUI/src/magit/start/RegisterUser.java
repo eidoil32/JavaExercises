@@ -30,7 +30,7 @@ public class RegisterUser extends HttpServlet {
                 printError(response, Settings.language.getString("USERNAME_CONTAIN_SPECIAL_CHARS"));
             } else {
                 try {
-                    WebUI.addUser(username, password, session.getId());
+                    WebUI.addUser(username, password, session);
                     WebUI.createUserFolder(username);
                     printError(response, "success");
                     System.out.println(String.format("User %s created successfully", username));
