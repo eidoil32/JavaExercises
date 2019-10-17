@@ -177,7 +177,7 @@ public class Settings {
         return current.brighter();
     }
 
-    public static final char[] special_chars = new char[] {'<','>',':','\"','|','?','*'};
+    public static final char[] special_chars = new char[]{'<', '>', ':', '\"', '|', '?', '*'};
 
     // WSA == Web Session Attributes - used for keys for session map
     public static final String
@@ -185,11 +185,12 @@ public class Settings {
             INVALID_XML_FILE = "invalid_xml_file",
             WSA_JSON_ACTIVE_BRANCH = "WSA_JSON_ACTIVE_BRANCH",
             WSA_REPOSITORY_NAME = "WSA_REPOSITORY_NAME",
+            WSA_SINGLE_REPOSITORY_ALL_COMMITS = "WSA_SINGLE_REPOSITORY_ALL_COMMITS",
             WSA_SINGLE_REPOSITORY_BRANCHES = "WSA_SINGLE_REPOSITORY_BRANCHES",
             WSA_SINGLE_REPOSITORY_HEAD_BRANCH = "WSA_SINGLE_REPOSITORY_HEAD_BRANCH",
             WSA_JSON_CURRENT_PATH = "WSA_JSON_CURRENT_PATH",
             WSA_REMOTE_REPOSITORY_NAME = "WSA_REMOTE_REPOSITORY_NAME",
-            WSA_REPOSITORIES= "WSA_REPOSITORIES",
+            WSA_REPOSITORIES = "WSA_REPOSITORIES",
             WSA_USER_NAME = "WSA_USER_NAME",
             WSA_SINGLE_REPOSITORY_OWNER_NAME = "WSA_SINGLE_REPOSITORY_OWNER_NAME",
             WSA_JSON_LAST_COMMIT_COMMENT = "WSA_JSON_LAST_COMMIT_COMMANT",
@@ -200,6 +201,11 @@ public class Settings {
             WSA_REPOSITORY_LOCATION = "WSA_REPOSITORY_LOCATION",
             WSA_REPOSITORY_ID = "repo_id",
             NULL_STRING = "null",
+            WSA_SINGLE_COMMIT_SHA1_KEY = "WSA_SINGLE_COMMIT_SHA1_KEY",
+            WSA_SINGLE_COMMIT_COMMENT_KEY = "WSA_SINGLE_COMMIT_COMMENT_KEY",
+            WSA_SINGLE_COMMIT_DATE_KEY = "WSA_SINGLE_COMMIT_DATE_KEY",
+            WSA_SINGLE_COMMIT_CREATOR_KEY = "WSA_SINGLE_COMMIT_CREATOR_KEY",
+            WSA_SINGLE_COMMIT_POINTED_BRANCHES = "WSA_SINGLE_COMMIT_POINTED_BRANCHES",
             WSA_USER = "WSA_USER";
 
     public static final String

@@ -79,4 +79,14 @@ public class  User  {
         }
         return -1;
     }
+
+    public Magit getRepository(int repositoryID) throws IOException, RepositoryException {
+        File repository = new File(String.format(Settings.USERS_REPOSITORY_FOLDER, name, repositoryID));
+        if (repository.exists()) {
+            Magit magit = new Magit();
+            magit.changeRepo(repository.getPath());
+            return magit;
+        }
+        throw new RepositoryException(eErrorCodes.NO_REPOSITORY);
+    }
 }

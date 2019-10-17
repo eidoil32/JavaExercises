@@ -1,21 +1,34 @@
-/* HTML document is loaded. DOM is ready. 
------------------------------------------*/
+
 function changeElementStyles(element, background_color, text_color, text_weight) {
-	element.style.backgroundColor = background_color;
-	element.style.fontWeight = text_weight;
-	element.style.color = text_color;
+    element.style.backgroundColor = background_color;
+    element.style.fontWeight = text_weight;
+    element.style.color = text_color;
 }
 
 function elementHover(element) {
-	changeElementStyles(element, "#f9f9f9","#39ADB4" ,"bold");
+    changeElementStyles(element, "#f9f9f9", "#39ADB4", "bold");
 }
 
 function elementOut(element) {
-	changeElementStyles(element, "#ffffff","black" ,"normal");
+    changeElementStyles(element, "#ffffff", "black", "normal");
 }
 
 function addTagsForTR(id, url) {
-	return 'id="' + id + '" onmouseover="elementHover(' + id + ')" onmouseout="elementOut(' + id + ')" onclick="' + url + '" style="cursor: pointer;"';
+    return 'id="' + id + '" onmouseover="elementHover(' + id + ')" onmouseout="elementOut(' + id + ')" onclick="' + url + '" style="cursor: pointer;"';
+}
+
+function showCustomAlert(message, type) {
+    document.getElementById("div_message").style.display = "block";
+    document.getElementById("div_message_" + type).style.display = "block";
+    document.getElementById("message_" + type).innerHTML = message;
+}
+
+function magitShowError(message) {
+    showCustomAlert(message, "failed");
+}
+
+function magitShowSuccess(message) {
+    showCustomAlert(message, "success");
 }
 
 $(document).ready(function() {
@@ -40,10 +53,10 @@ $(document).ready(function() {
         var formData = new FormData();
         formData.append("fake-key-1", file1);
 
-		
+
         $.ajax({
             method: 'POST',
-			async: true, 
+            async: true,
             data: formData,
             url: "/load-repository",
             processData: false, // Don't process the files
@@ -79,18 +92,11 @@ $(document).ready(function() {
     };
 
     var file_is_uploaded = getUrlParameter('file_upload');
-	if (file_is_uploaded != null) {
-		document.getElementById("div_message").style.display = "block";
-		if (file_is_uploaded == "success") {
-			var div = document.getElementById("div_message_success");
-			div.style.display = "block";
-			var p = document.getElementById("message_success");
-			p.innerHTML = "XML File uploaded successfully";
-		} else {
-			var div = document.getElementById("div_message_failed");
-			div.style.display = "block";
-			var p = document.getElementById("message_failed");
-			p.innerHTML = file_is_uploaded.replace(/_/g, " ");;
-		}
-	}
+    if (file_is_uploaded != null) {
+        if (file_is_uploaded == "success") {
+            magitShowSuccess("XML File uploaded successfully");
+        } else {
+            magitShowError(file_is_uploaded.replace(/_/g, " "));
+        }
+    }
 });
