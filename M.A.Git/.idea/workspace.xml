@@ -7,69 +7,50 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/CheckoutServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/SingleRepositoryServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/SingleUserServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/backup_file.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/login.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/main.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/main_backup.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/my-repository.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/preferences.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/signup.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/single-repository.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/backups/users.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/index.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/index.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/jquery-1.11.2.min.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/main.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/user.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/single-user.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Engine/src/utils/Utilities.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/CommitFileServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/FileViewerServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/SaveFileServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/jstree.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/jstree.min.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default-dark/32px.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default-dark/40px.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default-dark/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default-dark/style.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default-dark/throbber.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default/32px.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default/40px.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default/style.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default/style.min.css" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/dist/themes/default/throbber.gif" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/single-commit.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/single-commit.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Branch.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Branch.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/magit/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Commit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Repository.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/usermanager/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/usermanager/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/usermanager/UserManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/usermanager/UserManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FXUi/FXUi.iml" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/FXUi.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/MainController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/TreeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SettingsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/SettingsController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/WebUI.iml" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/WebUI.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/pages/LoadRepositoryServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/LoadRepositoryServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/pages/Preferences.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/PreferencesServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/pages/RepositoriesManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/RepositoriesManagerServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/pages/UsersServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/pages/UsersServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/start/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/start/LoginPage.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/start/RegisterUser.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/start/RegisterUser.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/start/StartServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/start/StartServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/addons/header.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/addons/menu.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/addons/menu.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/backup_file.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/css/templatemo-style.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/css/templatemo-style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/loginpage.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/loginpage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/mainpage.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/repositories.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/repositories.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/signup-page.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/signup-page.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/CheckoutServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/CheckoutServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/SingleRepositoryServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/SingleRepositoryServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/index.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/users.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/main.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/my-repository.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/my-repository.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/preferences.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/preferences.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/single-repository.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/single-repository.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/users.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/users.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Branch.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Branch.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -390,7 +371,13 @@
       <workItem from="1570797199121" duration="11735000" />
       <workItem from="1570894900383" duration="9424000" />
       <workItem from="1571039468727" duration="5878000" />
-      <workItem from="1571051531296" duration="10945000" />
+      <workItem from="1571051531296" duration="16257000" />
+      <workItem from="1571118772064" duration="1800000" />
+      <workItem from="1571207405996" duration="3591000" />
+      <workItem from="1571217642333" duration="6280000" />
+      <workItem from="1571223958582" duration="773000" />
+      <workItem from="1571224949385" duration="11024000" />
+      <workItem from="1571298334701" duration="574000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -553,7 +540,14 @@
       <option name="project" value="LOCAL" />
       <updated>1569680942234</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Create few servlets. Update html and JS files.">
+      <created>1571069675319</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1571069675319</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -611,6 +605,7 @@
     <MESSAGE value="Add new Css with color picker for select custom theme.&#10;Adding Push branch to remote repository feature." />
     <MESSAGE value="Start working on Web ui" />
     <MESSAGE value="Fix bug in merge and XML load" />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix bug in merge and XML load" />
+    <MESSAGE value="Create few servlets. Update html and JS files." />
+    <option name="LAST_COMMIT_MESSAGE" value="Create few servlets. Update html and JS files." />
   </component>
 </project>

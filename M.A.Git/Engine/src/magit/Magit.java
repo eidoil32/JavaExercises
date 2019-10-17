@@ -1,6 +1,7 @@
 package magit;
 
 
+import com.google.gson.Gson;
 import exceptions.*;
 import org.apache.commons.io.FileUtils;
 import puk.team.course.magit.ancestor.finder.AncestorFinder;
@@ -625,13 +626,13 @@ public class Magit {
         os.close();
     }
 
-    public Commit getCommitData(Object sha_one) throws IOException {
-        if (((String) sha_one).length() != Settings.SHA_ONE_CORRECT_LENGTH) {
+    public Commit getCommitData(String sha_one) throws IOException {
+        if ((sha_one).length() != Settings.SHA_ONE_CORRECT_LENGTH) {
             return null;
         } else {
             File commit = new File(currentRepository.getObjectPath() + File.separator + sha_one);
             if (commit.exists()) {
-                return new Commit((String) sha_one, currentRepository.getObjectPath().toString());
+                return new Commit(sha_one, currentRepository.getObjectPath().toString());
             } else {
                 return null;
             }
@@ -1148,24 +1149,50 @@ public class Magit {
         return result;
     }
 
-    private List<String> createSingleItemList(String item) {
-        List<String> temp = new LinkedList<>();
-        temp.add(item);
-        return temp;
-    }
-
     public Map<String, List<String>> getRepositoryMap() throws IOException {
         Map<String, List<String>> result = new HashMap<>();
 
-        result.put(Settings.WSA_REPOSITORY_NAME, createSingleItemList(currentRepository.getName()));
+        result.put(Settings.WSA_REPOSITORY_NAME, Utilities.createSingleItemList(currentRepository.getName()));
         List<Branch> branches = currentRepository.getActiveBranches();
         result.put(Settings.WSA_SINGLE_REPOSITORY_BRANCHES,
                 branches.stream()
                         .filter(branch -> !branch.getName().equals(Settings.MAGIT_BRANCH_HEAD))
                         .map(Branch::getName)
                         .collect(Collectors.toList()));
-        result.put(Settings.WSA_SINGLE_REPOSITORY_HEAD_BRANCH, createSingleItemList(currentRepository.getActiveBranch().getName()));
+        result.put(Settings.WSA_SINGLE_REPOSITORY_HEAD_BRANCH, Utilities.createSingleItemList(currentRepository.getActiveBranch().getName()));
+        result.put(Settings.WSA_SINGLE_REPOSITORY_ALL_COMMITS, createAllCommitJSONList());
 
         return result;
+    }
+
+    private List<String> createAllCommitJSONList() {
+        Set<Commit> commits = getSimpleAllCommitList();
+        List<String> results = new LinkedList<>();
+        List<Branch> branches = currentRepository.getAllBranches();
+
+        Gson gson = new Gson();
+
+        for (Commit commit : commits) {
+            Map<String, String> singleCommit = new HashMap<>();
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_SHA1_KEY, commit.getSHA_ONE());
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_COMMENT_KEY, commit.getComment());
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_DATE_KEY, new SimpleDateFormat(Settings.DATE_FORMAT).format(commit.getDate()));
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_CREATOR_KEY, commit.getCreator());
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_POINTED_BRANCHES, commit.getPointedBranches(branches));
+            results.add(gson.toJson(singleCommit));
+        }
+
+        return results;
+    }
+
+    private Set<Commit> getSimpleAllCommitList() {
+        Set<Commit> commits = new LinkedHashSet<>();
+        for (Branch branch : currentRepository.getBranches()) {
+            if (!branch.isHead()) {
+                commits.addAll(branch.getAllCommits());
+            }
+        }
+        commits = commits.stream().sorted(Comparator.comparing(Commit::getDate)).collect(Collectors.toCollection(LinkedHashSet::new));
+        return commits;
     }
 }

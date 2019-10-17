@@ -30,6 +30,17 @@ public class WebUI implements ServletContextListener {
         new File(Settings.USERS_FOLDER + File.separator + username).mkdir();
     }
 
+    public static User getUser(HttpServletRequest req, String userName) {
+        User user;
+        if (userName.equals(Settings.NULL_STRING)) {
+            user = (User) req.getSession().getAttribute(Settings.WSA_USER);
+        } else {
+            user = WebUI.findUser(userName);
+        }
+
+        return user;
+    }
+
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
         new File(Settings.SERVER_DATABASE).mkdir();

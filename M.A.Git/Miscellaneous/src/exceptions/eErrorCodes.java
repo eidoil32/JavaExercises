@@ -3,6 +3,7 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    NO_REPOSITORY(Settings.language.getString("NO_REPOSITORY")),
     REMOTE_REPO_CONTAIN_BRANCH(Settings.language.getString("REMOTE_REPO_CONTAIN_BRANCH")),
     OPEN_CHANGES_NEEDS_PULL(Settings.language.getString("OPEN_CHANGES_NEEDS_PULL")),
     ONLY_ONE_RTB(Settings.language.getString("ONLY_ONE_RTB")),

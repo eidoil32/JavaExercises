@@ -436,4 +436,17 @@ public class Commit implements CommitRepresentative {
 
         return files;
     }
+
+    public String getPointedBranches(List<Branch> branches) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < branches.size(); i++) {
+            if (branches.get(i).getAllCommits().contains(this)) {
+                stringBuilder.append("****").append(branches.get(i).getName());
+                if (i + 1 == branches.size()) {
+                    stringBuilder.append(",");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
 }
