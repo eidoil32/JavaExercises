@@ -1,6 +1,5 @@
 package magit;
 
-import exceptions.MyFileException;
 import exceptions.MyXMLException;
 import exceptions.eErrorCodesXML;
 import org.apache.commons.codec.digest.DigestUtils;
@@ -31,7 +30,8 @@ public class Blob extends BasicFile {
         this.filePath = filePath;
     }
 
-    public Blob() { }
+    public Blob() {
+    }
 
     public Blob(MagitBlob blob, String pathToFile, Folder rootFolder) {
         try {
@@ -49,7 +49,7 @@ public class Blob extends BasicFile {
         this.type = eFileTypes.FILE;
     }
 
-    public static Blob BlobFactory(Path objectPath, String[] row, Folder rootFolder) throws IOException, MyFileException {
+    public static Blob BlobFactory(Path objectPath, String[] row, Folder rootFolder) throws IOException {
         Blob blob = new Blob();
         File file = FileManager.unZipFile(new File(objectPath + File.separator + row[1]), objectPath + File.separator + Settings.TEMP_UNZIP_FOLDER);
         blob.setRootFolder(rootFolder);
@@ -71,39 +71,30 @@ public class Blob extends BasicFile {
         return blob;
     }
 
-    protected static Blob findBlobById(List<MagitBlob> blobs, String id, Folder rootFolder) throws MyXMLException {
-        for (MagitBlob blob : blobs) {
-            if (blob.getId().equals(id)) {
-                return new Blob(blob,rootFolder.getFullPathName(),rootFolder);
-            }
-        }
-        throw new MyXMLException(eErrorCodesXML.FOLDER_POINT_TO_NONSEXIST_BLOB, id);
-    }
-
     protected static Blob XML_Parser(List<MagitBlob> blobs, String id, Folder rootFolder) throws MyXMLException {
         Blob temp = new Blob();
         MagitBlob current = null;
         for (MagitBlob blob : blobs) {
-            if(blob.getId().equals(id)) {
+            if (blob.getId().equals(id)) {
                 current = blob;
                 break;
             }
         }
-        if(current == null) {
-            throw new MyXMLException(eErrorCodesXML.FOLDER_POINT_TO_NONSEXIST_BLOB,id);
+        if (current == null) {
+            throw new MyXMLException(eErrorCodesXML.FOLDER_POINT_TO_NONSEXIST_BLOB, id);
         }
         temp.rootFolder = rootFolder;
         temp.type = eFileTypes.FILE;
         temp.name = current.getName();
         temp.filePath = Paths.get(rootFolder.getFilePath() + File.separator + temp.name);
-        temp.content = current.getContent();
+        temp.content = FileManager.makeContent(current.getContent());
         temp.SHA_ONE = DigestUtils.sha1Hex(temp.content);
         temp.fullPathName = temp.filePath.toString();
         temp.editorName = current.getLastUpdater();
         try {
             temp.date = new SimpleDateFormat(Settings.DATE_FORMAT).parse(current.getLastUpdateDate());
         } catch (ParseException e) {
-            throw new MyXMLException(eErrorCodesXML.WRONG_DATE_FORMAT,current.getLastUpdateDate());
+            throw new MyXMLException(eErrorCodesXML.WRONG_DATE_FORMAT, current.getLastUpdateDate());
         }
 
         return temp;
@@ -137,14 +128,14 @@ public class Blob extends BasicFile {
         return filePath;
     }
 
-    public void setFilePath(Path filePath) {
+    private void setFilePath(Path filePath) {
         this.filePath = filePath;
         this.setFullPathName(filePath.toString());
     }
 
     @Override
     public String toString() {
-        return Settings.language.getString("FULL_PATH") + fullPathName + System.lineSeparator()
+        return    Settings.language.getString("FULL_PATH") + fullPathName + System.lineSeparator()
                 + Settings.language.getString("BASIC_FILE_TYPE") + type + System.lineSeparator()
                 + Settings.language.getString("BASIC_FILE_SHA_ONE") + SHA_ONE + System.lineSeparator()
                 + Settings.language.getString("BASIC_FILE_EDITOR") + editorName + System.lineSeparator()

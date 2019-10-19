@@ -3,6 +3,9 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    NO_REPOSITORY(Settings.language.getString("NO_REPOSITORY")),
+    REMOTE_REPO_CONTAIN_BRANCH(Settings.language.getString("REMOTE_REPO_CONTAIN_BRANCH")),
+    OPEN_CHANGES_NEEDS_PULL(Settings.language.getString("OPEN_CHANGES_NEEDS_PULL")),
     ONLY_ONE_RTB(Settings.language.getString("ONLY_ONE_RTB")),
     CANNOT_PULL_DATA_FOR_NONE_RTB(Settings.language.getString("CANNOT_PULL_DATA_FOR_NONE_RTB")),
     REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT(Settings.language.getString("REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT")),
@@ -45,7 +48,13 @@ public enum eErrorCodes {
     NOTHING_NEW(Settings.language.getString("NOTHING_NEW")),
     CANNOT_DELETE_ACTIVE_BRANCH(Settings.language.getString("CANNOT_DELETE_ACTIVE_BRANCH")),
     XML_PARSE_FAILED(Settings.language.getString("XML_PARSE_FAILED")),
-    PARSE_BLOB_TO_FOLDER_FAILED(Settings.language.getString("PARSE_BLOB_TO_FOLDER_FAILED"));
+    PARSE_BLOB_TO_FOLDER_FAILED(Settings.language.getString("PARSE_BLOB_TO_FOLDER_FAILED")),
+
+    // Web exceptions
+    // TODO: add all string to languages
+    USER_ALREADY_EXIST(Settings.language.getString("USER_ALREADY_EXIST")),
+    PASSWORD_TOO_SHORT(Settings.language.getString("PASSWORD_TOO_SHORT")),
+    USER_PASSWORD_WRONG(Settings.language.getString("USER_PASSWORD_WRONG"));
 
     private String message;
 

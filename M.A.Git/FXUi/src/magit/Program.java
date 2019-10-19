@@ -17,13 +17,15 @@ import settings.Settings;
 import java.io.IOException;
 import java.net.URL;
 
+import static javafx.application.Platform.exit;
+
 public class Program extends Application {
     private BooleanProperty isRepositoryExists = new SimpleBooleanProperty();
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         // load main fxml
-        URL mainFXML = Program.class.getResource(Settings.FXML_INTRO_WINDOW);
+        URL mainFXML = Program.class.getClassLoader().getResource(Settings.FXML_INTRO_WINDOW);
         FXMLLoader loader = new FXMLLoader();
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
@@ -61,7 +63,10 @@ public class Program extends Application {
 
     public static void main(String[] args) {
         Settings.setup();
-        launch(args);
+        if (Settings.testPaths())
+            launch(args);
+        else
+            exit();
     }
 
 }

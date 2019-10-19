@@ -3,6 +3,7 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodesXML {
+    BRANCH_TRACKING_AFTER_NONE_EXISTS(Settings.language.getString("BRANCH_TRACKING_AFTER_NONE_EXISTS")),
     DUPLICATE_ROOT_FOLDER(Settings.language.getString("DUPLICATE_ROOT_FOLDER")),
     TOO_MANY_PREV_COMMITS(Settings.language.getString("TOO_MANY_PREV_COMMITS")),
     COMMIT_POINT_NONE_EXIST(Settings.language.getString("COMMIT_POINT_NONE_EXIST")),

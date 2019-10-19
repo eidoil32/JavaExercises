@@ -13,22 +13,28 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Duration;
 import javafx.util.StringConverter;
 import magit.*;
@@ -71,7 +77,7 @@ public class MainController {
     private MenuItem menuItem_themeManager, menuItem_exportToXML,
             createNewBranchMenuItem, changeRepositoryMenuItem, menuItem_loadXMLRepository, menuItem_changeName,
             menuItem_quit, menuItem_changeRepository, menuItem_about, menuItem_createNewRepository, menuItem_manageBranches,
-            menuItemFetch, menuItemPull, menuItemPush, menuItemMerge, menuItemCommit, menuItemResetBranch, menuItemClone;
+            menuItemFetch, menuItemPull, menuItemPush, menuItemMerge, menuItemCommit, menuItemResetBranch, menuItemClone, menuItemPushBranch;
     @FXML
     private ProgressBar executeCommandProgressBar;
     @FXML
@@ -91,14 +97,12 @@ public class MainController {
     @FXML
     private AnchorPane bottomPane;
 
-    private boolean isAnimationTurnOn = false;
+    private boolean isAnimationTurnOn = false, isTreeAlreadyShown = false;
     private BooleanProperty isRepositoryExists = new SimpleBooleanProperty(), languageProperty, themeProperty;
     private CommitsDetailsController commitsDetailsController;
     private IntroController introController;
     private Magit model;
     private MainTableController mainTableController;
-    private MyBooleanProperty updateCommitTree = new MyBooleanProperty();
-    private Node commitTreePane;
     private OpenedChangesController openedChangesController;
     private Stage primaryStage;
     private StringProperty stringProperty_CurrentUser, stringProperty_CurrentState;
@@ -134,18 +138,13 @@ public class MainController {
                         new Thread(task).start();
                     }
                 }));
-        updateCommitTree.addListener((observable -> {
-            //todo: open new window for commit tree
-            if (mainBoard.getRight() != null) {
-                mainBoard.setRight(commitTreePane);
-            }
-        }));
         commitFileTree.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
                 FileViewer.showFileViewer(event, commitFileTree, getClass(), primaryStage);
             }
         });
+
     }
 
     public void refreshData() {
@@ -165,10 +164,40 @@ public class MainController {
 
     @FXML
     public void onMenuItemShowCommitTree_Click() {
-        if (mainBoard.getRight() == null) {
-            mainBoard.setRight(commitTreePane);
+        if (menuItemShowCommitTree.isSelected() && !isTreeAlreadyShown) {
+            isTreeAlreadyShown = true;
+            Stage stage = new Stage();
+            Pane root;
+            try {
+                FXMLLoader loader = new FXMLLoader();
+                URL mainFXML = getClass().getClassLoader().getResource(Settings.FXML_TREE_WINDOW);
+                loader.setLocation(mainFXML);
+                loader.setResources(Settings.language);
+                root = loader.load();
+                treeController = loader.getController();
+                treeController.setMainController(this);
+                treeController.setStage(stage);
+                stage.setMinHeight(Settings.MAGIT_UI_TREE_WINDOW_HEIGHT);
+                stage.setMinWidth(Settings.MAGIT_UI_TREE_WINDOW_WIDTH);
+                Scene scene = new MyScene(root, Settings.MAGIT_UI_TREE_WINDOW_WIDTH, Settings.MAGIT_UI_TREE_WINDOW_HEIGHT);
+                Rectangle2D primaryScreenBounds = Screen.getPrimary().getVisualBounds();
+                stage.setX(primaryScreenBounds.getMinX() + primaryScreenBounds.getWidth() - Settings.MAGIT_UI_TREE_WINDOW_WIDTH);
+                stage.setY(primaryScreenBounds.getMinY() + primaryScreenBounds.getHeight() - Settings.MAGIT_UI_TREE_WINDOW_HEIGHT);
+                scene.setFill(Color.TRANSPARENT);
+                stage.initStyle(StageStyle.TRANSPARENT);
+                stage.setScene(scene);
+                stage.show();
+                stage.setOnHidden((event) -> {
+                    menuItemShowCommitTree.setSelected(false);
+                    isTreeAlreadyShown = false;
+                });
+                primaryStage.setOnHiding((event -> stage.close()));
+            } catch (IOException e) {
+                IntroController.showError(e.getMessage());
+            }
         } else {
-            mainBoard.setRight(null);
+            treeController.getStage().close();
+            isTreeAlreadyShown = false;
         }
     }
 
@@ -206,7 +235,8 @@ public class MainController {
     }
 
     public void createMergeTask(Branch branch) {
-        Task merge = new MergeTask(model, branch, this);
+        MyBooleanProperty booleanProperty = new MyBooleanProperty();
+        Task merge = new MergeTask(branch, this);
         bindTaskToUIComponents(merge, true);
         new Thread(merge).start();
     }
@@ -351,6 +381,7 @@ public class MainController {
                     try {
                         model.tryCreateNewBranch(newValue, commit.getItem());
                         refreshData();
+                        stringProperty_CurrentState.set(Settings.language.getString("FX_BRANCH_CREATED_SUCCESSFULLY"));
                     } catch (RepositoryException | IOException e) {
                         IntroController.showError(e.getMessage());
                     }
@@ -436,7 +467,7 @@ public class MainController {
 
     @FXML
     private void onMenuItemPull_Clicked() {
-        Task pullTask = new PullTask(model, this);
+        Task pullTask = new PullTask(model);
         bindTaskToUIComponents(pullTask, true);
         new Thread(pullTask).start();
     }
@@ -467,6 +498,18 @@ public class MainController {
     @FXML
     private void onScanRepositoryButtonClick() {
         openedChangesController.scanRepository();
+    }
+
+    @FXML
+    private void onMenuItemPushBranch_Click(ActionEvent event) {
+        SmartListener<Branch> selectedBranch = new SmartListener<>();
+        BooleanProperty flag = new MyBooleanProperty();
+        selectBranch(selectedBranch, model.getCurrentRepository().getActiveBranches(), flag);
+        flag.addListener(observable -> {
+            Task pushBranch = new PushBranchTask(selectedBranch.getItem(), model);
+            bindTaskToUIComponents(pushBranch, true);
+            new Thread(pushBranch).start();
+        });
     }
 
     private void selectBranch(SmartListener branch, List<Branch> branches, BooleanProperty flag) {
@@ -507,7 +550,7 @@ public class MainController {
         Stage stage = new Stage();
         Pane root;
         FXMLLoader loader = new FXMLLoader();
-        URL mainFXML = MainController.class.getResource(Settings.FXML_SELECT_POPUP);
+        URL mainFXML = MainController.class.getClassLoader().getResource(Settings.FXML_SELECT_POPUP);
         loader.setLocation(mainFXML);
         loader.setResources(Settings.language);
         root = loader.load();
@@ -536,7 +579,7 @@ public class MainController {
         try {
             int smaller = 0;
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = MainController.class.getResource(Settings.FXML_DIALOG_BOX);
+            URL mainFXML = MainController.class.getClassLoader().getResource(Settings.FXML_DIALOG_BOX);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -626,7 +669,7 @@ public class MainController {
         Pane root;
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = MainController.class.getResource(Settings.FXML_MERGE_WINDOW);
+            URL mainFXML = MainController.class.getClassLoader().getResource(Settings.FXML_MERGE_WINDOW);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -645,7 +688,6 @@ public class MainController {
             stage.setScene(new MyScene(root, Settings.MAGIT_UI_MERGE_WINDOW_WIDTH, Settings.MAGIT_UI_MERGE_WINDOW_HEIGHT));
             stage.initOwner(primaryStage);
             stage.initModality(Modality.WINDOW_MODAL);
-
             stage.show();
         } catch (IOException e) {
             IntroController.showError(e.getMessage());
@@ -674,14 +716,14 @@ public class MainController {
         mainTableController = new MainTableController(this,
                 dateCommitTableColumn, branchCommitTableColumn, commentCommitTableColumn, shaoneCommitTableColumn);
         openedChangesController = new OpenedChangesController(this, newFilesListView, deletedFilesListView, editedFilesListView);
-        treeController = new TreeController(this);
-        this.commitTreePane = treeController.buildCommitTree();
+        //this.commitTreePane = treeController.buildCommitTree();
         this.currentRepositoryName.textProperty().setValue(model.getCurrentRepository().getName());
     }
 
     public void setStringProperty_CurrentMagitState(StringProperty currentStatus) {
         this.stringProperty_CurrentState = currentStatus;
-        currentStatus.addListener(((observable, oldValue, newValue) -> Platform.runLater(() -> executeCommandProgress.setText(newValue))));
+        executeCommandProgress.textProperty().bindBidirectional(currentStatus);
+        //currentStatus.addListener(((observable, oldValue, newValue) -> Platform.runLater(() -> executeCommandProgress.setText(newValue))));
         //currentStatus.addListener((observable, oldValue, newValue) -> Platform.runLater(() -> stringProperty_CurrentState.setValue(newValue)));
     }
 
@@ -738,15 +780,16 @@ public class MainController {
     private boolean animationOnAddingNewCommit() {
         boolean isActivated = false;
         Commit lastCommit = model.getCurrentBranch().getCommit();
-        List<Node> nodes = treeController.getListOfCommitsNodes(lastCommit);
+        if (lastCommit != null) {
+            Node node = treeController.getListOfCommitsNodes(lastCommit);
 
-        if (nodes == null) return false;
-        for (Node node : nodes) {
-            Circle circle = (Circle) node;
-            CustomAnimations.fillTransition(circle).play();
-            isActivated = true;
+            if (node != null) {
+                Circle circle = (Circle) node;
+                CustomAnimations.commitTreeTransition(circle);
+                CustomAnimations.fillTransition(circle);
+                isActivated = true;
+            }
         }
-
         return isActivated;
     }
 
@@ -763,7 +806,7 @@ public class MainController {
         Pane root;
         try {
             FXMLLoader loader = new FXMLLoader();
-            URL mainFXML = MainController.class.getResource(Settings.FXML_SMART_POPUP_BOX);
+            URL mainFXML = MainController.class.getClassLoader().getResource(Settings.FXML_SMART_POPUP_BOX);
             loader.setLocation(mainFXML);
             loader.setResources(Settings.language);
             root = loader.load();
@@ -784,10 +827,8 @@ public class MainController {
     }
 
     private void updateTree() {
-        commitTreePane = treeController.buildCommitTree();
-        if (mainBoard.getRight() != null) {
-            mainBoard.setRight(commitTreePane);
-        }
+        if (isTreeAlreadyShown)
+            treeController.updateTree();
     }
 
     public void bindTaskToUIComponents(Task task, boolean includeUpdate) {
@@ -849,6 +890,12 @@ public class MainController {
     }
 
     private void updateMessage(String message) {
-        this.stringProperty_CurrentState.setValue(message);
+        this.stringProperty_CurrentState.set(message);
+    }
+
+    public void markBranchInTree(Branch branch) {
+        if (isTreeAlreadyShown) {
+            treeController.markAllCommits(branch);
+        }
     }
 }

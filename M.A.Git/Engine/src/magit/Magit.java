@@ -1,6 +1,7 @@
 package magit;
 
 
+import com.google.gson.Gson;
 import exceptions.*;
 import org.apache.commons.io.FileUtils;
 import puk.team.course.magit.ancestor.finder.AncestorFinder;
@@ -181,11 +182,7 @@ public class Magit {
     }
 
     private void removeBranch(String branchName) {
-        List<Branch> branches = currentRepository.getActiveBranches();
-        Branch temp = new Branch(branchName);
-        int index = branches.indexOf(temp);
-        if (index != -1)
-            branches.remove(index);
+        currentRepository.removeBranch(branchName);
     }
 
     public String showCurrentCommitHistory() throws RepositoryException, IOException, MyFileException {
@@ -321,15 +318,17 @@ public class Magit {
 
     public void deleteOldMagitFolder(String path) {
         File[] listOfWC = new File(path).listFiles();
-        if (listOfWC.length != 0) {
-            for (File file : listOfWC) {
-                deleteOldFiles(file.getPath());
-                file.delete();
+        if (listOfWC != null) {
+            if (listOfWC.length != 0) {
+                for (File file : listOfWC) {
+                    deleteOldFiles(file.getPath());
+                    file.delete();
+                }
             }
         }
     }
 
-    public void basicCheckXML(MagitRepository magitRepository) throws MyXMLException {
+    public static void basicCheckXML(MagitRepository magitRepository) throws MyXMLException {
         List<MagitBlob> blobs = magitRepository.getMagitBlobs().getMagitBlob();
         List<MagitSingleFolder> folders = magitRepository.getMagitFolders().getMagitSingleFolder();
         List<MagitSingleCommit> commits = magitRepository.getMagitCommits().getMagitSingleCommit();
@@ -501,21 +500,23 @@ public class Magit {
         return listOfItems;
     }
 
-    public boolean deleteBranch(String branchName) throws RepositoryException {
-        if (currentBranch.getName().equals(branchName)) {
-            throw new RepositoryException(eErrorCodes.CANNOT_DELETE_ACTIVE_BRANCH);
+    public void deleteBranch(String branchName) throws RepositoryException {
+        if (branchName.equals(Settings.TEMP_BRANCH_FOR_EXPANDED_TREE)) {
+            removeBranch(branchName);
         } else {
-            File branch = new File(currentRepository.getBranchesPath() + File.separator + branchName);
-            if (branch.exists() && branch.getName().equals(branchName)) {
-                if (branch.delete()) {
-                    removeBranch(branchName);
-                    return true;
-                }
+            if (currentBranch.getName().equals(branchName)) {
+                throw new RepositoryException(eErrorCodes.CANNOT_DELETE_ACTIVE_BRANCH);
             } else {
-                throw new RepositoryException(eErrorCodes.BRANCH_NOT_EXIST);
+                File branch = new File(currentRepository.getBranchesPath() + File.separator + branchName);
+                if (branch.exists() && branch.getName().equals(branchName)) {
+                    if (branch.delete()) {
+                        removeBranch(branchName);
+                    }
+                } else {
+                    throw new RepositoryException(eErrorCodes.BRANCH_NOT_EXIST);
+                }
             }
         }
-        return false;
     }
 
     public void tryCreateNewBranch(String branchName, Commit commit) throws RepositoryException, IOException {
@@ -575,7 +576,7 @@ public class Magit {
                 if (temp.size() > 0) {
                     List<String> correctList = data.get(entry.getKey());
                     for (BasicFile file : temp) {
-                        correctList.add(file.getType() + " " + file.shortPath());
+                        correctList.add(file.getType() + Settings.TYPE_SPLITTER + file.shortPath());
                     }
                 }
             }
@@ -625,20 +626,20 @@ public class Magit {
         os.close();
     }
 
-    public Commit getCommitData(Object sha_one) throws IOException {
-        if (((String) sha_one).length() != Settings.SHA_ONE_CORRECT_LENGTH) {
+    public Commit getCommitData(String sha_one) throws IOException {
+        if ((sha_one).length() != Settings.SHA_ONE_CORRECT_LENGTH) {
             return null;
         } else {
             File commit = new File(currentRepository.getObjectPath() + File.separator + sha_one);
             if (commit.exists()) {
-                return new Commit((String) sha_one, currentRepository.getObjectPath().toString());
+                return new Commit(sha_one, currentRepository.getObjectPath().toString());
             } else {
                 return null;
             }
         }
     }
 
-    public Commit getAncestorCommit(Branch target) throws IOException {
+    private Commit getAncestorCommit(Branch target) throws IOException {
         Commit first = currentBranch.getCommit(), second = target.getCommit();
 
         AncestorFinder finder = new AncestorFinder(sha_one -> {
@@ -657,8 +658,15 @@ public class Magit {
         return currentRepository.searchBranch(branchName);
     }
 
-    public Map<String, BlobMap> findChanges(Commit ancestor, Branch target) throws RepositoryException, IOException, MyFileException {
+    public Map<String, BlobMap> findChanges(Branch target) throws RepositoryException, IOException, MyFileException {
         Map<String, BlobMap> allFiles = new HashMap<>();
+        Commit ancestor = getAncestorCommit(target);
+
+        if (checkIsFFMerge(ancestor, target.getCommit(), currentBranch.getCommit())) {
+            allFiles.put(Settings.FAST_FORWARD_MERGE, new BlobMap(new HashMap<>()));
+            return allFiles;
+        }
+
         BlobMap ancestorFileTree = getCurrentRepository().loadDataFromCommit(ancestor),
                 activeFileTree = getCurrentRepository().loadDataFromCommit(currentBranch.getCommit()),
                 targetFileTree = getCurrentRepository().loadDataFromCommit(target.getCommit());
@@ -677,6 +685,10 @@ public class Magit {
         return allFiles;
     }
 
+    private boolean checkIsFFMerge(Commit ancestor, Commit target, Commit active) {
+        return ancestor.equals(target) || ancestor.equals(active);
+    }
+
     private BlobMap mergeMaps(BlobMap... values) {
         BlobMap merge = new BlobMap(new HashMap<>());
 
@@ -684,12 +696,26 @@ public class Magit {
             if (temp != null) {
                 for (Map.Entry<BasicFile, Blob> entry : temp.getMap().entrySet()) {
                     Blob tempBlob = entry.getValue();
-                    merge.addToMap(tempBlob);
+                    if (merge.getMap().containsKey(tempBlob) && tempBlob.getType() == eFileTypes.FOLDER) {
+                        addAllToMap((Folder) merge.getMap().get(tempBlob), (Folder) tempBlob);
+                    } else {
+                        merge.addToMap(tempBlob);
+                    }
                 }
             }
         }
 
         return merge;
+    }
+
+    private void addAllToMap(Folder merge, Folder value) {
+        for (Map.Entry<BasicFile, Blob> entry : value.getBlobMap().getMap().entrySet()) {
+            if (merge.getBlobMap().getMap().containsKey(entry.getValue()) && entry.getValue().getType() == eFileTypes.FOLDER) {
+                addAllToMap((Folder) merge.getBlobMap().getMap().get(entry.getValue()), (Folder) entry.getValue());
+            } else {
+                merge.getBlobMap().addToMap(entry.getValue());
+            }
+        }
     }
 
     private List<BlobMap> calculateChanges(BlobMap... values) {
@@ -781,7 +807,7 @@ public class Magit {
         }
     }
 
-    public Map<Branch, List<PairBranchCommit>> getAllCommits() {
+    private Map<Branch, List<PairBranchCommit>> getAllCommits() {
         Map<Branch, List<PairBranchCommit>> commitBranchMap = new HashMap<>();
         Map<Commit, String> nonDuplicateInLists = new HashMap<>();
         List<Branch> branches = currentRepository.getAllBranches();
@@ -811,6 +837,40 @@ public class Magit {
         return commitBranchMap;
     }
 
+    public Map<Branch, List<PairBranchCommit>> getAllCommits(boolean includeAllCommits) throws RepositoryException {
+        Map<Branch, List<PairBranchCommit>> commitBranchMap = new HashMap<>(getAllCommits());
+        if (!includeAllCommits) {
+            return commitBranchMap;
+        }
+        Branch temp = new Branch(Settings.TEMP_BRANCH_FOR_EXPANDED_TREE);
+
+        File objectFolder = new File(currentRepository.getObjectPath().toString());
+        File[] objectFiles = objectFolder.listFiles();
+        if (objectFiles != null) {
+            Set<PairBranchCommit> list = new LinkedHashSet<>();
+            List<Commit> commitList = new LinkedList<>();
+            for (File file : objectFiles) {
+                try {
+                    if (checkIsRealCommitFile(Files.readAllLines(file.toPath()))) {
+                        commitList.add(new Commit(file.getName(), currentRepository.getObjectPath().toString()));
+                    }
+                } catch (IOException ignored) {
+                }
+            }
+
+            commitList.sort(Comparator.comparing(Commit::getDate));
+
+            for (Commit commit : commitList) {
+                list.add(new PairBranchCommit(commit, temp));
+            }
+            List<PairBranchCommit> updateList = new ArrayList<>(list);
+            commitBranchMap.put(temp, updateList);
+        }
+
+        currentRepository.addBranch(temp);
+        return commitBranchMap;
+    }
+
     public Map<Commit, Branch> getPointedBranchesToCommitsMap() {
         Map<Commit, Branch> map = new HashMap<>();
         for (Branch branch : currentRepository.getAllBranches()) {
@@ -829,7 +889,7 @@ public class Magit {
 
     private boolean checkAlreadyExistRTBPointedOnRemote(Branch oldBranch) {
         for (Branch branch : currentRepository.getActiveBranches()) {
-            if (branch.getRemoteBranch().getName().equals(oldBranch)) {
+            if (branch.getRemoteBranch().getName().equals(oldBranch.getName())) {
                 return true;
             }
         }
@@ -906,32 +966,44 @@ public class Magit {
         }
     }
 
-    public Branch pull() throws RepositoryException, MyFileException, IOException {
+    public void pull() throws RepositoryException, MyFileException, IOException {
         if (currentBranch instanceof RemoteTrackingBranch) {
             Branch activeRemoteBranch = remoteRepository.getCurrentBranch();
             Commit activeRemoteCommit = activeRemoteBranch.getCommit();
+
+            List<Commit> activeRBCommitHistory = activeRemoteCommit.getChainOfCommits();
+            boolean isContains = false;
+            for (Commit commit : activeRBCommitHistory) {
+                if (commit.equals(currentBranch.getCommit())) {
+                    isContains = true;
+                    break;
+                }
+            }
+
+            if (!isContains) {
+                throw new RepositoryException(eErrorCodes.OPEN_CHANGES_NEEDS_PULL);
+            }
 
             copyFilesFromCommit(activeRemoteCommit,
                     remoteRepository.getCurrentRepository().getObjectPath().toString(),
                     currentRepository.getObjectPath().toFile());
 
-            //updateBranchesData(activeRemoteBranch);
-            return activeRemoteBranch;
-/*        deleteOldFiles(this.rootFolder.toString());
-        BlobMap newRootFolder = currentRepository.loadDataFromCommit(activeRemoteCommit);
-        Folder rootFolder = currentRepository.getRootFolder();
-        rootFolder.setBlobMap(newRootFolder);
-        layoutRepositoryByRootFolder(newRootFolder.getMap(), null);*/
+            updateBranchesData(activeRemoteBranch);
+            deleteOldFiles(this.rootFolder.toString());
+            BlobMap newRootFolder = currentRepository.loadDataFromCommit(activeRemoteCommit);
+            Folder rootFolder = currentRepository.getRootFolder();
+            rootFolder.setBlobMap(newRootFolder);
+            layoutRepositoryByRootFolder(newRootFolder.getMap(), null);
         } else {
             throw new RepositoryException(eErrorCodes.CANNOT_PULL_DATA_FOR_NONE_RTB);
         }
     }
 
-    private void copyFilesFromCommit(Commit activeRemoteCommit, String copyFilesFrom, File copyFileTo) throws RepositoryException {
-        Set<File> files = activeRemoteCommit.getCommitsFiles(copyFilesFrom);
+    private void copyFilesFromCommit(Commit commit, String objectPathFrom, File objectPathTo) throws RepositoryException {
+        Set<File> files = commit.getCommitsFiles(objectPathFrom);
         for (File file : files) {
             try {
-                FileUtils.copyFileToDirectory(file, copyFileTo);
+                FileUtils.copyFileToDirectory(file, objectPathTo);
             } catch (IOException e) {
                 throw new RepositoryException(eErrorCodes.COPY_FILE_FROM_REMOTE_TO_LOCAL_FAILED);
             }
@@ -939,14 +1011,14 @@ public class Magit {
     }
 
     private void updateBranchesData(Branch activeRemoteBranch) throws RepositoryException, IOException {
-        Branch remote = findInRemoteBranches(activeRemoteBranch);
+        Branch remote = findInRemoteBranches(activeRemoteBranch, remoteRepository.getCurrentRepository().getName());
         if (remote == null) {
             throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_FOUND);
         }
 
         remote.setCommit(
                 activeRemoteBranch.getCommit(),
-                currentRepository.getBranchesPath() + File.separator + remoteRepository.getCurrentRepository().getName());
+                currentRepository.getBranchesPath().toString());
         Branch remoteTrackingBranch = findBranch(activeRemoteBranch.getName());
         if (!(remoteTrackingBranch instanceof RemoteTrackingBranch)) {
             remoteTrackingBranch = new RemoteTrackingBranch(remote,
@@ -957,9 +1029,9 @@ public class Magit {
         setNewActiveBranch(remoteTrackingBranch);
     }
 
-    private Branch findInRemoteBranches(Branch activeRemoteBranch) {
+    private Branch findInRemoteBranches(Branch activeRemoteBranch, String remoteRepositoryName) {
         for (Branch branch : currentRepository.getRemoteBranches()) {
-            if (activeRemoteBranch.getName().equals(branch.getName())) {
+            if (branch.getName().equals(remoteRepositoryName + File.separator + activeRemoteBranch.getName())) {
                 return branch;
             }
         }
@@ -969,7 +1041,7 @@ public class Magit {
     public void push() throws RepositoryException, IOException, MyFileException {
         Branch headBranch = currentBranch;
         if (headBranch instanceof RemoteTrackingBranch) {
-            Branch remoteBranch = findInRemoteBranches(headBranch);
+            Branch remoteBranch = findInRemoteBranches(headBranch, remoteRepository.getCurrentRepository().getName());
             if (remoteBranch != null) {
                 Branch branchFromRemoteRepository = remoteRepository.findBranch(remoteBranch.getName());
                 // checking if those branches pointed on the same commit -> mean that user already do fetch & pull commands!
@@ -981,8 +1053,10 @@ public class Magit {
                             remoteRepository.getCurrentRepository().getObjectPath().toFile());
 
                     remoteRepository.updateBranchesDataFarAway(headBranch);
-                    remoteRepository.deleteOldFiles(remoteRepository.getRootFolder().toString());
-                    remoteRepository.layoutRepositoryByRootFolder(currentRepository.loadDataFromCommit(headBranch.getCommit()).getMap(), remoteRepository.getRootFolder().toString());
+                    if (remoteRepository.getCurrentBranch().getName().equals(headBranch.getName())) {
+                        remoteRepository.deleteOldFiles(remoteRepository.getRootFolder().toString());
+                        remoteRepository.layoutRepositoryByRootFolder(currentRepository.loadDataFromCommit(headBranch.getCommit()).getMap(), remoteRepository.getRootFolder().toString());
+                    }
                     remoteBranch.setCommit(headBranch.getCommit(), currentRepository.getBranchesPath().toString());
                 } else {
                     throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_POINTED_ON_SAME_COMMIT);
@@ -1008,7 +1082,7 @@ public class Magit {
     }
 
     public void updateRemoteAfterMerge(Branch remote) throws RepositoryException {
-        Branch localRemote = findInRemoteBranches(remote);
+        Branch localRemote = findInRemoteBranches(remote, remoteRepository.getCurrentRepository().getName());
         if (localRemote == null) {
             throw new RepositoryException(eErrorCodes.REMOTE_BRANCH_NOT_FOUND);
         } else {
@@ -1023,5 +1097,178 @@ public class Magit {
         }
 
         return commits.stream().distinct().collect(Collectors.toList());
+    }
+
+    public void fastForwardMerge(Branch target) throws RepositoryException {
+        Commit targetCommit = target.getCommit(), activeCommit = currentBranch.getCommit();
+
+        if (targetCommit.getDate().compareTo(activeCommit.getDate()) > 0) {
+            currentBranch.setCommit(targetCommit, currentRepository.getBranchesPath().toString());
+        }
+    }
+
+    public void pushBranch(Branch branch) throws RepositoryException, IOException {
+        if (getRemoteRepository().findBranch(branch.getName()) != null) {
+            throw new RepositoryException(eErrorCodes.REMOTE_REPO_CONTAIN_BRANCH, branch.getName());
+        }
+        Commit commit = branch.getCommit();
+        copyFilesFromCommit(commit,
+                currentRepository.getObjectPath().toString(),
+                remoteRepository.getCurrentRepository().getObjectPath().toFile());
+
+        remoteRepository.tryCreateNewBranch(branch.getName(), commit);
+        convertLocalBranchToRTB(branch, remoteRepository.getCurrentRepository().getName());
+    }
+
+    private void convertLocalBranchToRTB(Branch branch, String remoteRepositoryName) throws IOException {
+        RemoteTrackingBranch remoteTrackingBranch =
+                new RemoteTrackingBranch(branch, currentRepository.getBranchesPath().toString(), null);
+
+        currentRepository.addBranch(remoteTrackingBranch);
+        currentRepository.removeBranch(branch.getName());
+        branch.setRemote(true);
+        branch.setName(remoteRepositoryName + File.separator + branch.getName());
+        File branchFile = new File(currentRepository.getBranchesPath() + File.separator + branch.getName());
+        try (PrintWriter writer = new PrintWriter(branchFile)) {
+            writer.write(branch.getCommit().getSHA_ONE());
+        }
+    }
+
+    public Map<String, String> createRepositoryJson() {
+        Map<String, String> result = new HashMap<>();
+
+        result.put(Settings.WSA_REPOSITORY_NAME, currentRepository.getName());
+        result.put(Settings.WSA_JSON_ACTIVE_BRANCH, currentBranch.getName());
+        result.put(Settings.WSA_JSON_CURRENT_PATH, rootFolder.toString());
+        result.put(Settings.WSA_JSON_NUM_OF_BRANCHES, Integer.toString(getCurrentRepository().getBranches().size() - 1)); // minus 1 because HEAD branch
+        Commit lastCommit = currentRepository.getLastCommit();
+        result.put(Settings.WSA_JSON_LAST_COMMIT_DATA,
+                new SimpleDateFormat(Settings.DATE_FORMAT).format(lastCommit.getDate()));
+        result.put(Settings.WSA_JSON_LAST_COMMIT_COMMENT, lastCommit.getComment());
+
+        return result;
+    }
+
+    public Map<String, List<String>> getRepositoryMap() throws IOException, MyFileException, RepositoryException {
+        Map<String, List<String>> result = new HashMap<>();
+
+        result.put(Settings.WSA_REPOSITORY_NAME, Utilities.createSingleItemList(currentRepository.getName()));
+        List<Branch> branches = currentRepository.getActiveBranches();
+        result.put(Settings.WSA_SINGLE_REPOSITORY_BRANCHES,
+                branches.stream()
+                        .filter(branch -> !branch.getName().equals(Settings.MAGIT_BRANCH_HEAD))
+                        .map(Branch::getName)
+                        .collect(Collectors.toList()));
+        result.put(Settings.WSA_SINGLE_REPOSITORY_HEAD_BRANCH, Utilities.createSingleItemList(currentRepository.getActiveBranch().getName()));
+        result.put(Settings.WSA_SINGLE_REPOSITORY_ALL_COMMITS, createAllCommitJSONList());
+        result.put(Settings.WSA_SINGLE_REPOSITORY_FILE_TREE, getFileTreeJSON());
+        result.put(Settings.WSA_SINGLE_REPOSITORY_OPENED_CHANGES, getOpenChangesJSON());
+
+        return result;
+    }
+
+    private List<String> getOpenChangesJSON() throws RepositoryException, MyFileException, IOException {
+        Map<MapKeys, List<BasicFile>> results = currentRepository.scanRepository(currentUser);
+        if (results == null) {
+            return new LinkedList<>();
+        } else {
+            List<String> changes = new LinkedList<>();
+            changes.add(mapWithTypes(results.get(MapKeys.LIST_NEW)));
+            changes.add(mapWithTypes(results.get(MapKeys.LIST_CHANGED)));
+            changes.add(mapWithTypes(results.get(MapKeys.LIST_DELETED)));
+            return changes;
+        }
+    }
+
+    private String mapWithTypes(List<BasicFile> files) {
+        Map<String, String> result = new HashMap<>();
+        for (BasicFile basicFile : files) {
+            result.put(basicFile.shortPath(), basicFile.getType().toString());
+        }
+
+        return new Gson().toJson(result);
+    }
+
+    private List<String> getFileTreeJSON() throws IOException {
+        List<String> result = new LinkedList<>();
+        BlobMap currentFileTree = currentRepository.getCurrentFilesState(currentUser);
+
+        result.add(new Gson().toJson(getFilesData(currentFileTree)));
+        return result;
+    }
+
+    private List<String> createAllCommitJSONList() {
+        Set<Commit> commits = getSimpleAllCommitList();
+        List<String> results = new LinkedList<>();
+        List<Branch> branches = currentRepository.getAllBranches();
+
+        Gson gson = new Gson();
+
+        for (Commit commit : commits) {
+            Map<String, String> singleCommit = new HashMap<>();
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_SHA1_KEY, commit.getSHA_ONE());
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_COMMENT_KEY, commit.getComment());
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_DATE_KEY, new SimpleDateFormat(Settings.DATE_FORMAT).format(commit.getDate()));
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_CREATOR_KEY, commit.getCreator());
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_POINTED_BRANCHES, commit.getPointedBranches(branches));
+            results.add(gson.toJson(singleCommit));
+        }
+
+        return results;
+    }
+
+    public Map<String, String> getFilesData(BlobMap blobMap) {
+        Map<String, String> map = new HashMap<>();
+        for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
+            Blob blob = entry.getValue();
+            if (blob.getType() == eFileTypes.FOLDER) {
+                map.put(blob.getName(), new Gson().toJson(getFilesData(((Folder)blob).getBlobMap())));
+            } else {
+                map.put(blob.getName(), blob.getContent());
+            }
+        }
+
+        return map;
+    }
+
+    private Set<Commit> getSimpleAllCommitList() {
+        Set<Commit> commits = new LinkedHashSet<>();
+        for (Branch branch : currentRepository.getBranches()) {
+            if (!branch.isHead()) {
+                commits.addAll(branch.getAllCommits());
+            }
+        }
+        commits = commits.stream()
+                .sorted((o1, o2) -> o2.getDate().compareTo(o1.getDate()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return commits;
+    }
+
+    public void updateFileContent(String path, String content) {
+        File file = new File(currentRepository.getCurrentPath() + File.separator + path);
+        if (file.exists()) {
+            try (PrintWriter writer = new PrintWriter(file)) {
+                writer.print(content);
+            } catch (FileNotFoundException ignored) { }
+        }
+    }
+
+    public String CreateFilesDataJSON(Map<String, BlobMap> changes) {
+        Gson gson = new Gson();
+        Map<String, Map<String, String>> result = new HashMap<>();
+        BlobMap filesChanges = changes.get(Settings.KEY_CHANGE_MAP);
+
+        Blob random = filesChanges.getRandomBlob();
+        while(random != null) {
+            Map<String, String> fileContent = new HashMap<>();
+            Map<eUserMergeChoice, Blob> contents = filesChanges.getDuplicate(random, changes);
+            fileContent.put(Settings.KEY_ACTIVE_MAP, contents.get(eUserMergeChoice.ACTIVE).getContent());
+            fileContent.put(Settings.KEY_TARGET_MAP, contents.get(eUserMergeChoice.TARGET).getContent());
+            fileContent.put(Settings.KEY_ANCESTOR_MAP, contents.get(eUserMergeChoice.ANCESTOR).getContent());
+            result.put(random.shortPath(), fileContent);
+            filesChanges.remove(random);
+            random = filesChanges.getRandomBlob();
+        }
+        return gson.toJson(result);
     }
 }

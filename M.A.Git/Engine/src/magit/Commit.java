@@ -1,13 +1,11 @@
 package magit;
 
+import com.google.gson.Gson;
 import exceptions.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import puk.team.course.magit.ancestor.finder.CommitRepresentative;
 import settings.Settings;
-import utils.FileManager;
-import utils.MapKeys;
-import utils.WarpBasicFile;
-import utils.WarpInteger;
+import utils.*;
 import xml.basic.*;
 
 import java.io.File;
@@ -43,28 +41,30 @@ public class Commit implements CommitRepresentative {
     }
 
     public Commit(String SHA_ONE, String pathToObject) throws IOException {
-        List<String> commitContent = Files.readAllLines(Paths.get(pathToObject + File.separator + SHA_ONE));
-        this.SHA_ONE = SHA_ONE;
-        this.prevCommitSHA_ONE = commitContent.get(1);
-        this.anotherPrevCommitSHA_ONE = commitContent.get(2);
-        this.creator = commitContent.get(4);
-        try {
-            this.date = new SimpleDateFormat(Settings.DATE_FORMAT).parse(commitContent.get(3));
-        } catch (ParseException e) {
-            this.date = new Date();
-        }
-        if (!this.prevCommitSHA_ONE.equals(Settings.EMPTY_COMMIT)) {
-            this.prevCommit = new Commit(this.prevCommitSHA_ONE, pathToObject);
-        }
-        if (!this.anotherPrevCommitSHA_ONE.equals(Settings.EMPTY_COMMIT)) {
-            this.anotherPrevCommit = new Commit(this.anotherPrevCommitSHA_ONE, pathToObject);
-        }
+        if (!SHA_ONE.equals(Settings.EMPTY_COMMIT)) {
+            List<String> commitContent = Files.readAllLines(Paths.get(pathToObject + File.separator + SHA_ONE));
+            this.SHA_ONE = SHA_ONE;
+            this.prevCommitSHA_ONE = commitContent.get(1);
+            this.anotherPrevCommitSHA_ONE = commitContent.get(2);
+            this.creator = commitContent.get(4);
+            try {
+                this.date = new SimpleDateFormat(Settings.DATE_FORMAT).parse(commitContent.get(3));
+            } catch (ParseException e) {
+                this.date = new Date();
+            }
+            if (!this.prevCommitSHA_ONE.equals(Settings.EMPTY_COMMIT)) {
+                this.prevCommit = new Commit(this.prevCommitSHA_ONE, pathToObject);
+            }
+            if (!this.anotherPrevCommitSHA_ONE.equals(Settings.EMPTY_COMMIT)) {
+                this.anotherPrevCommit = new Commit(this.anotherPrevCommitSHA_ONE, pathToObject);
+            }
 
-        this.comment = getCommentFromFile(commitContent);
-        this.rootFolderSHA_ONE = commitContent.get(0);
+            this.comment = getCommentFromFile(commitContent);
+            this.rootFolderSHA_ONE = commitContent.get(0);
+        }
     }
 
-    public Commit XML_Parser(MagitRepository xmlMagit, MagitSingleCommit commit, Folder rootFolder)
+    public Commit XML_Parser(MagitRepository xmlMagit, MagitSingleCommit commit, Folder rootFolder, String repositoryRootFolder)
             throws MyXMLException, MyFileException, IOException {
         Commit temp = new Commit();
 
@@ -79,7 +79,7 @@ public class Commit implements CommitRepresentative {
 
         temp.comment = commit.getMessage();
         temp.rootFolderSHA_ONE = rootFolder.getSHA_ONE();
-        String pathToObject = xmlMagit.getLocation() + File.separator + Settings.MAGIT_FOLDER + File.separator + Settings.OBJECT_FOLDER;
+        String pathToObject = repositoryRootFolder + File.separator + Settings.MAGIT_FOLDER + File.separator + Settings.OBJECT_FOLDER;
         zipAllChainOfInherit(rootFolder, Paths.get(pathToObject));
 
         if (commit.getPrecedingCommits() != null) {
@@ -90,13 +90,13 @@ public class Commit implements CommitRepresentative {
                 for (PrecedingCommits.PrecedingCommit precedingCommit : prevCommits) {
                     MagitSingleCommit tempCommit = XML_FindMagitCommit(xmlMagit.getMagitCommits().getMagitSingleCommit(), precedingCommit.getId());
                     MagitSingleFolder tempFolder = Folder.findRootFolder(xmlMagit.getMagitFolders().getMagitSingleFolder(), tempCommit.getRootFolder().getId());
-                    temp.addPrevCommit(XML_Parser(xmlMagit, tempCommit, Folder.XML_Parser(tempFolder, xmlMagit, null, xmlMagit.getLocation())));
+                    temp.addPrevCommit(XML_Parser(xmlMagit, tempCommit, Folder.XML_Parser(tempFolder, xmlMagit, null, repositoryRootFolder), repositoryRootFolder));
                 }
             }
         }
         temp.calcContent();
         temp.SHA_ONE = DigestUtils.sha1Hex(temp.content);
-        createCommitFile(temp, xmlMagit.getLocation());
+        createCommitFile(temp, repositoryRootFolder);
         return temp;
     }
 
@@ -118,15 +118,9 @@ public class Commit implements CommitRepresentative {
         return content;
     }
 
-    public String getRootFolderSHA_ONE() {
-        return rootFolderSHA_ONE;
-    }
-
     public void addPrevCommit(Commit commit) {
         if (this.prevCommit != null) {
-            if (this.anotherPrevCommit != null) {
-                return;
-            } else {
+            if (this.anotherPrevCommit == null) {
                 this.anotherPrevCommit = commit;
                 this.anotherPrevCommitSHA_ONE = commit.getSHA_ONE();
             }
@@ -189,7 +183,7 @@ public class Commit implements CommitRepresentative {
         zipAllChainOfInherit(currentRepository.getRootFolder(), currentRepository.getObjectPath());
     }
 
-    public void zipAllChainOfInherit(BasicFile file, Path objectPath) throws MyFileException {
+    private void zipAllChainOfInherit(BasicFile file, Path objectPath) throws MyFileException {
         FileManager.zipFile(file, objectPath);
         Folder f = file.tryParseFolder();
         if (f != null) {
@@ -206,8 +200,13 @@ public class Commit implements CommitRepresentative {
     public void loadDataFromFile(Path objectPath, String commit_sha) throws IOException, RepositoryException {
         List<String> commitFile = Files.readAllLines(Paths.get(objectPath + File.separator + commit_sha));
 
-        this.prevCommitSHA_ONE = calcPervsCommit(this.prevCommit, commitFile.get(1), objectPath);
-        this.anotherPrevCommitSHA_ONE = calcPervsCommit(this.anotherPrevCommit, commitFile.get(2), objectPath);
+        CustomWrapper<Commit> prev = new CustomWrapper<>(null),
+                another = new CustomWrapper<>(null);
+
+        this.prevCommitSHA_ONE = calcPervsCommit(prev, commitFile.get(1), objectPath);
+        this.anotherPrevCommitSHA_ONE = calcPervsCommit(another, commitFile.get(2), objectPath);
+        this.prevCommit = prev.getData();
+        this.anotherPrevCommit = another.getData();
 
         this.SHA_ONE = commit_sha;
         this.rootFolderSHA_ONE = commitFile.get(0);
@@ -222,13 +221,12 @@ public class Commit implements CommitRepresentative {
         this.comment = getCommentFromFile(commitFile);
     }
 
-    private String calcPervsCommit(Commit commit, String sha_one, Path objectPath) throws IOException, RepositoryException {
+    private String calcPervsCommit(CustomWrapper<Commit> commit, String sha_one, Path objectPath) throws IOException, RepositoryException {
         if (!sha_one.equals(Settings.EMPTY_COMMIT)) {
-            commit = new Commit(sha_one, objectPath.toString());
-            commit.loadDataFromFile(objectPath, sha_one);
+            commit.setData(new Commit(sha_one, objectPath.toString()));
+            commit.getData().loadDataFromFile(objectPath, sha_one);
             return sha_one;
         } else {
-            commit = null;
             return Settings.EMPTY_COMMIT;
         }
     }
@@ -356,17 +354,6 @@ public class Commit implements CommitRepresentative {
         return commitList;
     }
 
-    public int namOfPreceding() {
-        if (prevCommit == null) {
-            return 0;
-        } else {
-            if (anotherPrevCommit == null) {
-                return 1;
-            }
-            return 2;
-        }
-    }
-
     public Date getDate() {
         return date;
     }
@@ -449,5 +436,28 @@ public class Commit implements CommitRepresentative {
         files.add(new File(pathToObjectFolder + File.separator + SHA_ONE));
 
         return files;
+    }
+
+    public String getPointedBranches(List<Branch> branches) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < branches.size(); i++) {
+            if (branches.get(i).getAllCommits().contains(this)) {
+                stringBuilder.append("****").append(branches.get(i).getName());
+                if (i + 1 == branches.size()) {
+                    stringBuilder.append(",");
+                }
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public String toJSON() {
+        Map<String, String> commit = new HashMap<>();
+        commit.put(Settings.WSA_SINGLE_COMMIT_SHA1_KEY, SHA_ONE);
+        commit.put(Settings.WSA_SINGLE_COMMIT_COMMENT_KEY, comment);
+        commit.put(Settings.WSA_SINGLE_COMMIT_DATE_KEY, new SimpleDateFormat(Settings.DATE_FORMAT).format(date));
+        commit.put(Settings.WSA_SINGLE_COMMIT_CREATOR_KEY, creator);
+
+        return new Gson().toJson(commit);
     }
 }

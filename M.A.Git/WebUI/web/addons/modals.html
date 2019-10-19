@@ -1,0 +1,64 @@
+<!-- Load repository modal -->
+<div id="load-repository" class="modal fade" role="dialog" >
+    <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Load repository</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-signup" action="load-repository" enctype="multipart/form-data" method="POST" id="form-load-repository">
+              <div class="panel-body" id="load-repository_form">
+                <label>Please choose an XML file for repository</label>
+                <input type="file" accept=".xml" class="form-control" id="field_path" name="field_path" placeholder="Path" value="" required>
+              </div>
+              <div class="modal-footer">
+                <div class="btn-group">
+                <input class='btn btn-primary' type='Submit' id="addNewField" name="addNewField" value='Submit' class='submit'/></div>
+                <div class="btn-group"><button type="button" class="btn btn-default" data-dismiss="modal">Close</button></div>
+              </div>
+            </form>
+          </div>
+        </div>
+    </div>
+</div>
+<!-- Commit add commant modal -->
+<div class="modal fade" id="commitCommentModal" tabindex="-1" role="dialog" aria-labelledby="commitModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commitModalLabel">Add comment to commit: </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea id="commit_comment_textarea"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="commit_comment_close">Close</button>
+        <button type="button" class="btn btn-primary" id="save_comment">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Merge comment modal -->
+<div class="modal fade" id="mergeCommentModal" tabindex="-1" role="dialog" aria-labelledby="mergeModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="mergeModalLabel">Add comment to merge: </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea id="merge_comment_textarea"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="merge_comment_close">Close</button>
+        <button type="button" class="btn btn-primary" id="merge_comment">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>

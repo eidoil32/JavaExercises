@@ -1,17 +1,19 @@
 package controller.screen.popups;
 
+import controller.screen.intro.IntroController;
 import controller.screen.main.MainController;
+import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import magit.Magit;
 import settings.Settings;
+
+import java.io.*;
 
 public class SettingsController {
     private MainController mainController;
@@ -23,9 +25,11 @@ public class SettingsController {
     @FXML
     private Label styleHint, languagesHint;
     @FXML
-    private ChoiceBox<String> styleChoiceBox, languageChoiceBox;
+    private ChoiceBox<String> languageChoiceBox;
     @FXML
-    private Button saveButton;
+    private Button saveButton, defaultButton;
+    @FXML
+    private ColorPicker styleChoiceBox;
 
     @FXML
     public void initialize() {
@@ -36,21 +40,71 @@ public class SettingsController {
         languageChoiceBox.getItems().add(1, Settings.LANG_ENG);
         index = Settings.currentLanguage.equals(Settings.HEBREW_CODE) ? 0 : 1;
         languageChoiceBox.getSelectionModel().select(index);
-        index = Settings.currentTheme.equals(Settings.THEME_WHITE) ? 0 : 1;
-        styleChoiceBox.getItems().add(0, Settings.THEME_WHITE);
-        styleChoiceBox.getItems().add(1, Settings.THEME_BLACK);
-        styleChoiceBox.getSelectionModel().select(index);
+        styleChoiceBox.setValue(Settings.CURRENT_THEME_COLOR);
+        styleChoiceBox.setOnAction(event -> editCustomCSSFile());
+    }
+
+    private void editCustomCSSFile() {
+        InputStream in = getClass().getClassLoader().getResourceAsStream(Settings.FXML_THEME_CUSTOM_CSS_FILE);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+        String line;
+        try {
+            StringBuilder sb = new StringBuilder();
+            int i = 0;
+            while ((line = reader.readLine()) != null) {
+                if (i == 2) {
+                    String standard = getColorCode(styleChoiceBox.getValue());
+                    line = "    -standard                    : " + standard + ";";
+                } else if (i == 3) {
+                    String light = getColorCode(styleChoiceBox.getValue().brighter());
+                    line = "    -bright                    : " + light + ";";
+                }
+                sb.append(line).append("\n");
+                i++;
+            }
+            PrintWriter writer =
+                    new PrintWriter(
+                            new File(Settings.FXML_THEME_CUSTOM_EXTERNAL_CSS_FILE));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            Platform.runLater(() -> IntroController.showError(e.getMessage()));
+        }
+    }
+
+    private String getColorCode(Color color) {
+        return "#" + color.toString().substring(2, 8);
     }
 
     @FXML
     void onSaveButton_Click(ActionEvent event) {
-        String language = languageChoiceBox.getValue(), style = styleChoiceBox.getValue();
-        Settings.currentLanguage = language.equals(Settings.LANG_ENG) ? "" : Settings.HEBREW_CODE;
-        Settings.currentTheme = style;
-        languageProperty.setValue(true);
+        String language = languageChoiceBox.getValue();
+        Color style = styleChoiceBox.getValue();
+        if (style.equals(Color.WHITE)) {
+            Settings.currentTheme = Settings.THEME_WHITE;
+        } else {
+            Settings.currentTheme = Settings.THEME_CUSTOM;
+        }
+        Settings.CURRENT_THEME_COLOR = style;
+        if (isLanguagesChanges(language))
+        {
+            Settings.currentLanguage = language.equals(Settings.LANG_ENG) ? Settings.ENGLISH_CODE : Settings.HEBREW_CODE;
+            languageProperty.setValue(true);
+        }
         themeProperty.setValue(true);
-        currentState.setValue(Settings.language.getString("LANGUAGE_CHANGES_SUCCESSFULLY"));
+        currentState.set(Settings.language.getString("LANGUAGE_CHANGES_SUCCESSFULLY"));
         stage.close();
+    }
+
+    private boolean isLanguagesChanges(String selectedLanguages) {
+        String currentLang;
+        if (Settings.currentLanguage.equals(Settings.ENGLISH_CODE)) {
+            currentLang = Settings.LANG_ENG;
+        } else {
+            currentLang = Settings.LANG_HEB;
+        }
+
+        return !selectedLanguages.equals(currentLang);
     }
 
     public void setMainController(MainController mainController) {
@@ -75,5 +129,16 @@ public class SettingsController {
 
     public void setCurrentState(StringProperty currentState) {
         this.currentState = currentState;
+    }
+
+    @FXML
+    void onDefaultButton_Clicked(ActionEvent event) {
+        Settings.currentTheme = Settings.THEME_WHITE;
+        Settings.currentLanguage = ""; // reset to english language
+        Settings.CURRENT_THEME_COLOR = Color.WHITE;
+        themeProperty.set(true);
+        languageProperty.set(true);
+        currentState.setValue(Settings.language.getString("SETTINGS_SAVED_SUCCESSFULLY"));
+        stage.close();
     }
 }

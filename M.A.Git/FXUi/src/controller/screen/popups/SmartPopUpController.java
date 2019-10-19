@@ -7,6 +7,7 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import magit.utils.CustomAnimations;
 import settings.Settings;
 
 public class SmartPopUpController {
@@ -19,6 +20,13 @@ public class SmartPopUpController {
     private Button confirmBtn, cancelBtn;
 
     private StringProperty stringProperty;
+
+    public void initialize() {
+        textArea.setOnMouseClicked(event -> {
+            textArea.getStyleClass().clear();
+            textArea.getStyleClass().addAll(Settings.CSS_TEXT_AREA_BASIC, Settings.CSS_TEXT_INPUT_BASIC);
+        });
+    }
 
     public void setStringProperty(StringProperty stringProperty) {
         this.stringProperty = stringProperty;
@@ -41,7 +49,9 @@ public class SmartPopUpController {
             stringProperty.setValue(comment);
             ((Node)event.getSource()).getScene().getWindow().hide();
         } else {
-            // set textarea border color to red! - animation
+            textArea.getStyleClass().clear();
+            textArea.getStyleClass().add(Settings.CSS_RED_BORDER_ERROR);
+            CustomAnimations.playAnimation(CustomAnimations.snoozeNode(textArea));
         }
     }
 }

@@ -22,11 +22,13 @@ public class PushTask extends Task<Void> {
     protected Void call() {
         if (model.getRemoteRepository() == null) {
             Platform.runLater(()-> IntroController.showError(Settings.language.getString("FX_RR_NOT_EXIST_NOT_WHERE_TO_PUSH")));
+            updateStatus(Settings.language.getString("FX_PUSH_COMMAND_FAILED"),3);
             return null;
         }
         updateStatus(Settings.language.getString("FX_CHECKING_FOR_UPDATES"),1);
         try {
             if (model.getRemoteRepository().getCurrentRepository().scanRepository(model.getCurrentUser()) != null) {
+                updateStatus(Settings.language.getString("FX_PUSH_COMMAND_FAILED"),3);
                 Platform.runLater(() -> IntroController.showError(Settings.language.getString("FX_OPENED_ISSUES_FOUND_IN_RR")));
                 return null;
             }

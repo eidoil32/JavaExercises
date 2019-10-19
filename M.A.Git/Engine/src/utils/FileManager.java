@@ -117,10 +117,16 @@ public class FileManager {
         }
     }
 
-    public static MagitRepository deserializeFrom(InputStream in) throws JAXBException {
-        JAXBContext jc = JAXBContext.newInstance(Settings.XML_LOAD_PACKAGE);
-        Unmarshaller u = jc.createUnmarshaller();
-        return (MagitRepository) u.unmarshal(in);
+    public static MagitRepository deserializeFrom(StringReader stringReader) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Settings.XML_LOAD_PACKAGE);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        return (MagitRepository) unmarshaller.unmarshal(stringReader);
+    }
+
+    public static MagitRepository deserializeFrom(InputStream stringReader) throws JAXBException {
+        JAXBContext jaxbContext = JAXBContext.newInstance(Settings.XML_LOAD_PACKAGE);
+        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        return (MagitRepository) unmarshaller.unmarshal(stringReader);
     }
 
     public static File unZipFile(File file, String pathToTempFolder) {
@@ -201,5 +207,18 @@ public class FileManager {
         }
 
         return files;
+    }
+
+    public static String makeContent(String content) {
+        StringBuilder stringBuilder = new StringBuilder();
+        String[] lines = content.split("\n");
+        for (int i = 0; i < lines.length; i++) {
+            stringBuilder.append(lines[i]);
+            if (i + 1 != lines.length) {
+                stringBuilder.append(System.lineSeparator());
+            }
+        }
+
+        return stringBuilder.toString();
     }
 }

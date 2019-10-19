@@ -1,9 +1,11 @@
 package magit.utils;
 
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Tooltip;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import settings.Settings;
@@ -58,5 +60,33 @@ public class Utilities {
         alert.setContentText(values[1]);
         alert.getButtonTypes().setAll(buttons);
         alert.showAndWait().ifPresent(function);
+    }
+
+    public static void installToolTip(Node node, String string) {
+        Tooltip tooltip = new Tooltip(string);
+        Tooltip.install(node, tooltip);
+    }
+
+    public static String[] myCustomSplit(String string, String splitter) {
+        String[] array = new String[2];
+        StringBuilder[] tempBuilder = new StringBuilder[2];
+        int index = 0;
+
+        for (int i = 0; i < 2; i++) {
+            tempBuilder[i] = new StringBuilder();
+        }
+
+        for (char c : string.toCharArray()) {
+            if (c == splitter.charAt(0)) {
+                index = 1;
+            } else {
+                tempBuilder[index].append(c);
+            }
+        }
+
+        array[0] = tempBuilder[0].toString();
+        array[1] = tempBuilder[1].toString();
+
+        return array;
     }
 }
