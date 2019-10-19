@@ -1,5 +1,6 @@
 package magit;
 
+import com.google.gson.Gson;
 import exceptions.*;
 import org.apache.commons.codec.digest.DigestUtils;
 import puk.team.course.magit.ancestor.finder.CommitRepresentative;
@@ -448,5 +449,15 @@ public class Commit implements CommitRepresentative {
             }
         }
         return stringBuilder.toString();
+    }
+
+    public String toJSON() {
+        Map<String, String> commit = new HashMap<>();
+        commit.put(Settings.WSA_SINGLE_COMMIT_SHA1_KEY, SHA_ONE);
+        commit.put(Settings.WSA_SINGLE_COMMIT_COMMENT_KEY, comment);
+        commit.put(Settings.WSA_SINGLE_COMMIT_DATE_KEY, new SimpleDateFormat(Settings.DATE_FORMAT).format(date));
+        commit.put(Settings.WSA_SINGLE_COMMIT_CREATOR_KEY, creator);
+
+        return new Gson().toJson(commit);
     }
 }

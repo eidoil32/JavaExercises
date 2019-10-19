@@ -11,34 +11,6 @@ function GetCookieValue(name) {
     }
 }
 
-function checkFolder(data) {
-    try {
-        jQuery.parseJSON(data);
-        return true;
-    } catch (err) {
-        return false;
-    }
-}
-
-function createFolder(text, parent, newID) {
-    var parentUL = document.getElementById(parent);
-    var li = document.createElement("li");
-    li.appendChild(document.createTextNode(text));
-    var newUL = document.createElement("ul");
-    newUL.id = newID;
-    li.appendChild(newUL);
-    li.setAttribute("data-jstree", '{"icon" : "fa fa-folder"}');
-    parentUL.appendChild(li);
-}
-
-function createNode(text, parent) {
-    var li = document.createElement("li");
-    var parentUL = document.getElementById(parent);
-    li.appendChild(document.createTextNode(text));
-    parentUL.appendChild(li);
-    li.setAttribute("data-jstree", '{"icon" : "fa fa-file"}');
-}
-
 function loadCommitData(data, rootFolderID) {
     var tree = jQuery.parseJSON(data);
 
@@ -53,6 +25,12 @@ function loadCommitData(data, rootFolderID) {
     })
 }
 
+function saveFile() {
+	var repository = $("#repository").value;
+	var path = $("#path").value;
+	var user = $("#user").value;
+	console.log("form input - repository:" + repository + ", path: " + path + ", user: " + user);
+}
 
 function createFileViewer(filename, content) {
     if (content !== "") {
@@ -63,6 +41,7 @@ function createFileViewer(filename, content) {
         document.getElementById('textEditor').innerHTML = viewer;
     }
 }
+
 
 function getFullPath(file, counter) {
     var rootFolder = file.parentElement.parentElement;
@@ -87,7 +66,7 @@ function loadFileData(file, repository, user, commitSHA) {
             console.error("Error from server!");
         },
         success: function(data) {
-            createFileViewer(file, data);
+            createFileViewer(file, data, path, repository, user);
         }
     });
 }

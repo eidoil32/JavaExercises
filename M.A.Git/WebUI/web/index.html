@@ -6,8 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>M.A.Git</title>
-    <meta name="description" content="">
-    <meta name="author" content="templatemo">
+    <meta name="description" content="M.A.Git application - version control">
+    <meta name="author" content="IdoHayun">
+    <link rel="shortcut icon" href="favicon.ico">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/templatemo-style.css" rel="stylesheet">
@@ -45,12 +46,12 @@
         </div>
         <!-- Main content -->
         <div class="templatemo-content col-1 light-gray-bg" style="min-height: 100vh">
-            <div class="container">
+            <div class="container-fluid">
                 <div class="row">
                     <div class="templatemo-content-container" id="div_message" style="display: none;">
                         <div id="div_message_failed" class="templatemo-flex-row flex-content-row" style="display:none;">
                             <div class="templatemo-content-widget white-bg col-2" style="background-color: #efdbd7;">
-                                <i class="fa fa-times"></i>
+                                <i class="fa fa-times" onclick="hideMessage();"></i>
                                 <h2 class="templatemo-inline-block" style="color: #b73a24; margin-bottom: 10px"> Message:</h2>
                                 <p id="message_failed">
 
@@ -59,7 +60,7 @@
                         </div>
                         <div id="div_message_success" class="templatemo-flex-row flex-content-row" style="display:none;">
                             <div class="templatemo-content-widget white-bg col-2" style="background-color: #DFF0D8;">
-                                <i class="fa fa-times"></i>
+                                <i class="fa fa-times" onclick="hideMessage();"></i>
                                 <h2 class="templatemo-inline-block" style="color: #008000; margin-bottom: 10px"> Message:</h2>
                                 <p id="message_success">
 
@@ -71,8 +72,8 @@
             </div>
             <div class="templatemo-content-container">
                 <!-- Notification center -->
-                <div class="templatemo-flex-row flex-content-row">
-                    <div class="container">
+                <div >
+                    <div class="container-fluid">
                         <div class="row">
                             <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
                                 <div class="panel-heading templatemo-position-relative">
@@ -117,13 +118,13 @@
     <!-- Add modal contents -->
     <div id="modal-popups"></div>
     <!-- JS -->
-    <script src="js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="js/jquery-1.12.4.js"></script>
+    <script type="text/javascript" src="js/jquery-ui.js"></script>
     <!-- jQuery -->
-    <script src="js/bootstrap.js"></script>
+    <script type="text/javascript" src="js/bootstrap.js"></script>
     <!-- Bootstrap scripts -->
-    <script src="dist/jstree.min.js"></script>
+    <script type="text/javascript" src="dist/jstree.min.js"></script>
     <script type="text/javascript" src="js/index.js"></script>
     <script type="text/javascript" src="js/templatemo-script.js"></script>
 </body>
-
 </html>

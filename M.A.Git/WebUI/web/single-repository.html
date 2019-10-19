@@ -1,81 +1,173 @@
-<div class="container">
-	<div class="row">
-	    <div class="col-sm-6">
-		    <div class="templatemo-flex-row flex-content-row">
-		        <div class="templatemo-content-widget white-bg col-2" style="background-color: #bfeff2;">
-		              <h2 class="templatemo-inline-block" style="color: #15777c; margin-bottom: 10px"> Repository Details</h2>
-		              <p id="repository_details">
+<div class="container-fluid">
+	<div id="tabs" class="nav nav-tabs">
+		<ul class="nav nav-tabs">
+			<li class="active"><a data-toggle="tab" href="#tabs-5">Repository details</a></li>
+			<li><a data-toggle="tab" href="#tabs-1">Commit List</a></li>
+			<li><a data-toggle="tab" href="#tabs-3">Branches</a></li>
+			<li><a data-toggle="tab" href="#tabs-2">Files viewer</a></li>
+			<li><a data-toggle="tab" href="#tabs-4">Options</a></li>
+		</ul>
+		<div class="tab-content">
+			<div id="tabs-1" class="tab-pane fade">
+				<div class="row">
+					<div class="col-12">
+				        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+				            <div class="panel-heading templatemo-position-relative">
+				                <h2 class="text-uppercase">Commits</h2>
+				            </div>
+				            <div class="table-responsive">
+				                <table class="table table-striped table-bordered" id="commits-table">
+				                	<colgroup>
+				                      <col span="1" style="width: 5%;">
+				                      <col span="1" style="width: 20%;">
+				                      <col span="1" style="width: 20%;">
+				                      <col span="1" style="width: 10%;">
+				                      <col span="1" style="width: 10%;">
+				                      <col span="1" style="width: 25%;">
+				                    </colgroup>
+				                    <thead>
+				                        <tr style="font-weight: bold;">
+				                            <td>No.</td>
+				                            <td>SHA-1</td>
+				                            <td>Comment</td>
+				                            <td>Creation date</td>
+				                            <td>Created by</td>
+				                            <td>Pointed by</td>
+				                        </tr>
+				                    </thead>
+				                    <tbody id="commit-table-tbody">
+				                    </tbody>
+				                </table>
+				            </div>
+				        </div>
+			    	</div>
+			    </div>
+			</div>
+			<div id="tabs-2" class="tab-pane fade">
+				<div class="row">
+					<div class="col-sm-6">
+			            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+			                <div class="panel-heading templatemo-position-relative">
+			                    <h2 class="text-uppercase">File tree</h2>
+			                </div>
+			                <div id="filetree_div">
+			                    <ul id="root_folder">
+			                    </ul>
+			                </div>
+			            </div>
+			    	</div>
+			    	<div class="col-sm-6">
+			            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+			                <div class="panel-heading templatemo-position-relative">
+			                    <h2 class="text-uppercase">File viewer</h2>
+			                </div>
+			                <div id="textEditor" style="margin: 5px;max-width: 100%;" class="text-center">
+			                    Choose file to view his content.
+			                </div>
+			            </div>
+			        </div>
+			    </div>
+			    <div class="row">
+			    	<div class="col" style="display: none;" id="repository_opened_changes">
+			    		<div class="panel-group" id="accordion_files">
+			    			<div class="panel panel-default">
+			    				<div class="panel-heading" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" style="cursor: pointer;">
+									<h2 class="panel-title">
+									New files
+									</h2>
+								</div>
+								<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion_files">
+									<div class="panel-body" style="padding: 	5px;" id="new_files">
+										There's no any new files.
+									</div>
+								</div>
+			    			</div>
+			    			<div class="panel panel-default">
+			    				<div class="panel-heading" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="cursor: pointer;">
+									<h2 class="panel-title">
+										Edited files
+										</button>
+									</h2>
+								</div>
+								<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion_files">
+									<div class="panel-body" id="edited_files">
+										There's no any edited files.
+									</div>
+								</div>
+			    			</div>
+			    			<div class="panel panel-default">
+			    				<div class="panel-heading" id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="cursor: pointer;">
+									<h2 class="panel-title">
+										Deleted files
+										</button>
+									</h2>
+								</div>
+								<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion_files">
+									<div class="panel-body" id="deleted_files">
+										There's no any deleted files.
+									</div>
+								</div>
+			    			</div>
+			    		</div>
+			    	</div>
+			    </div>
+			</div>
+			<div id="tabs-3" class="tab-pane fade">
+			    <div class="col">
+			        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+			            <div class="panel-heading templatemo-position-relative">
+			                <h2 class="text-uppercase">Branches</h2>
+			            </div>
+			            <div class="table-responsive">
+			                <table class="table table-striped table-bordered" id="branches-table">
+			                    <thead>
+			                        <tr style="font-weight: bold;">
+			                            <td>No.</td>
+			                            <td>Branch name</td>
+			                        </tr>
+			                    </thead>
+			                    <tbody id="branches-tbody">
+			                    </tbody>
+			                </table>
+			            </div>
+			        </div>
+			    </div>
+			</div>
+			<div id="tabs-4" class="tab-pane fade">
+				<div class="row">
+					<div class="col">
+				        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+				            <div class="panel-heading templatemo-position-relative">
+				                <h2 class="text-uppercase">Options</h2>
+				            </div>
+				            <div class="table-responsive">
+				               	<table class="table table-striped table-bordered">
+				                    <tbody>
+				                    	<tr id="repository_options">
+				                        </tr>
+				                    </tbody>
+				                </table>
+				            </div>
+				        </div>
+				    </div>		
+				</div>
+			</div>
+			<div id="tabs-5" class="tab-pane fade  in active">
+				<div class="row">
+				    <div class="col">
+					    <div class="templatemo-flex-row flex-content-row">
+					        <div class="templatemo-content-widget white-bg col-2">
+					              <h2 class="templatemo-inline-block" style="margin-bottom: 10px"> Repository Details</h2>
+					              <p id="repository_details">
 
-		              </p>
-		        </div>
-		    </div>
-	    </div>
-	    <div class="col-sm-6">
-	        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
-	            <div class="panel-heading templatemo-position-relative">
-	                <h2 class="text-uppercase">Branches</h2>
-	            </div>
-	            <div class="table-responsive">
-	                <table class="table table-striped table-bordered" id="branches-table">
-	                    <thead>
-	                        <tr style="font-weight: bold;">
-	                            <td>No.</td>
-	                            <td>Branch name</td>
-	                        </tr>
-	                    </thead>
-	                    <tbody id="repositories-details">
-	                    </tbody>
-	                </table>
-	            </div>
-	        </div>
-	    </div>
+					              </p>
+					        </div>
+					    </div>
+				    </div>
+				</div>
+			</div>
+		</div>
 	</div>
-	<div class="row">
-		<div class="col-12">
-	        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
-	            <div class="panel-heading templatemo-position-relative">
-	                <h2 class="text-uppercase">Commits</h2>
-	            </div>
-	            <div class="table-responsive">
-	                <table class="table table-striped table-bordered" id="commits-table">
-	                	<colgroup>
-	                      <col span="1" style="width: 5%;">
-	                      <col span="1" style="width: 20%;">
-	                      <col span="1" style="width: 20%;">
-	                      <col span="1" style="width: 10%;">
-	                      <col span="1" style="width: 10%;">
-	                      <col span="1" style="width: 25%;">
-	                    </colgroup>
-	                    <thead>
-	                        <tr style="font-weight: bold;">
-	                            <td>No.</td>
-	                            <td>SHA-1</td>
-	                            <td>Comment</td>
-	                            <td>Creation date</td>
-	                            <td>Created by</td>
-	                            <td>Pointed by</td>
-	                        </tr>
-	                    </thead>
-	                    <tbody id="repositories-details">
-	                    </tbody>
-	                </table>
-	            </div>
-	        </div>
-    	</div>
-    </div>
-	<div class="row">
-		<div class="col-12">
-            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
-                <div class="panel-heading templatemo-position-relative">
-                    <h2 class="text-uppercase">File tree</h2>
-                </div>
-                <div id="filetree_div">
-                    <ul id="root_folder">
-                    </ul>
-                </div>
-            </div>
-    	</div>
-    </div>
 </div>
 <!-- notification row ends -->
 <script type="text/javascript" src="js/single-repository.js"></script>

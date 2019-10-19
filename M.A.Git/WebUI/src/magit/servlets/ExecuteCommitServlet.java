@@ -1,5 +1,6 @@
 package magit.servlets;
 
+import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import magit.Magit;
 import magit.WebUI;
@@ -13,20 +14,25 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-@WebServlet(name = "SaveFileServlet", urlPatterns = {"/save_file"})
-public class SaveFileServlet extends HttpServlet {
-
+@WebServlet(name = "ExecuteCommitServlet", urlPatterns = {"/execute_commit"})
+public class ExecuteCommitServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String path = request.getParameter("file_path"),
+        String username = request.getParameter("user_id"),
                 repositoryID = request.getParameter("repository_id"),
-                content = request.getParameter("file_content"),
-                username = request.getParameter("user_id");
+                comment = request.getParameter("comment");
 
         User user = WebUI.getUser(request, username);
-        try (PrintWriter out = response.getWriter()) {
+        PrintWriter out = response.getWriter();
+        try {
             Magit magit = user.getRepository(Integer.parseInt(repositoryID));
-            magit.updateFileContent(path, content);
-        } catch (RepositoryException ignored) { }
+            magit.commitMagit(user.getName(), comment);
+            out.print(magit.getCurrentBranch().getCommit().toJSON());
+        } catch (RepositoryException | MyFileException e) {
+            response.setStatus(400);
+            out.print(e.getMessage());
+        } finally {
+            out.close();
+        }
     }
 }

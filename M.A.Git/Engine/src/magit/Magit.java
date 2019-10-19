@@ -654,7 +654,7 @@ public class Magit {
         return new Commit(sha_one, currentRepository.getObjectPath().toString());
     }
 
-    private Branch findBranch(String branchName) {
+    public Branch findBranch(String branchName) {
         return currentRepository.searchBranch(branchName);
     }
 
@@ -1149,7 +1149,7 @@ public class Magit {
         return result;
     }
 
-    public Map<String, List<String>> getRepositoryMap() throws IOException {
+    public Map<String, List<String>> getRepositoryMap() throws IOException, MyFileException, RepositoryException {
         Map<String, List<String>> result = new HashMap<>();
 
         result.put(Settings.WSA_REPOSITORY_NAME, Utilities.createSingleItemList(currentRepository.getName()));
@@ -1161,7 +1161,39 @@ public class Magit {
                         .collect(Collectors.toList()));
         result.put(Settings.WSA_SINGLE_REPOSITORY_HEAD_BRANCH, Utilities.createSingleItemList(currentRepository.getActiveBranch().getName()));
         result.put(Settings.WSA_SINGLE_REPOSITORY_ALL_COMMITS, createAllCommitJSONList());
+        result.put(Settings.WSA_SINGLE_REPOSITORY_FILE_TREE, getFileTreeJSON());
+        result.put(Settings.WSA_SINGLE_REPOSITORY_OPENED_CHANGES, getOpenChangesJSON());
 
+        return result;
+    }
+
+    private List<String> getOpenChangesJSON() throws RepositoryException, MyFileException, IOException {
+        Map<MapKeys, List<BasicFile>> results = currentRepository.scanRepository(currentUser);
+        if (results == null) {
+            return new LinkedList<>();
+        } else {
+            List<String> changes = new LinkedList<>();
+            changes.add(mapWithTypes(results.get(MapKeys.LIST_NEW)));
+            changes.add(mapWithTypes(results.get(MapKeys.LIST_CHANGED)));
+            changes.add(mapWithTypes(results.get(MapKeys.LIST_DELETED)));
+            return changes;
+        }
+    }
+
+    private String mapWithTypes(List<BasicFile> files) {
+        Map<String, String> result = new HashMap<>();
+        for (BasicFile basicFile : files) {
+            result.put(basicFile.shortPath(), basicFile.getType().toString());
+        }
+
+        return new Gson().toJson(result);
+    }
+
+    private List<String> getFileTreeJSON() throws IOException {
+        List<String> result = new LinkedList<>();
+        BlobMap currentFileTree = currentRepository.getCurrentFilesState(currentUser);
+
+        result.add(new Gson().toJson(getFilesData(currentFileTree)));
         return result;
     }
 
@@ -1185,6 +1217,20 @@ public class Magit {
         return results;
     }
 
+    public Map<String, String> getFilesData(BlobMap blobMap) {
+        Map<String, String> map = new HashMap<>();
+        for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
+            Blob blob = entry.getValue();
+            if (blob.getType() == eFileTypes.FOLDER) {
+                map.put(blob.getName(), new Gson().toJson(getFilesData(((Folder)blob).getBlobMap())));
+            } else {
+                map.put(blob.getName(), blob.getContent());
+            }
+        }
+
+        return map;
+    }
+
     private Set<Commit> getSimpleAllCommitList() {
         Set<Commit> commits = new LinkedHashSet<>();
         for (Branch branch : currentRepository.getBranches()) {
@@ -1192,7 +1238,37 @@ public class Magit {
                 commits.addAll(branch.getAllCommits());
             }
         }
-        commits = commits.stream().sorted(Comparator.comparing(Commit::getDate)).collect(Collectors.toCollection(LinkedHashSet::new));
+        commits = commits.stream()
+                .sorted((o1, o2) -> o2.getDate().compareTo(o1.getDate()))
+                .collect(Collectors.toCollection(LinkedHashSet::new));
         return commits;
+    }
+
+    public void updateFileContent(String path, String content) {
+        File file = new File(currentRepository.getCurrentPath() + File.separator + path);
+        if (file.exists()) {
+            try (PrintWriter writer = new PrintWriter(file)) {
+                writer.print(content);
+            } catch (FileNotFoundException ignored) { }
+        }
+    }
+
+    public String CreateFilesDataJSON(Map<String, BlobMap> changes) {
+        Gson gson = new Gson();
+        Map<String, Map<String, String>> result = new HashMap<>();
+        BlobMap filesChanges = changes.get(Settings.KEY_CHANGE_MAP);
+
+        Blob random = filesChanges.getRandomBlob();
+        while(random != null) {
+            Map<String, String> fileContent = new HashMap<>();
+            Map<eUserMergeChoice, Blob> contents = filesChanges.getDuplicate(random, changes);
+            fileContent.put(Settings.KEY_ACTIVE_MAP, contents.get(eUserMergeChoice.ACTIVE).getContent());
+            fileContent.put(Settings.KEY_TARGET_MAP, contents.get(eUserMergeChoice.TARGET).getContent());
+            fileContent.put(Settings.KEY_ANCESTOR_MAP, contents.get(eUserMergeChoice.ANCESTOR).getContent());
+            result.put(random.shortPath(), fileContent);
+            filesChanges.remove(random);
+            random = filesChanges.getRandomBlob();
+        }
+        return gson.toJson(result);
     }
 }
