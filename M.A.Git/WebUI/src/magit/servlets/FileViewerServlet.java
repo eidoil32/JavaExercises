@@ -3,6 +3,7 @@ package magit.servlets;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import magit.*;
+import settings.Settings;
 import usermanager.User;
 
 import javax.servlet.ServletException;
@@ -17,6 +18,7 @@ import java.util.Map;
 @WebServlet(name = "FileViewerServlet", urlPatterns = {"/file_content"})
 public class FileViewerServlet extends HttpServlet {
     private static final String regexPath = ",";
+
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String shaOne = req.getParameter("sha-1"),
@@ -24,17 +26,20 @@ public class FileViewerServlet extends HttpServlet {
                 filePath = req.getParameter("file_path"),
                 userName = req.getParameter("user_id"); // if current user is the owner then the parameter is the string "null" and not null
 
-        if (shaOne != null && repositoryID != null && filePath != null) {
-            User user = WebUI.getUser(req, userName);
-            try (PrintWriter out = resp.getWriter()) {
-                Magit magit = user.getRepository(Integer.parseInt(repositoryID));
+        User user = WebUI.getUser(req, userName);
+        try (PrintWriter out = resp.getWriter()) {
+            Magit magit = user.getRepository(Integer.parseInt(repositoryID));
+            BlobMap blobMap;
+            if (shaOne.equals(Settings.EMPTY_STRING)) {
+                blobMap = magit.getCurrentRepository().getCurrentFilesState(magit.getCurrentUser());
+            } else {
                 Commit commit = magit.getCommitData(shaOne);
-                BlobMap blobMap = magit.getCurrentRepository().loadDataFromCommit(commit);
-
-                out.print(getFileContent(blobMap, filePath));
-            } catch (RepositoryException | MyFileException ignored) {
+                blobMap = magit.getCurrentRepository().loadDataFromCommit(commit);
             }
-        }
+
+
+            out.print(getFileContent(blobMap, filePath));
+        } catch (RepositoryException | MyFileException ignored) { }
     }
 
     private String getFileContent(BlobMap blobMap, String filePath) {
@@ -47,7 +52,7 @@ public class FileViewerServlet extends HttpServlet {
             Blob blob = entry.getValue();
             if (blob.getName().equals(parts[0])) {
                 if (blob.getType() == eFileTypes.FOLDER) {
-                    return findFile(((Folder)blob).getBlobMap(), createPathWithoutFirst(filePath));
+                    return findFile(((Folder) blob).getBlobMap(), createPathWithoutFirst(filePath));
                 } else {
                     return blob;
                 }

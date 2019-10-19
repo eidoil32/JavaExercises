@@ -3,7 +3,10 @@ package magit.servlets;
 import com.google.gson.Gson;
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
-import magit.*;
+import magit.BlobMap;
+import magit.Commit;
+import magit.Magit;
+import magit.WebUI;
 import usermanager.User;
 
 import javax.servlet.ServletException;
@@ -13,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
 
 @WebServlet(name = "CommitFileServlet", urlPatterns = {"/single_commit"})
@@ -32,24 +34,10 @@ public class CommitFileServlet extends HttpServlet {
                 Magit magit = user.getRepository(Integer.parseInt(repositoryID));
                 Commit commit = magit.getCommitData(shaOne);
                 BlobMap blobMap = magit.getCurrentRepository().loadDataFromCommit(commit);
-                Map<String, String> filesData = getFilesData(blobMap);
+                Map<String, String> filesData = magit.getFilesData(blobMap);
                 out.print(new Gson().toJson(filesData));
             } catch (RepositoryException | MyFileException ignored) {
             }
         }
-    }
-
-    private Map<String, String> getFilesData(BlobMap blobMap) {
-        Map<String, String> map = new HashMap<>();
-        for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
-            Blob blob = entry.getValue();
-            if (blob.getType() == eFileTypes.FOLDER) {
-                map.put(blob.getName(), new Gson().toJson(getFilesData(((Folder)blob).getBlobMap())));
-            } else {
-                map.put(blob.getName(), blob.getContent());
-            }
-        }
-
-        return map;
     }
 }

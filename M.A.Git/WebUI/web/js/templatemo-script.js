@@ -1,3 +1,31 @@
+function checkFolder(data) {
+    try {
+        jQuery.parseJSON(data);
+        return true;
+    } catch (err) {
+        return false;
+    }
+}
+
+function createFolder(text, parent, newID) {
+    var parentUL = document.getElementById(parent);
+    var li = document.createElement("li");
+    li.appendChild(document.createTextNode(text));
+    var newUL = document.createElement("ul");
+    newUL.id = newID;
+    li.appendChild(newUL);
+    li.setAttribute("data-jstree", '{"icon" : "fa fa-folder"}');
+    parentUL.appendChild(li);
+}
+
+function createNode(text, parent) {
+    var li = document.createElement("li");
+    var parentUL = document.getElementById(parent);
+    li.appendChild(document.createTextNode(text));
+    parentUL.appendChild(li);
+    li.setAttribute("data-jstree", '{"icon" : "fa fa-file"}');
+}
+
 
 function changeElementStyles(element, background_color, text_color, text_weight) {
     element.style.backgroundColor = background_color;

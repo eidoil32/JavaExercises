@@ -1,11 +1,14 @@
+function hideMessage() {
+	window.history.replaceState({}, document.title,'index.html'); // hide url parameters
+	$("#div_message").css('display','none');
+}
+
 function GetCookieValue(name) {
     var found = document.cookie.split(';').filter(c => c.trim().split("=")[0] === name);
     return found.length > 0 ? found[0].split("=")[1] : null;
 }
 
 $(function() { // onload...do
-	
-
     var getUrlParameter = function getUrlParameter(sParam) {
         var sPageURL = window.location.search.substring(1),
             sURLVariables = sPageURL.split('&'),

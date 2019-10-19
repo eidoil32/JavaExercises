@@ -1,0 +1,59 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+                <div class="panel-heading templatemo-position-relative">
+                    <h2 class="text-uppercase">File lists (<span id="counterFiles"></span>)</h2>
+                </div>
+                <div>
+                    <ul class="list-group" id="merge_file_list">
+
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+                <div class="panel-heading templatemo-position-relative">
+                    <h2 class="text-uppercase">File viewer: <span id="currentFile"></span></h2>
+                </div>
+                <div>
+                    <div class="row" style="text-align:center; padding: 5px;">
+                        <div class="col-sm-4">
+                            <p class="font-weight-bold">Ancestor file's content:</p>
+                            <textarea class="form-control" rows="10" style="min-height: 10%; height:100%; resize:vertical;" id="file_ancestor" disabled></textarea>
+                            <button type="button" style="margin: 10px 0 5px 0;" class="btn btn-info" id="button_ancestor_content">Copy text</button>
+                        </div>
+                        <div class="col-sm-4">
+                            <p class="font-weight-bold">Our file's content:</p>
+                            <textarea class="form-control" rows="10" style="min-height: 10%; height:100%; resize:vertical;" id="file_ours" disabled></textarea>
+                            <button type="button" style="margin: 10px 0 5px 0;" class="btn btn-info" id="button_ours_content">Copy text</button>
+                        </div>
+                        <div class="col-sm-4">
+                            <p class="font-weight-bold">Their file's content:</p>
+                            <textarea class="form-control" rows="10" style="min-height: 10%; height:100%; resize:vertical;" id="file_theirs" disabled></textarea>
+                            <button type="button" style="margin: 10px 0 5px 0;" class="btn btn-info" id="button_theirs_content">Copy text</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+                <div class="panel-heading templatemo-position-relative">
+                    <h2 class="text-uppercase">Custom file content</h2>
+                </div>
+                <div class="panel-content" style="text-align:center; padding: 5px;">
+                    <form id="merge_form">
+                            <textarea class="form-control" rows="10" style="min-height: 10%; height:100%; resize:vertical;" id="merge_file_content"></textarea>
+                      <button type="submit" class="btn btn-info" style="margin: 10px 0 5px 0;" id="button_merge_form">Next</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Repositories table row ends -->
+<script type="text/javascript" src="js/merge.js"></script>

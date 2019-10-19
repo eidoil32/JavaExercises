@@ -358,7 +358,7 @@ public class Repository {
         }
     }
 
-    private Commit loadFromHEAD(Path branchesPath) {
+    public Commit loadFromHEAD(Path branchesPath) {
         File head = new File(branchesPath + File.separator + Settings.MAGIT_BRANCH_HEAD);
         if (head.exists()) {
             Commit commit = null;
@@ -419,6 +419,14 @@ public class Repository {
             tempFolder.delete();
             return files;
         }
+    }
+
+    public BlobMap getCurrentFilesState(String currentUser) throws IOException {
+        Folder rootFolder = new Folder(currentPath, currentUser);
+        rootFolder.setRootFolder(null);
+
+        scanRecursiveFolder(rootFolder, rootFolder, currentUser);
+        return rootFolder.getBlobMap();
     }
 
     public Map<MapKeys, List<BasicFile>> scanRepository(String currentUser) throws IOException, MyFileException, RepositoryException {
