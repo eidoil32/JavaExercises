@@ -4,7 +4,6 @@ import magit.WebUI;
 import settings.Settings;
 import usermanager.User;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,11 +18,7 @@ public class LoginPage extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (request.getParameter("signout") != null) {
-            userSignedOut(request, response);
-        } else {
-            userLogin(request, response);
-        }
+        userLogin(request, response);
     }
 
     private void userLogin(HttpServletRequest request, HttpServletResponse response) {
@@ -42,18 +37,6 @@ public class LoginPage extends HttpServlet {
             }
         } else {
             printError(response, String.format(Settings.language.getString("NO_SUCH_USER"), username));
-        }
-    }
-
-    private void userSignedOut(HttpServletRequest request, HttpServletResponse response) {
-        try {
-            User user = (User) request.getSession().getAttribute(Settings.WSA_USER);
-            if (user != null) {
-                request.getSession().removeAttribute(Settings.WSA_USER);
-            }
-            RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(Settings.PAGE_LOGIN);
-            dispatcher.forward(request, response);
-        } catch (IOException | ServletException ignored) {
         }
     }
 

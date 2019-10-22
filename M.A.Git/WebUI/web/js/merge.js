@@ -23,18 +23,17 @@ function endMerge(repo_id, selectedBranch, user, comment) {
 	files["user_id"] = user;
 	files["user_comment"] = comment;
 	
-	console.log(files);
-	
 	$.ajax({
             async: true,
             data: files,
             url: "end_merge",
             timeout: 2000,
             error: function() {
-                console.error("Error from server!");
+                magitShowError("Merge branches failed!");
             },
             success: function(data) {
-				console.log("end merge");
+				magitShowSuccess("Merge finish successfully!");
+				selectMenuItem(document.getElementById("menu-my-repositories"), 'my-repository.html');
 			}
     });
 }
@@ -46,14 +45,16 @@ function removeFromList(elementID) {
 			li.parentNode.removeChild(li);
 	}
 	
-	$("textarea#merge_file_content").val("Please choose file from list");
-	$("textarea#merge_file_content").prop('disabled', true);
+	$("textarea#merge_file_content")
+		.val("Please choose file from list")
+		.prop('disabled', true);
 }
 
 function editFileContent(repo_id, selectedBranch, user) {
-	var currentFilename = $("#currentFile").html();
-	sessionStorage.removeItem("repository_" + repo_id + "\\" + currentFilename);
-	sessionStorage.setItem(currentFilename, $("#merge_file_content").val());
+	var currentFilename = $("#currentFile").html(),
+		fullname = "repository_" + repo_id + "\\" + currentFilename;
+	sessionStorage.removeItem(fullname);
+	sessionStorage.setItem(fullname, $("#merge_file_content").val());
 	 
 	removeFromList("repository_" + repo_id + "\\" + currentFilename);
 	document.getElementById("button_merge_form").setAttribute('disabled', 'disabled');
@@ -150,9 +151,10 @@ function fetchMergeStepTwoData(data, repository_id,  selectedBranch, user) {
 }
 
 $(function() {
-    var selectedBranch = GetCookieValue('target');
-    var repository = GetCookieValue('repository');
-    var user = GetCookieValue('user');
+    var selectedBranch = GetCookieValue('target'),
+		repository = GetCookieValue('repository'),
+		user = GetCookieValue('user'),
+		rb = GetCookieValue('rb');
 
     if (selectedBranch != null) {
         $.ajax({
@@ -160,6 +162,7 @@ $(function() {
             data: {
                 "selected_branch": selectedBranch,
                 "repository_id": repository,
+				"rb" : rb,
                 "user_id": user
             },
             url: "merge_step_two",
@@ -168,7 +171,12 @@ $(function() {
                 console.error("Error from server!");
             },
             success: function(data) {
-				fetchMergeStepTwoData(data, repository, selectedBranch, user);
+				if (data === "FAST_FORWARD_MERGE") {
+					magitShowSuccess("Merging complete successfully: Fast forward merge type.");
+					selectMenuItem(document.getElementById("menu-my-repositories"), 'my-repository.html');
+				} else {
+					fetchMergeStepTwoData(data, repository, selectedBranch, user);
+				}
 			}
         });
     }

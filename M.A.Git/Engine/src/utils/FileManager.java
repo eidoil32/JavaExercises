@@ -30,7 +30,7 @@ public class FileManager {
             content.append(line);
             line = reader.readLine();
             if (line != null) {
-                content.append(System.lineSeparator());
+                content.append(Settings.MAGIT_LINE_SEPARATOR);
             }
         }
         reader.close();
@@ -215,7 +215,7 @@ public class FileManager {
         for (int i = 0; i < lines.length; i++) {
             stringBuilder.append(lines[i]);
             if (i + 1 != lines.length) {
-                stringBuilder.append(System.lineSeparator());
+                stringBuilder.append(Settings.MAGIT_LINE_SEPARATOR);
             }
         }
 

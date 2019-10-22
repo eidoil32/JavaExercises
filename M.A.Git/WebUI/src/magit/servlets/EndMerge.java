@@ -1,5 +1,6 @@
 package magit.servlets;
 
+import exceptions.MyFileException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
 import magit.Branch;
@@ -31,11 +32,11 @@ public class EndMerge extends HttpServlet {
             Magit magit = user.getRepository(Integer.parseInt(repositoryID));
             Branch target = magit.findBranch(selectedBranch);
             if (target != null) {
-                //magit.finishMerge(target, parameterMap); //parameterMap include now only files names and theirs content.
+                magit.finishMerge(target, parameterMap, comment); //parameterMap include now only files names and theirs content.
             } else {
                 throw new RepositoryException(eErrorCodes.BRANCH_NOT_EXIST);
             }
-        } catch (RepositoryException e) {
+        } catch (RepositoryException | MyFileException e) {
             response.sendError(400, e.getMessage());
         }
     }

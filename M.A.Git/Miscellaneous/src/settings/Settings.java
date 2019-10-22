@@ -48,6 +48,7 @@ public class Settings {
             FX_MAX_NAME_OF_REMOTE_REPOSITORY = 15,
             MAX_SHA_ONE_TABLE_LENGTH = 7;
     public static final String
+            MAGIT_LINE_SEPARATOR = "\n",
             TEMP_BRANCH_FOR_EXPANDED_TREE = "not pointed commit",
             THEME_CUSTOM = "black",
             THEME_WHITE = "white",
@@ -185,6 +186,7 @@ public class Settings {
             INVALID_XML_FILE = "invalid_xml_file",
             WSA_JSON_ACTIVE_BRANCH = "WSA_JSON_ACTIVE_BRANCH",
             WSA_REPOSITORY_NAME = "WSA_REPOSITORY_NAME",
+            WSA_SINGLE_REPOSITORY_IS_RT = "WSA_SINGLE_REPOSITORY_IS_RT",
             WSA_SINGLE_REPOSITORY_OPENED_CHANGES = "WSA_SINGLE_REPOSITORY_OPENED_CHANGES",
             WSA_SINGLE_REPOSITORY_FILE_TREE = "WSA_SINGLE_REPOSITORY_FILE_TREE",
             WSA_SINGLE_REPOSITORY_ALL_COMMITS = "WSA_SINGLE_REPOSITORY_ALL_COMMITS",
@@ -211,14 +213,21 @@ public class Settings {
             WSA_USER = "WSA_USER";
 
     public static final String
+            USER_MESSAGE_SEPARATOR = " | ",
             GET_URL_PARAMETERS_ADDON = "?",
             GET_URL_PARAMETERS_ADDON_PLUS = "&",
             URL_REFERER = "referer",
             APPLICATION_RESPONSE_TYPE = "application/json",
             SERVER_DATABASE = "c:" + File.separator + "magit-ex3",
             USERS_FOLDER = SERVER_DATABASE + File.separator + "users",
+            USER_BASE_FOLDER = USERS_FOLDER + File.separator + "%s",
+            USER_PULL_REQUEST_CENTER = USER_BASE_FOLDER + File.separator + "pull_requests_center",
+            USER_MESSAGES_CENTER = USER_BASE_FOLDER + File.separator + "messages_center",
             USERS_REPOSITORY_ROOT_FOLDER = USERS_FOLDER + File.separator + "%s" + File.separator + "repositories", // argument user name
             USERS_REPOSITORY_FOLDER = USERS_REPOSITORY_ROOT_FOLDER + File.separator + "repository_%s"; // argument repository number
+
+    public static final String USER_MESSAGE_PARTS[] = new String[] {
+            "MESSAGE_KEY_TYPE", "MESSAGE_KEY_REPOSITORY", "MESSAGE_KEY_CONTENT", "MESSAGE_KEY_TIME", "MESSAGE_KEY_CREATOR" };
 
     public static final String
             PAGE_LOGIN = "/login.html",
