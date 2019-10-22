@@ -3,6 +3,7 @@ package magit;
 
 import com.google.gson.Gson;
 import exceptions.*;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.io.FileUtils;
 import puk.team.course.magit.ancestor.finder.AncestorFinder;
 import settings.Settings;
@@ -1153,7 +1154,7 @@ public class Magit {
         Map<String, List<String>> result = new HashMap<>();
 
         result.put(Settings.WSA_REPOSITORY_NAME, Utilities.createSingleItemList(currentRepository.getName()));
-        List<Branch> branches = currentRepository.getActiveBranches();
+        List<Branch> branches = currentRepository.getAllBranches();
         result.put(Settings.WSA_SINGLE_REPOSITORY_BRANCHES,
                 branches.stream()
                         .filter(branch -> !branch.getName().equals(Settings.MAGIT_BRANCH_HEAD))
@@ -1163,6 +1164,8 @@ public class Magit {
         result.put(Settings.WSA_SINGLE_REPOSITORY_ALL_COMMITS, createAllCommitJSONList());
         result.put(Settings.WSA_SINGLE_REPOSITORY_FILE_TREE, getFileTreeJSON());
         result.put(Settings.WSA_SINGLE_REPOSITORY_OPENED_CHANGES, getOpenChangesJSON());
+        if (remoteRepository != null)
+            result.put(Settings.WSA_SINGLE_REPOSITORY_IS_RT, Utilities.createSingleItemList("Remote tracking"));
 
         return result;
     }
@@ -1233,7 +1236,7 @@ public class Magit {
 
     private Set<Commit> getSimpleAllCommitList() {
         Set<Commit> commits = new LinkedHashSet<>();
-        for (Branch branch : currentRepository.getBranches()) {
+        for (Branch branch : currentRepository.getAllBranches()) {
             if (!branch.isHead()) {
                 commits.addAll(branch.getAllCommits());
             }
@@ -1270,5 +1273,61 @@ public class Magit {
             random = filesChanges.getRandomBlob();
         }
         return gson.toJson(result);
+    }
+
+    public void finishMerge(Branch target, Map<String, String[]> filesContents, String comment) throws RepositoryException, MyFileException, IOException {
+        Map<String, BlobMap> changes = findChanges(target);
+        BlobMap[] userApprove = updateUserChoiceFromWeb(filesContents, changes.get(Settings.KEY_CHANGE_MAP));
+
+        merge(changes, userApprove, target.getCommit(), comment);
+    }
+
+    private BlobMap[] updateUserChoiceFromWeb(Map<String, String[]> filesContents, BlobMap files) {
+        BlobMap[] userApprove = new BlobMap[2];
+        for (int i = 0; i < 2; i++) { userApprove[i] = new BlobMap(new HashMap<>()); }
+
+        Blob random = files.getRandomBlob();
+        while (random != null) {
+            files.remove(random);
+            if (filesContents.containsKey(random.shortPath())) {
+                random.setContent(filesContents.get(random.shortPath())[0]);
+                random.setSHA_ONE(DigestUtils.sha1Hex(random.getContent()));
+                random.setDate(new Date());
+                random.setEditorName(currentUser);
+                userApprove[0].addToMap(random);
+            } else {
+                userApprove[1].addToMap(random);
+            }
+            random = files.getRandomBlob();
+        }
+
+        return userApprove;
+    }
+
+    public void resetBranch(Branch currentBranch, String commitSHA_ONE) throws RepositoryException, IOException, MyFileException {
+        if (commitSHA_ONE.length() == 40) {
+            Commit commit = loadCommitBySHA(commitSHA_ONE);
+            if (commit == null) {
+                throw new RepositoryException(eErrorCodes.NO_COMMIT_WITH_SHA_ONE_EXISTS);
+            } else {
+                currentBranch.setCommit(commit, currentRepository.getBranchesPath().toString());
+                if (checkout(currentBranch.getName())) {
+                    currentRepository.setLastCommit(currentBranch.getCommit());
+                } else {
+                    throw new RepositoryException(eErrorCodes.UNKNOWN_ERROR);
+                }
+            }
+        }
+    }
+
+    public Branch findRemoteBranch(String targetBranch) {
+        List<Branch> branches = currentRepository.getRemoteBranches();
+        for (Branch branch : branches) {
+            if (branch.getName().equals(targetBranch)) {
+                return branch;
+            }
+        }
+
+        return null;
     }
 }

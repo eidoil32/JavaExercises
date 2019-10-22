@@ -63,7 +63,7 @@ public class Blob extends BasicFile {
         }
 
         blob.setContent(FileManager.readFile(file.toPath()));
-        blob.setSHA_ONE(row[1]);
+        blob.setSHA_ONE(DigestUtils.sha1Hex(blob.getContent()));
         blob.setFilePath(Paths.get(rootFolder.getFilePath() + File.separator + row[0]));
         blob.setName(row[0]);
         blob.setType(eFileTypes.FILE);

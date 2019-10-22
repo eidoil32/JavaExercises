@@ -1,6 +1,6 @@
 $(function() { // onload...do
     $("#loginForm").submit(function() {
-        var parameters = $(this).serialize();
+        let parameters = $(this).serialize();
 
         $.ajax({
             data: parameters,
@@ -11,10 +11,10 @@ $(function() { // onload...do
                 console.error("Error from server!");
             },
             success: function(data) {
-              if (data == "success") {
+              if (data === "success") {
                 location.href = "index.html";
               } else {
-                var x = document.getElementById("errorblock");
+                let x = document.getElementById("errorblock");
                 x.style.display = "block";
                 x.innerHTML = data;
               }
@@ -23,4 +23,4 @@ $(function() { // onload...do
 
         return false;
     })
-})
+});

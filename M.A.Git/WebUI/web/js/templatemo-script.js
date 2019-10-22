@@ -49,6 +49,7 @@ function showCustomAlert(message, type) {
     document.getElementById("div_message").style.display = "block";
     document.getElementById("div_message_" + type).style.display = "block";
     document.getElementById("message_" + type).innerHTML = message;
+	$('#div_message').delay(2000).fadeOut(300);
 }
 
 function magitShowError(message) {
@@ -63,6 +64,26 @@ $(document).ready(function() {
     /* Mobile menu */
     $('.mobile-menu-icon').click(function() {
         $('.templatemo-left-nav').slideToggle();
+    });
+	
+	$.ajax({
+        data: {x: "username"},
+        url: "mainPage",
+        timeout: 2000,
+		async: true, 
+        error: function() {
+            console.error("Error from server!");
+        },
+        success: function(data) {
+            if (data == "0001") {
+                
+            } else {
+				var username_menu = document.getElementById("username_menu");
+                if (username_menu != null) {
+					username_menu.innerHTML = data;
+				}
+            }
+        }
     });
 
     /* Close the widget when clicked on close button */
@@ -102,26 +123,11 @@ $(document).ready(function() {
         // return value of the submit operation
         // by default - we'll always return false so it doesn't redirect the user.
         return false;
-    })
-
-    var getUrlParameter = function getUrlParameter(sParam) {
-        var sPageURL = window.location.search.substring(1),
-            sURLVariables = sPageURL.split('&'),
-            sParameterName,
-            i;
-
-        for (i = 0; i < sURLVariables.length; i++) {
-            sParameterName = sURLVariables[i].split('=');
-
-            if (sParameterName[0] === sParam) {
-                return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
-            }
-        }
-    };
+    });
 
     var file_is_uploaded = getUrlParameter('file_upload');
     if (file_is_uploaded != null) {
-        if (file_is_uploaded == "success") {
+        if (file_is_uploaded === "success") {
             magitShowSuccess("XML File uploaded successfully");
         } else {
             magitShowError(file_is_uploaded.replace(/_/g, " "));

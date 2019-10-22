@@ -1,5 +1,7 @@
 package usermanager;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import exceptions.MyWebException;
 import exceptions.RepositoryException;
 import exceptions.eErrorCodes;
@@ -7,13 +9,14 @@ import magit.Magit;
 import magit.Repository;
 import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
+import utils.FileManager;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.io.PrintWriter;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class  User  {
     private String name, password;
@@ -88,5 +91,54 @@ public class  User  {
             return magit;
         }
         throw new RepositoryException(eErrorCodes.NO_REPOSITORY);
+    }
+
+
+    /**
+     * @param messageParts :
+     *                     1. Type (Fork, pull request)
+     *                     2. Repository
+     *                     3. Message content
+     *                     4. Time
+     *                     5. Creator
+     * @throws IOException
+     */
+    public void leaveMessageToMe(String ...messageParts) throws IOException {
+        int size = 5;
+        File messageCenter = new File(String.format(Settings.USER_MESSAGES_CENTER, name));
+        StringBuilder messages = new StringBuilder(FileManager.readFile(messageCenter.toPath()));
+        if (messages.length() > 0) {
+            messages.append(System.lineSeparator());
+        }
+        Map<String, String> message = new HashMap<>();
+        for (int i = 0; i < size; i++) {
+            message.put(Settings.USER_MESSAGE_PARTS[i], messageParts[i]);
+        }
+
+        messages.append(new Gson().toJson(message));
+
+        try (PrintWriter writer = new PrintWriter(messageCenter)) {
+            writer.print(messages.toString());
+        }
+    }
+
+    // returns JSON as String.
+    public String readMessages() throws IOException {
+        Map<Integer, Map<String, String>> messagesMap = new HashMap<>();
+        int i = 0;
+        Scanner scanner = new Scanner(new File(String.format(Settings.USER_MESSAGES_CENTER, name)));
+        while(scanner.hasNextLine()) {
+            Type converter = new TypeToken<Map<String, String>>() {}.getType();
+            Map<String, String> message = new HashMap<>(new Gson().fromJson(scanner.nextLine(), converter));
+            messagesMap.put(i++, message);
+        }
+
+        return new Gson().toJson(messagesMap);
+    }
+
+    public void clearMessages() throws FileNotFoundException {
+        try (PrintWriter writer = new PrintWriter(String.format(Settings.USER_MESSAGES_CENTER, name))) {
+            writer.write("");
+        }
     }
 }

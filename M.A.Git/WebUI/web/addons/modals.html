@@ -33,7 +33,7 @@
         </button>
       </div>
       <div class="modal-body">
-        <textarea id="commit_comment_textarea"></textarea>
+        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="commit_comment_textarea"></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="commit_comment_close">Close</button>
@@ -53,11 +53,38 @@
         </button>
       </div>
       <div class="modal-body">
-        <textarea id="merge_comment_textarea"></textarea>
+        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="merge_comment_textarea"></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="merge_comment_close">Close</button>
         <button type="button" class="btn btn-primary" id="merge_comment">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Pull request form modal -->
+<div class="modal fade" id="pullRequestModal" tabindex="-1" role="dialog" aria-labelledby="pullRequestLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pullRequest">Pull Request:</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <span>Select Local branch target:</span></br>
+        <select class="form-control form-control-sm" id="PR_LR_branchSelector" name="PR_LR_branchSelector">
+        </select>
+        <span>Select Remote branch target:</span></br>
+        <select class="form-control form-control-sm" id="PR_RR_branchSelector" name="PR_RR_branchSelector">
+        </select>
+        <span>Enter commant:</span></br>
+        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="pull_request_comment_textarea"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="pull_request_close">Close</button>
+        <button type="button" class="btn btn-primary" id="send_pr">Save changes</button>
       </div>
     </div>
   </div>

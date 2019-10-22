@@ -5,7 +5,8 @@
 			<li><a data-toggle="tab" href="#tabs-1">Commit List</a></li>
 			<li><a data-toggle="tab" href="#tabs-3">Branches</a></li>
 			<li><a data-toggle="tab" href="#tabs-2">Files viewer</a></li>
-			<li><a data-toggle="tab" href="#tabs-4">Options</a></li>
+			<li id="repository_pull_requests" style="display:none;"></li>
+			<li id="repository_options_tab_button"><a data-toggle="tab" href="#tabs-4">Options</a></li>
 		</ul>
 		<div class="tab-content">
 			<div id="tabs-1" class="tab-pane fade">
@@ -120,6 +121,10 @@
 			            </div>
 			            <div class="table-responsive">
 			                <table class="table table-striped table-bordered" id="branches-table">
+			                	<colgroup>
+				                      <col span="1" style="width: 10%;">
+				                      <col span="1" style="width: 90%;">
+				                </colgroup>
 			                    <thead>
 			                        <tr style="font-weight: bold;">
 			                            <td>No.</td>
@@ -145,6 +150,8 @@
 				                    <tbody>
 				                    	<tr id="repository_options">
 				                        </tr>
+				                        <tr id="repository_options_second_row">
+				                        </tr>
 				                    </tbody>
 				                </table>
 				            </div>
@@ -157,13 +164,34 @@
 				    <div class="col">
 					    <div class="templatemo-flex-row flex-content-row">
 					        <div class="templatemo-content-widget white-bg col-2">
-					              <h2 class="templatemo-inline-block" style="margin-bottom: 10px"> Repository Details</h2>
-					              <p id="repository_details">
+					              <h2>Repository Details <span id='remote_repository' class='badge badge-primary'>Remote tracking repository</span></h2>
+					              <p id="repository_details" style="margin-top: 10px;">
 
 					              </p>
 					        </div>
 					    </div>
 				    </div>
+				</div>
+			</div>
+			<div id="tabs-6" class="tab-pane fade">
+				<div class="row">
+					<div class="col">
+				        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+				            <div class="panel-heading templatemo-position-relative">
+				                <h2 class="text-uppercase">Pull Requests</h2>
+				            </div>
+				            <div class="table-responsive">
+				               	<table class="table table-striped table-bordered">
+				                    <tbody>
+				                    	<tr id="repository_options">
+				                        </tr>
+				                        <tr id="repository_options_second_row">
+				                        </tr>
+				                    </tbody>
+				                </table>
+				            </div>
+				        </div>
+				    </div>		
 				</div>
 			</div>
 		</div>

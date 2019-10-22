@@ -6,62 +6,40 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/EndMerge.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/ExecuteCommitServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/MergeStepTwoServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/favicon.ico" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/jquery-1.12.4.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/jquery-ui.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/js/merge.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/merge.html" afterDir="false" />
+    <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="Create single-repository page, can watch branch list, commit list and do checkout.&#10;for each commit user can watch the files that saved in the selected commit.">
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/CheckOpenedChangesServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/ForkRepositoryServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/MessagesCenterServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/PullRequestCreatorServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/ResetBranchServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/LogoutUserServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/customError.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Commit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Commit.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Blob.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Blob.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Repository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/usermanager/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/usermanager/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/CommitFileServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/CommitFileServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/FileViewerServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/FileViewerServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/SaveFileServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/SaveFileServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/SingleRepositoryServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/SingleRepositoryServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/addons/footer.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/addons/menu.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/EndMerge.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/EndMerge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/MergeStepTwoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/MergeStepTwoServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/start/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/start/LoginPage.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/addons/modals.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/addons/modals.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/data/jquery.vmap.sampledata.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/jquery.vmap.packed.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/jqvmap.css" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.africa.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.asia.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.australia.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.europe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.north-america.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/jquery.vmap.south-america.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/continents/readme.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.algeria.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.brazil.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.europe.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.france.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.germany.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.russia.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.usa.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/jqvmap/maps/jquery.vmap.world.js" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/jquery-1.11.2.min.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/single-commit.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/single-commit.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/js/loginpage.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/loginpage.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/js/merge.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/merge.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/main.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/main.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/my-repository.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/my-repository.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/js/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/user.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/js/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/users.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/single-repository.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/single-repository.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/users.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/users.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Commit.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Blob.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Blob.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Repository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
@@ -122,6 +100,12 @@
       </map>
     </option>
   </component>
+  <component name="JsFlowSettings">
+    <service-enabled>true</service-enabled>
+    <exe-path />
+    <other-services-enabled>true</other-services-enabled>
+    <auto-save>true</auto-save>
+  </component>
   <component name="LogFilters">
     <option name="FILTER_ERRORS" value="false" />
     <option name="FILTER_WARNINGS" value="false" />
@@ -147,7 +131,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.20614035" />
-    <property name="settings.editor.selected.configurable" value="preferences.applicationServers" />
+    <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -165,6 +149,7 @@
       <recent name="D:\Projects\Java\JavaExercises\M.A.Git\Ui\src" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="magit.start" />
       <recent name="magit.servlets" />
       <recent name="exceptions" />
     </key>
@@ -201,6 +186,7 @@
     </configuration>
     <configuration name="Tomcat 8.5.46" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 8.5.46" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
       <option name="OPEN_IN_BROWSER_URL" value="http://localhost:8080/WebUI_war_exploded" />
+      <option name="UPDATING_POLICY" value="update-resources" />
       <deployment>
         <artifact name="WebUI:war exploded">
           <settings>
@@ -396,7 +382,8 @@
       <workItem from="1571334866892" duration="2937000" />
       <workItem from="1571346272427" duration="13507000" />
       <workItem from="1571486369372" duration="5374000" />
-      <workItem from="1571495122881" duration="600000" />
+      <workItem from="1571495122881" duration="8745000" />
+      <workItem from="1571571367064" duration="25735000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -573,7 +560,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571299474946</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Create single-repository page, can watch branch list, commit list and do checkout.&#10;for each commit user can watch the files that saved in the selected commit.">
+      <created>1571498792012</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1571498792012</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -636,10 +630,14 @@
     <option name="LAST_COMMIT_MESSAGE" value="Create single-repository page, can watch branch list, commit list and do checkout.&#10;for each commit user can watch the files that saved in the selected commit." />
   </component>
   <component name="XDebuggerManager">
-    <watches-manager>
-      <configuration name="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
-        <watch expression="check_1" />
-      </configuration>
-    </watches-manager>
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/WebUI/src/magit/servlets/CheckOpenedChangesServlet.java</url>
+          <line>20</line>
+          <option name="timeStamp" value="11" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
