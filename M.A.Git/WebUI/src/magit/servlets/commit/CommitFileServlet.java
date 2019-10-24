@@ -1,4 +1,4 @@
-package magit.servlets;
+package magit.servlets.commit;
 
 import com.google.gson.Gson;
 import exceptions.MyFileException;

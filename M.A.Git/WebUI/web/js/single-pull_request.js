@@ -1,20 +1,7 @@
-function GetCookieValue(name) {
-    var cookies = document.cookie;
-    var str = cookies.split(";");
-    var parameters = str[0].split("?");
-    var urlParams = parameters[1].split("&");
-    for (var i = 0; i < Object.keys(urlParams).length; i++) {
-        var parts = urlParams[i].split("=");
-        if (parts[0] === name) {
-            return parts[1];
-        }
-    }
-}
-
 function loadCommitData(data, rootFolderID) {
     var tree = jQuery.parseJSON(data);
 
-    Object.keys(tree).forEach(function(key) {
+    Object.keys(tree).forEach(function (key) {
         if (checkFolder(tree[key])) {
             var folderID = "folder_" + key;
             createFolder(key, rootFolderID, folderID);
@@ -23,13 +10,6 @@ function loadCommitData(data, rootFolderID) {
             createNode(key, rootFolderID, "fa fa-file");
         }
     })
-}
-
-function saveFile() {
-	var repository = $("#repository").value;
-	var path = $("#path").value;
-	var user = $("#user").value;
-	console.log("form input - repository:" + repository + ", path: " + path + ", user: " + user);
 }
 
 function createFileViewer(filename, content) {
@@ -62,10 +42,10 @@ function loadFileData(file, repository, user, commitSHA) {
         },
         url: "file_content",
         timeout: 2000,
-        error: function() {
+        error: function () {
             console.error("Error from server!");
         },
-        success: function(data) {
+        success: function (data) {
             createFileViewer(file, data, path, repository, user);
         }
     });
@@ -76,34 +56,61 @@ function createFirstNode() {
 }
 
 function makeItTree(repository, user, commitSHA) {
-    $('#filetree_div').jstree();
-    $('#filetree_div').on('changed.jstree', function(e, data) {
-        loadFileData(document.getElementById(data.selected), repository, user, commitSHA);
-    }).jstree();
+    $('#filetree_div')
+        .jstree()
+        .on('changed.jstree', function (e, data) {
+            loadFileData(document.getElementById(data.selected), repository, user, commitSHA);
+        }).jstree();
 }
 
-$(function() {
-    var commitSHA = GetCookieValue('sha1');
-    var repository = GetCookieValue('repository_id');
-    var user = GetCookieValue('user_id');
+function sendApprovePR() {
 
-    if (commitSHA != null) {
-        $.ajax({
-            async: true,
-            data: {
-                "sha-1": commitSHA,
-                "repository_id": repository,
-                "user_id": user
-            },
-            url: "single_commit",
-            timeout: 2000,
-            error: function() {
-                console.error("Error from server!");
-            },
-            success: function(data) {
-                loadCommitData(data, "root_folder");
-                makeItTree(repository, user, commitSHA);
-            }
-        });
-    }
+}
+
+function rejectPR() {
+
+}
+
+function fetchCommits(data) {
+    let commits = jQuery.parseJSON(data);
+    let i = 1;
+    Object.keys(commits).forEach(function (key) {
+        addCommitToTable(commits[key], i++,$("#repo_id").text(),$("#selected_user").text(), "#pr_commits-table");
+    });
+}
+
+$(function () {
+    $.ajax({
+        async: true,
+        data: {
+            "pr_id": window.pr_ID,
+            "repository_id": $("#repo_id").text(),
+            "user_id":  $("#selected_user").text()
+        },
+        url: "pullRequest_data",
+        timeout: 2000,
+        error: function () {
+
+        },
+        success: function (data) {
+/*            loadCommitData(data, "root_folder");
+            makeItTree(repository, user, commitSHA);*/
+            //fetchCommits(data);
+            console.log(data);
+        }
+    });
+
+    $("#show_all_pull_requests").click(function (e) {
+        e.preventDefault();
+        $("#pull_requests_outter_div").css('display', 'none');
+        $('#pull_requests_inner_div').css('display', 'block');
+    });
+
+    $("#approve_pr").click(function () {
+        sendApprovePR();
+    });
+
+    $("#send_reject_pr").click(function () {
+        rejectPR();
+    });
 });

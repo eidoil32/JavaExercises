@@ -640,9 +640,7 @@ public class Magit {
         }
     }
 
-    private Commit getAncestorCommit(Branch target) throws IOException {
-        Commit first = currentBranch.getCommit(), second = target.getCommit();
-
+    private Commit getAncestorCommit(Commit base, Commit target) throws IOException {
         AncestorFinder finder = new AncestorFinder(sha_one -> {
             try {
                 return new Commit(sha_one, currentRepository.getObjectPath().toString());
@@ -651,8 +649,13 @@ public class Magit {
             }
         });
 
-        String sha_one = finder.traceAncestor(first.getSHA_ONE(), second.getSHA_ONE());
+        String sha_one = finder.traceAncestor(base.getSHA_ONE(), target.getSHA_ONE());
         return new Commit(sha_one, currentRepository.getObjectPath().toString());
+    }
+
+    private Commit getAncestorCommit(Branch target) throws IOException {
+        Commit first = currentBranch.getCommit(), second = target.getCommit();
+        return getAncestorCommit(first, second);
     }
 
     public Branch findBranch(String branchName) {
@@ -1144,7 +1147,7 @@ public class Magit {
         result.put(Settings.WSA_JSON_NUM_OF_BRANCHES, Integer.toString(getCurrentRepository().getBranches().size() - 1)); // minus 1 because HEAD branch
         Commit lastCommit = currentRepository.getLastCommit();
         result.put(Settings.WSA_JSON_LAST_COMMIT_DATA,
-                new SimpleDateFormat(Settings.DATE_FORMAT).format(lastCommit.getDate()));
+                new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(lastCommit.getDate()));
         result.put(Settings.WSA_JSON_LAST_COMMIT_COMMENT, lastCommit.getComment());
 
         return result;
@@ -1161,7 +1164,7 @@ public class Magit {
                         .map(Branch::getName)
                         .collect(Collectors.toList()));
         result.put(Settings.WSA_SINGLE_REPOSITORY_HEAD_BRANCH, Utilities.createSingleItemList(currentRepository.getActiveBranch().getName()));
-        result.put(Settings.WSA_SINGLE_REPOSITORY_ALL_COMMITS, createAllCommitJSONList());
+        result.put(Settings.WSA_SINGLE_REPOSITORY_ALL_COMMITS, createAllCommitJSONList(getSimpleAllCommitList()));
         result.put(Settings.WSA_SINGLE_REPOSITORY_FILE_TREE, getFileTreeJSON());
         result.put(Settings.WSA_SINGLE_REPOSITORY_OPENED_CHANGES, getOpenChangesJSON());
         if (remoteRepository != null)
@@ -1200,8 +1203,7 @@ public class Magit {
         return result;
     }
 
-    private List<String> createAllCommitJSONList() {
-        Set<Commit> commits = getSimpleAllCommitList();
+    private List<String> createAllCommitJSONList(Set<Commit> commits) {
         List<String> results = new LinkedList<>();
         List<Branch> branches = currentRepository.getAllBranches();
 
@@ -1211,7 +1213,7 @@ public class Magit {
             Map<String, String> singleCommit = new HashMap<>();
             singleCommit.put(Settings.WSA_SINGLE_COMMIT_SHA1_KEY, commit.getSHA_ONE());
             singleCommit.put(Settings.WSA_SINGLE_COMMIT_COMMENT_KEY, commit.getComment());
-            singleCommit.put(Settings.WSA_SINGLE_COMMIT_DATE_KEY, new SimpleDateFormat(Settings.DATE_FORMAT).format(commit.getDate()));
+            singleCommit.put(Settings.WSA_SINGLE_COMMIT_DATE_KEY, new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(commit.getDate()));
             singleCommit.put(Settings.WSA_SINGLE_COMMIT_CREATOR_KEY, commit.getCreator());
             singleCommit.put(Settings.WSA_SINGLE_COMMIT_POINTED_BRANCHES, commit.getPointedBranches(branches));
             results.add(gson.toJson(singleCommit));
@@ -1329,5 +1331,33 @@ public class Magit {
         }
 
         return null;
+    }
+
+    public void createPullRequest(Map<String, String> data) {
+
+    }
+
+    public String getAggregation(Map<String, String> details, Magit localRepository) throws RepositoryException, IOException {
+        if(details == null) {
+            throw new RepositoryException(eErrorCodes.PR_NOT_FOUND);
+        }
+
+        Commit deltaCommit = localRepository.findCommitsFromRepositories(
+                currentRepository.getName() + File.separator + details.get(Settings.PR_REMOTE_BRANCH_NAME),
+                details.get(Settings.PR_LOCAL_BRANCH_NAME));
+
+
+
+        return "";
+    }
+
+    private Commit findCommitsFromRepositories(String remoteBranchName, String localBranchName) throws IOException {
+        Branch  remote = findRemoteBranch(remoteBranchName),
+                local = findBranch(localBranchName);
+
+        Commit remoteCommit = remote.getCommit(),
+                localCommit = local.getCommit();
+
+        return getAncestorCommit(remoteCommit, localCommit);
     }
 }

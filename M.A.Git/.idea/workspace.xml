@@ -6,42 +6,52 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="Create single-repository page, can watch branch list, commit list and do checkout.&#10;for each commit user can watch the files that saved in the selected commit.">
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/CheckOpenedChangesServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/ForkRepositoryServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/MessagesCenterServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/PullRequestCreatorServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/ResetBranchServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/start/LogoutUserServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/web/addons/customError.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+    <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/general/CreateNewFileServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/general/DeleteFileServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/ExecutePullRequestServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/PullRequestCreatorServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/SinglePullRequestServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/CreateNewBranchServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/PushBranchServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/js/single-pull_request.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebUI/web/single-pullRequest.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Blob.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Blob.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/usermanager/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/usermanager/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/popups/FileViewer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/exceptions/eErrorCodes.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/EndMerge.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/EndMerge.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/MergeStepTwoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/MergeStepTwoServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/start/LoginPage.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/start/LoginPage.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/CheckOpenedChangesServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/commit/CheckOpenedChangesServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/CheckoutServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/CheckoutServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/CommitFileServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/commit/CommitFileServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/EndMerge.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/merge/EndMerge.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/ExecuteCommitServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/commit/ExecuteCommitServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/FileViewerServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/general/FileViewerServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/ForkRepositoryServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/ForkRepositoryServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/MergeStepTwoServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/merge/MergeStepTwoServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/MessagesCenterServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/general/MessagesCenterServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/PullRequestCreatorServlet.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/ResetBranchServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/ResetBranchServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/SaveFileServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/general/SaveFileServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/SingleRepositoryServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/SingleRepositoryServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/addons/modals.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/addons/modals.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/loginpage.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/loginpage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/merge.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/merge.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/js/signup-page.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/signup-page.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/js/single-commit.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/single-commit.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/templatemo-script.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/user.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/web/signup.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/signup.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/single-repository.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/single-repository.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Blob.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Blob.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/exceptions/eErrorCodes.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -134,12 +144,9 @@
     <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resources\img" />
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resource" />
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\external" />
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\controller\resource" />
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\Miscellaneous\src\controller" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="magit.utils" />
+      <recent name="controller" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Projects\Java\JavaExercises\M.A.Git\external" />
@@ -149,13 +156,18 @@
       <recent name="D:\Projects\Java\JavaExercises\M.A.Git\Ui\src" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="magit.start" />
+      <recent name="magit.servlets.general" />
+      <recent name="magit.servlets.repository" />
       <recent name="magit.servlets" />
+      <recent name="magit.start" />
       <recent name="exceptions" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="magit.utils" />
-      <recent name="controller" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resources\img" />
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resource" />
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\external" />
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\controller\resource" />
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\Miscellaneous\src\controller" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -383,7 +395,8 @@
       <workItem from="1571346272427" duration="13507000" />
       <workItem from="1571486369372" duration="5374000" />
       <workItem from="1571495122881" duration="8745000" />
-      <workItem from="1571571367064" duration="25735000" />
+      <workItem from="1571571367064" duration="29471000" />
+      <workItem from="1571818553515" duration="24608000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -567,7 +580,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571498792012</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="Add option to commit, merge and fork repository.&#10;when user fork repository the owner will get an notification about it.">
+      <created>1571751009094</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1571751009094</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -602,7 +622,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Split to 2 modules (Ui and Engine)" />
     <MESSAGE value="Finish making options:&#10; - Commit: user can save current state of his repository folder&#10; - Change repository: user can load and using magit on old repository folder and using all features.&#10; - Change User: now when user commit M.A.git will save how make the changes.&#10; - New branch: making the option to working on different branches." />
     <MESSAGE value="Show all commit that execute in current active branch" />
     <MESSAGE value="Starting reading repository from XML" />
@@ -627,17 +646,7 @@
     <MESSAGE value="Fix bug in merge and XML load" />
     <MESSAGE value="Create few servlets. Update html and JS files." />
     <MESSAGE value="Create single-repository page, can watch branch list, commit list and do checkout.&#10;for each commit user can watch the files that saved in the selected commit." />
-    <option name="LAST_COMMIT_MESSAGE" value="Create single-repository page, can watch branch list, commit list and do checkout.&#10;for each commit user can watch the files that saved in the selected commit." />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/WebUI/src/magit/servlets/CheckOpenedChangesServlet.java</url>
-          <line>20</line>
-          <option name="timeStamp" value="11" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Add option to commit, merge and fork repository.&#10;when user fork repository the owner will get an notification about it." />
+    <option name="LAST_COMMIT_MESSAGE" value="Add option to commit, merge and fork repository.&#10;when user fork repository the owner will get an notification about it." />
   </component>
 </project>

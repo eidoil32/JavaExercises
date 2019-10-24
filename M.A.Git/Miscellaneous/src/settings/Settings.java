@@ -91,6 +91,7 @@ public class Settings {
             SEPARATOR_PATTERN = Pattern.quote(File.separator),
             EMPTY_COMMIT = "null",
             DATE_FORMAT = "dd.MM.yyyy-HH:mm:ss:SSS",
+            WEB_DATE_FORMAT = "dd.MM.yyyy",
             MAGIT_BRANCH_MASTER = "master",
             FOLDER_FILE_EXTENSION = "magit",
             FOLDER_DELIMITER = ",",
@@ -188,6 +189,7 @@ public class Settings {
             WSA_REPOSITORY_NAME = "WSA_REPOSITORY_NAME",
             WSA_SINGLE_REPOSITORY_IS_RT = "WSA_SINGLE_REPOSITORY_IS_RT",
             WSA_SINGLE_REPOSITORY_OPENED_CHANGES = "WSA_SINGLE_REPOSITORY_OPENED_CHANGES",
+            WSA_SINGLE_REPOSITORY_PR = "WSA_SINGLE_REPOSITORY_PR",
             WSA_SINGLE_REPOSITORY_FILE_TREE = "WSA_SINGLE_REPOSITORY_FILE_TREE",
             WSA_SINGLE_REPOSITORY_ALL_COMMITS = "WSA_SINGLE_REPOSITORY_ALL_COMMITS",
             WSA_SINGLE_REPOSITORY_BRANCHES = "WSA_SINGLE_REPOSITORY_BRANCHES",
@@ -213,6 +215,19 @@ public class Settings {
             WSA_USER = "WSA_USER";
 
     public static final String
+            PR_ALL_COMMITS = "PR_ALL_COMMITS",
+            PR_ID = "PR_ID",
+            PR_LOCAL_BRANCH_NAME = "PR_LOCAL_BRANCH_NAME",
+            PR_REMOTE_BRANCH_NAME = "PR_REMOTE_BRANCH_NAME",
+            PR_COMMENT = "PR_COMMENT",
+            PR_DATE_CREATION = "PR_DATE_CREATION",
+            PR_REMOTE_REPOSITORY_ID = "PR_REMOTE_REPOSITORY_ID",
+            PR_LOCAL_REPOSITORY_ID = "PR_LOCAL_REPOSITORY_ID",
+            PR_REQUEST_CREATOR = "PR_REQUEST_CREATOR";
+
+
+    public static final String
+            SINGLE_REPOSITORY_PREFIX = "repository_",
             USER_MESSAGE_SEPARATOR = " | ",
             GET_URL_PARAMETERS_ADDON = "?",
             GET_URL_PARAMETERS_ADDON_PLUS = "&",

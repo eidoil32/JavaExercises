@@ -11,10 +11,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import settings.Settings;
 import utils.FileManager;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -140,5 +137,46 @@ public class  User  {
         try (PrintWriter writer = new PrintWriter(String.format(Settings.USER_MESSAGES_CENTER, name))) {
             writer.write("");
         }
+    }
+
+    public void createPullRequest(Map<String, String> data) throws IOException {
+        File prCenter = new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name));
+        int lines = FileManager.countLines(prCenter);
+        data.put(Settings.PR_ID, Integer.toString(lines));
+        String newLine = (prCenter.length() > 0) ? System.lineSeparator() : "";
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(prCenter, true))) {
+            bw.append(newLine).append(new Gson().toJson(data));
+        }
+    }
+
+    public List<String> getPullRequests(String repository_id) throws IOException {
+        List<String> results = new LinkedList<>();
+
+        Scanner scanner = new Scanner(new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
+        while(scanner.hasNextLine()) {
+            Type converter = new TypeToken<Map<String, String>>() {}.getType();
+            String line = scanner.nextLine();
+            Map<String, String> pullRequest = new HashMap<>(new Gson().fromJson(line, converter));
+            if (pullRequest.get(Settings.PR_REMOTE_REPOSITORY_ID).equals(repository_id)) {
+                results.add(line);
+            }
+        }
+
+        return results;
+    }
+
+    public Map<String, String> getPullRequest(String repository_id, String pullRequest_id) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
+        while(scanner.hasNextLine()) {
+            Type converter = new TypeToken<Map<String, String>>() {}.getType();
+            String line = scanner.nextLine();
+            Map<String, String> pullRequest = new HashMap<>(new Gson().fromJson(line, converter));
+            if (pullRequest.get(Settings.PR_REMOTE_REPOSITORY_ID).equals(repository_id)
+                    && pullRequest.get(Settings.PR_ID).equals(pullRequest_id)) {
+                return pullRequest;
+            }
+        }
+
+        return null;
     }
 }

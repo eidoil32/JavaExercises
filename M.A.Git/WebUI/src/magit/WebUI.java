@@ -1,6 +1,7 @@
 package magit;
 
 import exceptions.MyWebException;
+import org.apache.commons.io.FileUtils;
 import settings.Settings;
 import usermanager.User;
 import usermanager.UserManager;
@@ -66,21 +67,11 @@ public class WebUI implements ServletContextListener {
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
         System.out.println("Start deleting files...");
-        deleteFolder(new File(Settings.SERVER_DATABASE));
-        System.out.println("Finish deleting files, good bye!");
-    }
-
-    private void deleteFolder(File root_folder) {
-        File[] files = root_folder.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                if (file.isDirectory()) {
-                    deleteFolder(file);
-                } else {
-                    file.delete();
-                }
-            }
+        try {
+            FileUtils.deleteDirectory(new File(Settings.SERVER_DATABASE));
+        } catch (IOException e) {
+            System.out.println("Deleting servers files failed! sorry for that.");
         }
-        root_folder.delete();
+        System.out.println("Finish deleting files, good bye!");
     }
 }

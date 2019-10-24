@@ -221,4 +221,15 @@ public class FileManager {
 
         return stringBuilder.toString();
     }
+
+    public static int countLines(File prCenter) throws FileNotFoundException {
+        int counter = 0;
+        Scanner scanner = new Scanner(prCenter);
+        while (scanner.hasNextLine()) {
+            counter++;
+            scanner.nextLine();
+        }
+
+        return counter;
+    }
 }

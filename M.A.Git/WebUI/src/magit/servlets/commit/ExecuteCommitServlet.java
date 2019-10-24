@@ -1,4 +1,4 @@
-package magit.servlets;
+package magit.servlets.commit;
 
 import exceptions.MyFileException;
 import exceptions.RepositoryException;
@@ -12,21 +12,27 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.PrintWriter;
 
-@WebServlet(name = "ResetBranchServlet", urlPatterns = {"/reset_branch"})
-public class ResetBranchServlet extends HttpServlet {
+@WebServlet(name = "ExecuteCommitServlet", urlPatterns = {"/execute_commit"})
+public class ExecuteCommitServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String  username = request.getParameter("user_id"),
+        String username = request.getParameter("user_id"),
                 repositoryID = request.getParameter("repository_id"),
-                commit_SHAONE = request.getParameter("selected_commit_shaone");
+                comment = request.getParameter("comment");
 
         User user = WebUI.getUser(request, username);
+        PrintWriter out = response.getWriter();
         try {
             Magit magit = user.getRepository(Integer.parseInt(repositoryID));
-            magit.resetBranch(magit.getCurrentBranch(), commit_SHAONE);
+            magit.commitMagit(user.getName(), comment);
+            out.print(magit.getCurrentBranch().getCommit().toJSON());
         } catch (RepositoryException | MyFileException e) {
-            response.sendError(400, e.getMessage());
+            response.setStatus(400);
+            out.print(e.getMessage());
+        } finally {
+            out.close();
         }
     }
 }

@@ -1,3 +1,18 @@
+function getUrlParameter(sParam) {
+    var sPageURL = window.location.search.substring(1),
+        sURLVariables = sPageURL.split('&'),
+        sParameterName,
+        i;
+
+    for (i = 0; i < sURLVariables.length; i++) {
+        sParameterName = sURLVariables[i].split('=');
+
+        if (sParameterName[0] === sParam) {
+            return sParameterName[1] === undefined ? true : decodeURIComponent(sParameterName[1]);
+        }
+    }
+}
+
 function checkFolder(data) {
     try {
         jQuery.parseJSON(data);
@@ -8,22 +23,22 @@ function checkFolder(data) {
 }
 
 function createFolder(text, parent, newID) {
-    var parentUL = document.getElementById(parent);
-    var li = document.createElement("li");
+    const parentUL = document.getElementById(parent);
+    let li = document.createElement("li");
     li.appendChild(document.createTextNode(text));
-    var newUL = document.createElement("ul");
+    let newUL = document.createElement("ul");
     newUL.id = newID;
     li.appendChild(newUL);
     li.setAttribute("data-jstree", '{"icon" : "fa fa-folder"}');
     parentUL.appendChild(li);
 }
 
-function createNode(text, parent) {
-    var li = document.createElement("li");
-    var parentUL = document.getElementById(parent);
+function createNode(text, parent, icon) {
+    let li = document.createElement("li"),
+        parentUL = document.getElementById(parent);
     li.appendChild(document.createTextNode(text));
     parentUL.appendChild(li);
-    li.setAttribute("data-jstree", '{"icon" : "fa fa-file"}');
+    li.setAttribute("data-jstree", '{"icon" : "' + icon + '"}');
 }
 
 
@@ -49,7 +64,7 @@ function showCustomAlert(message, type) {
     document.getElementById("div_message").style.display = "block";
     document.getElementById("div_message_" + type).style.display = "block";
     document.getElementById("message_" + type).innerHTML = message;
-	$('#div_message').delay(2000).fadeOut(300);
+	$('#div_message').delay(3000).fadeOut(300);
 }
 
 function magitShowError(message) {

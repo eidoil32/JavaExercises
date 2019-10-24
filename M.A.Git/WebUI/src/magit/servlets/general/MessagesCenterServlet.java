@@ -1,4 +1,4 @@
-package magit.servlets;
+package magit.servlets.general;
 
 import settings.Settings;
 import usermanager.User;
