@@ -15,7 +15,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class  User  {
+public class User {
     private String name, password;
 
     public User(String name, String password) {
@@ -100,7 +100,7 @@ public class  User  {
      *                     5. Creator
      * @throws IOException
      */
-    public void leaveMessageToMe(String ...messageParts) throws IOException {
+    public void leaveMessageToMe(String... messageParts) throws IOException {
         int size = 5;
         File messageCenter = new File(String.format(Settings.USER_MESSAGES_CENTER, name));
         StringBuilder messages = new StringBuilder(FileManager.readFile(messageCenter.toPath()));
@@ -124,8 +124,9 @@ public class  User  {
         Map<Integer, Map<String, String>> messagesMap = new HashMap<>();
         int i = 0;
         Scanner scanner = new Scanner(new File(String.format(Settings.USER_MESSAGES_CENTER, name)));
-        while(scanner.hasNextLine()) {
-            Type converter = new TypeToken<Map<String, String>>() {}.getType();
+        while (scanner.hasNextLine()) {
+            Type converter = new TypeToken<Map<String, String>>() {
+            }.getType();
             Map<String, String> message = new HashMap<>(new Gson().fromJson(scanner.nextLine(), converter));
             messagesMap.put(i++, message);
         }
@@ -153,8 +154,9 @@ public class  User  {
         List<String> results = new LinkedList<>();
 
         Scanner scanner = new Scanner(new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
-        while(scanner.hasNextLine()) {
-            Type converter = new TypeToken<Map<String, String>>() {}.getType();
+        while (scanner.hasNextLine()) {
+            Type converter = new TypeToken<Map<String, String>>() {
+            }.getType();
             String line = scanner.nextLine();
             Map<String, String> pullRequest = new HashMap<>(new Gson().fromJson(line, converter));
             if (pullRequest.get(Settings.PR_REMOTE_REPOSITORY_ID).equals(repository_id)) {
@@ -167,8 +169,9 @@ public class  User  {
 
     public Map<String, String> getPullRequest(String repository_id, String pullRequest_id) throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
-        while(scanner.hasNextLine()) {
-            Type converter = new TypeToken<Map<String, String>>() {}.getType();
+        while (scanner.hasNextLine()) {
+            Type converter = new TypeToken<Map<String, String>>() {
+            }.getType();
             String line = scanner.nextLine();
             Map<String, String> pullRequest = new HashMap<>(new Gson().fromJson(line, converter));
             if (pullRequest.get(Settings.PR_REMOTE_REPOSITORY_ID).equals(repository_id)
@@ -178,5 +181,20 @@ public class  User  {
         }
 
         return null;
+    }
+
+    public String getRepositoryPathParameter(Magit remote, String oneBefore) {
+        String current = remote.getCurrentRepository().getCurrentPath().getName(0).toString();
+        int i = 1;
+        while (!current.equals(oneBefore)) {
+            current = remote.getCurrentRepository().getCurrentPath().getName(i++).toString();
+        }
+        return remote.getCurrentRepository().getCurrentPath().getName(i).toString();
+    }
+
+    public void removePullRequest(String repository_id, String pr_id) throws IOException {
+        Map<String, String> pullRequest = getPullRequest(repository_id, pr_id);
+        String request = new Gson().toJson(pullRequest);
+        FileManager.removeLineFromFile(request, new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
     }
 }

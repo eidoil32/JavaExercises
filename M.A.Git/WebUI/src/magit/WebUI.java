@@ -70,6 +70,7 @@ public class WebUI implements ServletContextListener {
         try {
             FileUtils.deleteDirectory(new File(Settings.SERVER_DATABASE));
         } catch (IOException e) {
+            System.out.println(e.getMessage());
             System.out.println("Deleting servers files failed! sorry for that.");
         }
         System.out.println("Finish deleting files, good bye!");

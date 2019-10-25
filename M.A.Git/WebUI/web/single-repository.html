@@ -10,9 +10,21 @@
 		</ul>
 		<div class="tab-content">
 			<div id="tabs-1" class="tab-pane fade">
+				<div class="row" id="single_commit_show" style="display:none;">
+					<div class="col">
+						<div ></div>
+					</div>	
+				</div>
+				<div class="row" style="display:none;">
+					<div class="col">
+						<div id="single_commit_sha1"></div>
+						<div id="single_commit_repo_id"></div>
+						<div id="single_commit_user"></div>
+					</div>	
+				</div>
 				<div class="row">
 					<div class="col-12">
-				        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+				        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden" id="all_commits_show">
 				            <div class="panel-heading templatemo-position-relative">
 				                <h2 class="text-uppercase">Commits</h2>
 				            </div>
@@ -54,8 +66,8 @@
 			                <div class="panel-heading templatemo-position-relative">
 			                    <h2 class="text-uppercase">File tree</h2>
 			                </div>
-			                <div id="filetree_div">
-			                    <ul id="root_folder">
+			                <div id="full_filetree_div">
+			                    <ul id="full_root_folder">
 			                    </ul>
 			                </div>
 			            </div>
@@ -66,7 +78,7 @@
 			                    <h2 class="text-uppercase">File viewer</h2>
 			                </div>
 			                <div class="panel-body">
-				                <div id="textEditor" style="margin: 5px;max-width: 100%;" class="row text-center">
+				                <div id="full_textEditor" style="margin: 5px;max-width: 100%;" class="row text-center">
 				                    Choose file to view his content.
 				                </div>
 			            	</div>
@@ -84,7 +96,7 @@
 								</div>
 								<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion_files">
 									<div class="panel-body" style="padding: 	5px;" id="new_files">
-										There's no any new files.
+										<p id="new_files_empty">There's no any new files.</p>
 									</div>
 								</div>
 			    			</div>
@@ -96,7 +108,7 @@
 								</div>
 								<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion_files">
 									<div class="panel-body" id="edited_files">
-										There's no any edited files.
+										<p id="edited_files_empty">There's no any edited files.</p>
 									</div>
 								</div>
 			    			</div>
@@ -108,7 +120,8 @@
 								</div>
 								<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion_files">
 									<div class="panel-body" id="deleted_files">
-										There's no any deleted files.
+										<p id="deleted_files_empty">There's no any deleted files.</p>
+										
 									</div>
 								</div>
 			    			</div>

@@ -1,11 +1,16 @@
 function makeAjaxRequests(data, url, errorFunction, successFunction) {
     $.ajax({
+        contentType: 'application/json; charset=utf-8',
         async: true,
         data: data,
         timeout: 2000,
         url: url,
         error: function (data) {
-            errorFunction(data);
+            if (data.status === 200) {
+                successFunction(data);
+            } else {
+                errorFunction(data);
+            }
         },
         success: function (data) {
             successFunction(data);
@@ -16,7 +21,7 @@ function makeAjaxRequests(data, url, errorFunction, successFunction) {
 function getFullPath(file, counter) {
     if (file != null) {
         let rootFolder = file.parentElement.parentElement;
-        if (rootFolder.id === "filetree_div")
+        if (rootFolder.id === "full_filetree_div")
             return file.getElementsByTagName("a")[0].innerText;
         return getFullPath(rootFolder) + "," + file.getElementsByTagName("a")[0].innerText;
     }
@@ -27,10 +32,10 @@ function checkIsRemote(branchName) {
 }
 
 function saveFile() {
-    var repository = document.getElementById('repository').value;
-    var path = document.getElementById('path').value.replace(',', '/');
-    var user = document.getElementById('user').value;
-    var content = document.getElementById('file_content').value;
+    let repository = document.getElementById('repository').value,
+        path = document.getElementById('path').value.replace(',', '/'),
+        user = document.getElementById('user').value,
+        content = document.getElementById('file_content').value;
 
     $.ajax({
         async: true,
@@ -46,9 +51,19 @@ function saveFile() {
             magitShowError("Saving file failed!");
         },
         success: function (data) {
+            updateOpenedChanges(path, "edited_files");
             magitShowSuccess("Saving file done successfully!");
         }
     });
+}
+
+function updateOpenedChanges(fileFullPath, category) {
+    let fileInDiv = document.getElementById(fileFullPath + "_" + category);
+    if (fileInDiv == null) {
+        $("#repository_opened_changes").css('display', 'block');
+        $("#" + category).append("</br><i class='fa fa-file' aria-hidden='true' id='" + fileFullPath + "_" + category + "'></i> " + fileFullPath);
+        $("#" + category + "_empty").css('display', 'none');
+    }
 }
 
 function createFileViewer(filename, content, path, repository, user) {
@@ -68,12 +83,15 @@ function createFileViewer(filename, content, path, repository, user) {
             '</div>';
         if (user === "null") {
             myForm += '<div style="margin-top: 5px;"></br><button id="deleted_file_button" class="btn btn-danger">Delete File</button>'
-            myForm += '<button type="submit" style="margin-left: 10px" class="btn btn-success">Save</button></div>';
+            myForm += '<button type="submit" style="margin-left: 10px" class="btn btn-success" id="button_save_file_content" disabled>Save</button></div>';
         }
         myForm += '</form>';
 
 
-        document.getElementById('textEditor').innerHTML = myForm;
+        document.getElementById('full_textEditor').innerHTML = myForm;
+        $('#file_content').on('input selectionchange propertychange', function () {
+            $('#button_save_file_content').prop('disabled', '');
+        });
         $("#saveFileForm").submit(function (e) {
             e.preventDefault();
         });
@@ -88,7 +106,8 @@ function createFileViewer(filename, content, path, repository, user) {
                 function (data) {
                     magitShowError(data.responseText);
                 }, function (data) {
-                    $('#filetree_div').jstree().delete_node(filename);
+                    $('#full_filetree_div').jstree().delete_node(filename);
+                    updateOpenedChanges(path, "deleted_files");
                     magitShowSuccess("File deleted successfully!");
                 });
         });
@@ -118,7 +137,8 @@ function createNewFile(path, repository, user, file) {
             magitShowError("Creating file failed!");
         }, function (data) {
             $("#close_modal_new_file").click();
-            $('#filetree_div').jstree().create_node(fileParent, $("#new_file_name").val(), "first");
+            $('#full_filetree_div').jstree().create_node(fileParent, $("#new_file_name").val(), "first");
+            updateOpenedChanges(realPath + "\\" + $("#new_file_name").val(), "new_files");
             magitShowSuccess("The file " + $("#new_file_name").val() + " Created successfully!");
         });
     });
@@ -145,6 +165,7 @@ function loadFileData(file, repository, user, commitSHA) {
 
 function updateBranches(branchesList) {
     let size = Object.keys(branchesList).length;
+    window.numOfBranches = size;
     for (let index = 0; index < size; index++) {
         let branchName = "";
         if (checkIsRemote(branchesList[index])) {
@@ -209,7 +230,7 @@ function splitNames(text, regex) {
 
 function addCommitToTable(commit, id, repositoryID, user, tableID) {
     $(tableID + ' tr:last')
-        .after('<tr ' + addTagsForTR("commit_" + id, "selectMenuItem(null, 'single-commit.html?sha1=" + commit.WSA_SINGLE_COMMIT_SHA1_KEY + "&repository_id=" + repositoryID + "&user_id=" + user + "');") + '><td>' +
+        .after('<tr ' + addTagsForTR("commit_" + id, "showCommit('" + commit.WSA_SINGLE_COMMIT_SHA1_KEY + "','" + repositoryID + "','" + user + "');") + '><td>' +
             (id) +
             '</td><td>' +
             commit.WSA_SINGLE_COMMIT_SHA1_KEY +
@@ -301,15 +322,17 @@ function addChangeBranchForm(branches, headBranch, location) {
     });
 }
 
-function loadCommitData(data, rootFolderID) {
+function loadCommitData(data, rootFolderID, user) {
     let tree = jQuery.parseJSON(data);
 
     Object.keys(tree).forEach(function (key) {
         if (checkFolder(tree[key])) {
             let folderID = "folder_" + key;
             createFolder(key, rootFolderID, folderID);
-            loadCommitData(tree[key], folderID);
-            createNode("Add new file", folderID, "fa fa-plus");
+            loadCommitData(tree[key], folderID, user);
+            if (user === "null") {
+                createNode("Add new file", folderID, "fa fa-plus");
+            }
         } else {
             createNode(key, rootFolderID, "fa fa-file");
         }
@@ -317,7 +340,7 @@ function loadCommitData(data, rootFolderID) {
 }
 
 function makeItTree(repository, user, commitSHA) {
-    $('#filetree_div').on('changed.jstree', function (e, data) {
+    $('#full_filetree_div').on('changed.jstree', function (e, data) {
         loadFileData(document.getElementById(data.selected), repository, user, commitSHA);
     }).jstree({
         'core': {
@@ -327,8 +350,10 @@ function makeItTree(repository, user, commitSHA) {
 }
 
 function setFileTree(file_tree, repo_id, user, rootFolderID) {
-    loadCommitData(file_tree, rootFolderID);
-    createNode("Add new file", rootFolderID, "fa fa-plus");
+    loadCommitData(file_tree, rootFolderID, user);
+    if (user === "null") {
+        createNode("Add new file", rootFolderID, "fa fa-plus");
+    }
     makeItTree(repo_id, user, null);
 }
 
@@ -362,7 +387,7 @@ function doCommit(repository, user, comment, headBranch) {
             magitShowError(data['responseText']);
         },
         success: function (data) {
-            addToCommitTable(data, $('#commits-table tr').length, headBranch, repository, user);
+            addToCommitTable(jQuery.parseJSON(data), $('#commits-table tr').length, headBranch, repository, user);
             magitShowSuccess("Commit done successfully!");
         }
     });
@@ -412,40 +437,57 @@ function addPullRequestButton(branches, headBranch, repository, user) {
     });
 }
 
+function addPullButton(repository, user) {
+    let repositoryDetails = document.getElementById("repository_options"),
+        pushButton = "<td><b>Simple pull data from RR:</b></br>" +
+            "<button class='btn btn-primary mb-2' id='pull_data_button'>" +
+            "Pull</button></td>";
+    $(pushButton).appendTo(repositoryDetails);
+    $("#pull_data_button").click(function () {
+        makeAjaxRequests({
+            "repo_id": repository,
+            "user": user
+        }, "pull_head", function (data) {
+            magitShowError(data.responseText);
+        }, function (data) {
+            magitShowSuccess("Pull data ended successfully!");
+        })
+    });
+}
+
 function addCollaborationButtons(headBranch, branches, location, repository, user) {
-    var repositoryDetailes = document.getElementById("repository_options");
-    var commit = "<td><b>Save files current contents:</b></br><button class='btn btn-primary mb-2' id='commit_button' data-toggle='modal' data-target='#commitCommentModal'>Commit</button></td>";
-    $(commit).appendTo(repositoryDetailes);
+    let repositoryDetails = document.getElementById("repository_options"),
+        commit = "<td><b>Save files current contents:</b></br><button class='btn btn-primary mb-2' id='commit_button' data-toggle='modal' data-target='#commitCommentModal'>Commit</button></td>";
+    $(commit).appendTo(repositoryDetails);
     $("#save_comment").click(function () {
-        var comment = document.getElementById("commit_comment_textarea").value;
+        let comment = document.getElementById("commit_comment_textarea").value;
         if (comment != null && comment !== "") {
             $("#commit_comment_close").trigger("click");
             doCommit(repository, user, comment, headBranch);
         }
     });
     addMergeButtonForm(branches, headBranch, location, repository, user);
-
-
+    addPullButton(repository, user);
 }
 
 function setOpenedChangesFiles(filesList, repo_id) {
-    var hasOpenedChanges = false;
-    var arrayTypes = ["new_files", "edited_files", "deleted_files"];
+    let hasOpenedChanges = false,
+        arrayTypes = ["new_files", "edited_files", "deleted_files"];
 
-    if (filesList.length != 0) {
-        for (var i = 0; i < 3; i++) {
-            var element = document.getElementById(arrayTypes[i]);
-            var tempText = "";
-            var json = jQuery.parseJSON(filesList[i]);
-            if (json.length != 0) {
+    if (filesList.length > 0) {
+        for (let i = 0; i < 3; i++) {
+            let element = document.getElementById(arrayTypes[i]), tempText = "",
+                json = jQuery.parseJSON(filesList[i]);
+            if (json.length > 0) {
                 hasOpenedChanges = true;
                 Object.keys(json).forEach(function (key) {
+                    let filename = key.replace("repository_" + repo_id + "\\", "");
                     if (json[key] === "File") {
-                        tempText += "<i class='fa fa-file' aria-hidden='true'></i> ";
+                        tempText += "<i class='fa fa-file' aria-hidden='true' id='" + filename + "_" + arrayTypes[i] + "'></i> ";
                     } else {
-                        tempText += "<i class='fa fa-folder' aria-hidden='true'></i> ";
+                        tempText += "<i class='fa fa-folder' aria-hidden='true' id='" + filename + "_" + arrayTypes[i] + "'></i> ";
                     }
-                    tempText += key.replace("repository_" + repo_id + "\\", "") + "</br>";
+                    tempText += filename + "</br>";
                 });
             }
             if (tempText !== "") {
@@ -485,7 +527,7 @@ function resetBranch(repo_id, selected_user) {
 }
 
 function addResetBranchForm(allCommits, repo_id, selected_user, isRemote) {
-    var myForm = '<td colspan="' + (isRemote ? 2 : 3) + '"><form method="POST" id="resetBranchForm" onsubmit=\'checkOpenedChanges(' + repo_id + ',' + selected_user + ')\' class="form-inline"><b>Select commit sha-1 you want to reset:</b></br>' +
+    let myForm = '<td colspan="' + (isRemote ? 3 : 4) + '"><form method="POST" id="resetBranchForm" onsubmit=\'checkOpenedChanges(' + repo_id + ',' + selected_user + ')\' class="form-inline"><b>Select commit sha-1 you want to reset:</b></br>' +
         '<div class="form-group mb-2" style="margin-right: 5px;">' +
         '<select class="form-control form-control-sm" id="commitSelector" name="commitSelector">';
     allCommits.forEach(function (entry) {
@@ -509,6 +551,14 @@ function showPullRequest(i) {
     $('#pull_requests_inner_div').css('display', 'none');
     window.pr_ID = i;
     $("#pull_requests_outter_div").css('display', 'block').load("single-pullRequest.html");
+}
+
+function showCommit(sha_1, repository_id, user) {
+    $("#single_commit_sha1").html(sha_1);
+    $("#single_commit_repo_id").html(repository_id);
+    $("#single_commit_user").html(user);
+    $("#single_commit_show").css('display', 'block').load("single-commit.html");
+    $("#all_commits_show").css('display', 'none');
 }
 
 function pullRequestsCenter(data, repository, user) {
@@ -544,8 +594,19 @@ function pullRequestsCenter(data, repository, user) {
     }
 }
 
-function addCreateBranchForm(repo_id, selected_user, commits) {
-    const createBranch = "<td><button data-toggle='modal' data-target='#createNewBranchModal' class=\"btn btn-primary mb-2\">Create new branch</button></td>";
+function addBranchToLists(branchName) {
+    $(new Option(branchName, branchName)).appendTo("#branchSelector");
+    if ($("#branchSelector").length > 1) {
+        $("#checkoutButton").prop('disabled', '');
+    }
+    $(new Option(branchName, branchName)).appendTo("#merge_branchSelector");
+    $(new Option(branchName, branchName)).appendTo("#select_branch_to_push");
+    window.numOfBranches++;
+    $('#branches-table tr:last').after('<tr><td>' + window.numOfBranches + '</td><td>' + branchName + '</td></tr>');
+}
+
+function addCreateBranchForm(repo_id, selected_user, commits, branches, remoteRepo) {
+    const createBranch = "<td><button id='show_create_branch_modal' data-toggle='modal' data-target='#createNewBranchModal' class=\"btn btn-primary mb-2\">Create new branch</button></td>";
     $(createBranch).appendTo("#repository_options_third_row");
 
     Object.keys(commits).forEach(function (key) {
@@ -553,26 +614,53 @@ function addCreateBranchForm(repo_id, selected_user, commits) {
         $(new Option(sha1, sha1)).appendTo('#branch_commit');
     });
 
+
+    if (remoteRepo) {
+        $("#show_create_branch_modal").click(function () {
+            $("#remote_tracking_branch").css("display", "block");
+        });
+        $("#branch_remote").change(function () {
+            if ($("#branch_remote").val() !== "none") {
+                $("#branch_name").prop('disabled', 'disabled');
+            } else {
+                $("#branch_name").prop('disabled', '');
+            }
+        });
+        $(new Option('select branch', 'none')).appendTo('#branch_remote');
+        Object.keys(branches).forEach(function (key) {
+            if (checkIsRemote(branches[key])) {
+                $(new Option(branches[key], branches[key])).appendTo('#branch_remote');
+            }
+        });
+    } else {
+        $("#show_create_branch_modal").click(function () {
+            $("#remote_tracking_branch").css("display", "none");
+        });
+    }
+
     $("#branch_create").click(function () {
         const commit = $("#branch_commit").val(),
+            branch_remote = $("#branch_remote").val(),
             name = $("#branch_name").val();
         $("#branch_close").click();
         makeAjaxRequests({
             "commit": commit,
+            "tracking-after": branch_remote,
             "branch_name": name,
             "repo_id": repo_id,
             "user_id": selected_user
         }, "create_branch", function (data) {
             magitShowError(data.responseText);
-        }, function () {
-            magitShowSuccess("Creating branch finish successfully!");
+        }, function (data) {
+            addBranchToLists(name);
+            magitShowSuccess("Creating branch '" + name + "' finish successfully!");
         });
 
     });
 }
 
 function addPushBranchButton(branches, repo_id, selected_user) {
-    let pushBranch = "<td colspan='2'>" +
+    let pushBranch = "<td colspan='3'>" +
         "<div class='row'>" +
         "<div class='col-md-8'>" +
         "<select class=\"form-control\" id=\"select_branch_to_push\"></select>" +
@@ -610,11 +698,12 @@ function fetchRepositoryData(data, repo_id, selected_user) {
     }
     updateBranches(json.WSA_SINGLE_REPOSITORY_BRANCHES);
     updateCommits(json.WSA_SINGLE_REPOSITORY_ALL_COMMITS, repo_id, selected_user);
-    setFileTree(json.WSA_SINGLE_REPOSITORY_FILE_TREE, repo_id, selected_user, "root_folder");
+    setFileTree(json.WSA_SINGLE_REPOSITORY_FILE_TREE, repo_id, selected_user, "full_root_folder");
     setOpenedChangesFiles(json.WSA_SINGLE_REPOSITORY_OPENED_CHANGES, repo_id);
 
     if (selected_user === "null") {
-        addCreateBranchForm(repo_id, selected_user, json.WSA_SINGLE_REPOSITORY_ALL_COMMITS);
+        addCreateBranchForm(repo_id, selected_user, json.WSA_SINGLE_REPOSITORY_ALL_COMMITS,
+            json.WSA_SINGLE_REPOSITORY_BRANCHES, isRemote);
         addResetBranchForm(json.WSA_SINGLE_REPOSITORY_ALL_COMMITS, repo_id, selected_user, isRemote);
         addChangeBranchForm(json.WSA_SINGLE_REPOSITORY_BRANCHES, json.WSA_SINGLE_REPOSITORY_HEAD_BRANCH, json.WSA_REPOSITORY_LOCATION);
         addCollaborationButtons(json.WSA_SINGLE_REPOSITORY_HEAD_BRANCH, json.WSA_SINGLE_REPOSITORY_BRANCHES, json.WSA_REPOSITORY_LOCATION, repo_id, selected_user);
@@ -629,8 +718,8 @@ function fetchRepositoryData(data, repo_id, selected_user) {
 }
 
 function repositoryDataFetching() {
-    var repo_id = document.getElementById("repo_id").innerHTML;
-    var selected_user = document.getElementById("selected_user").innerHTML;
+    let repo_id = document.getElementById("repo_id").innerHTML,
+        selected_user = document.getElementById("selected_user").innerHTML;
 
     makeAjaxRequests({"repo_id": repo_id, "username": selected_user}
         , "single_repository", function (data) {

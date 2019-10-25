@@ -1,5 +1,6 @@
 package magit.servlets.pullrequests;
 
+import com.google.gson.Gson;
 import exceptions.RepositoryException;
 import magit.Magit;
 import magit.WebUI;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class PullRequestCreatorServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType(Settings.APPLICATION_RESPONSE_TYPE);
         String comment = request.getParameter("comment"),
                 lr_branchName = request.getParameter("lr_Branch"),
                 rr_branchName = request.getParameter("rr_Branch"),
@@ -39,10 +41,10 @@ public class PullRequestCreatorServlet extends HttpServlet {
             data.put(Settings.PR_DATE_CREATION, new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(new Date()));
             data.put(Settings.PR_REQUEST_CREATOR, user.getName());
             data.put(Settings.PR_REMOTE_REPOSITORY_ID,
-                    getRepositoryPathParameter(magit.getRemoteRepository(), "repositories").replaceFirst(Settings.SINGLE_REPOSITORY_PREFIX,""));
+                    user.getRepositoryPathParameter(magit.getRemoteRepository(), "repositories").replaceFirst(Settings.SINGLE_REPOSITORY_PREFIX,""));
             data.put(Settings.PR_LOCAL_REPOSITORY_ID, repository_id);
 
-            User remoteOwner = WebUI.getUser(request, getRepositoryPathParameter(magit.getRemoteRepository(), "users"));
+            User remoteOwner = WebUI.getUser(request, user.getRepositoryPathParameter(magit.getRemoteRepository(), "users"));
             remoteOwner.createPullRequest(data);
             remoteOwner.leaveMessageToMe(
                     Settings.language.getString("USER_PULL_REQUEST_KEY"),
@@ -51,18 +53,12 @@ public class PullRequestCreatorServlet extends HttpServlet {
                     new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(new Date()),
                     user.getName()
             );
+            response.getWriter().print(new Gson().toJson("DONE"));
         } catch (RepositoryException e) {
-            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print(e.getMessage());
         }
 
     }
 
-    private String getRepositoryPathParameter(Magit remote, String oneBefore) {
-        String current = remote.getCurrentRepository().getCurrentPath().getName(0).toString();
-        int i = 1;
-        while (!current.equals(oneBefore)) {
-            current = remote.getCurrentRepository().getCurrentPath().getName(i++).toString();
-        }
-        return remote.getCurrentRepository().getCurrentPath().getName(i).toString();
-    }
 }

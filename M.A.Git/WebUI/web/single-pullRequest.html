@@ -3,10 +3,10 @@
         <div class="col-sm-4">
             <button class="btn btn-primary mb-2" id="show_all_pull_requests">< Show all pull requests</button>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4" style="text-align: center;">
             <button class="btn btn-success mb-2" id="approve_pr">Approve Pull Request</button>
         </div>
-        <div class="col-sm-4">
+        <div class="col-sm-4" style="text-align: right;">
             <button class="btn btn-danger mb-2" data-toggle='modal' data-target='#reject_pullRequestModal'>Reject Pull Request</button>
         </div>
     </div>
@@ -33,7 +33,6 @@
                                 <td>Comment</td>
                                 <td>Creation date</td>
                                 <td>Created by</td>
-                                <td>Pointed by</td>
                             </tr>
                         </thead>
                         <tbody id="commit-table-tbody">
@@ -49,9 +48,8 @@
                 <div class="panel-heading templatemo-position-relative">
                     <h2 class="text-uppercase">Modified files</h2>
                 </div>
-                <div id="filetree_div">
-                    <ul id="root_folder">
-                    </ul>
+                <div style="padding: 10px;">
+                    <p id="modified_files_list"></p>
                 </div>
             </div>
         </div>
@@ -60,7 +58,7 @@
                 <div class="panel-heading templatemo-position-relative">
                     <h2 class="text-uppercase">File viewer</h2>
                 </div>
-                <div id="textEditor" style="margin: 5px;" class="text-center">
+                <div id="pr_textEditor" style="margin: 5px;" class="text-center">
                     Choose file to view his content.
                 </div>
             </div>

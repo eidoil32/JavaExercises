@@ -761,22 +761,45 @@ public class Magit {
         return blobMapList;
     }
 
+    public void merge(Commit our, Commit theirs, String comment, boolean includeLayout) throws IOException, MyFileException, RepositoryException {
+        Commit ancestor = getAncestorCommit(our, theirs);
+        BlobMap outMap = currentRepository.loadDataFromCommit(our),
+                theirsMap = currentRepository.loadDataFromCommit(theirs),
+                ancestorMap = currentRepository.loadDataFromCommit(ancestor);
+
+        BlobMap mergedMaps = mergeMaps(outMap, theirsMap, ancestorMap);
+        List<BlobMap> blobMapList = calculateChanges(mergedMaps, ancestorMap, theirsMap, outMap);
+        Map<String, BlobMap> changes = new HashMap<>();
+        changes.put(Settings.KEY_FINAL_MAP, mergedMaps);
+        changes.put(Settings.KEY_EASY_TAKE_MAP, blobMapList.get(1));
+        merge(changes,
+                new BlobMap[]{new BlobMap(new HashMap<>()), new BlobMap(new HashMap<>())},
+                new Commit[]{our, theirs}, comment, includeLayout);
+    }
+
     public void merge(Map<String, BlobMap> changes, BlobMap[] userApprove, Commit theirCommit, String comment)
+            throws IOException, MyFileException, RepositoryException {
+
+        merge(changes, userApprove, new Commit[]{currentBranch.getCommit(), theirCommit}, comment, true);
+    }
+
+    public void merge(Map<String, BlobMap> changes, BlobMap[] userApprove, Commit[] commits, String comment, boolean includeLayout)
             throws IOException, MyFileException, RepositoryException {
 
         BlobMap finalMap = changes.get(Settings.KEY_FINAL_MAP);
         replaceEasyTakeInFinalMap(finalMap, changes.get(Settings.KEY_EASY_TAKE_MAP));
         buildFromTwoBlobMaps(userApprove, finalMap);
 
-        deleteOldFiles(rootFolder.toString());
-
-        layoutRepositoryByRootFolder(finalMap.getMap(), null);
+        if(includeLayout) {
+            deleteOldFiles(rootFolder.toString());
+            layoutRepositoryByRootFolder(finalMap.getMap(), null);
+        }
         try {
-            commitMagit(currentUser, comment, theirCommit);
+            commitMagit(currentUser, comment, commits[1]);
         } catch (RepositoryException e) {
             if (e.getCode() == eErrorCodes.NOTHING_NEW) {
-                Commit newCommit = new Commit(currentBranch.getCommit());
-                newCommit.addPrevCommit(theirCommit);
+                Commit newCommit = new Commit(commits[0]);
+                newCommit.addPrevCommit(commits[1]);
                 newCommit.createCommitFileWithoutChanges(currentRepository, currentUser, comment);
                 currentBranch.setCommit(newCommit, currentRepository.getBranchesPath().toString());
                 currentRepository.setLastCommit(newCommit);
@@ -1042,6 +1065,15 @@ public class Magit {
         return null;
     }
 
+    public void push(String branchName) throws RepositoryException {
+        Branch branch = findBranch(branchName);
+        if (branch instanceof RemoteTrackingBranch) {
+
+        } else {
+            throw new RepositoryException(eErrorCodes.NOT_RTB_CANNOT_PUSH);
+        }
+    }
+
     public void push() throws RepositoryException, IOException, MyFileException {
         Branch headBranch = currentBranch;
         if (headBranch instanceof RemoteTrackingBranch) {
@@ -1144,7 +1176,7 @@ public class Magit {
         result.put(Settings.WSA_REPOSITORY_NAME, currentRepository.getName());
         result.put(Settings.WSA_JSON_ACTIVE_BRANCH, currentBranch.getName());
         result.put(Settings.WSA_JSON_CURRENT_PATH, rootFolder.toString());
-        result.put(Settings.WSA_JSON_NUM_OF_BRANCHES, Integer.toString(getCurrentRepository().getBranches().size() - 1)); // minus 1 because HEAD branch
+        result.put(Settings.WSA_JSON_NUM_OF_BRANCHES, Integer.toString(getCurrentRepository().getAllBranches().size() - 1)); // minus 1 because HEAD branch
         Commit lastCommit = currentRepository.getLastCommit();
         result.put(Settings.WSA_JSON_LAST_COMMIT_DATA,
                 new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(lastCommit.getDate()));
@@ -1227,7 +1259,7 @@ public class Magit {
         for (Map.Entry<BasicFile, Blob> entry : blobMap.getMap().entrySet()) {
             Blob blob = entry.getValue();
             if (blob.getType() == eFileTypes.FOLDER) {
-                map.put(blob.getName(), new Gson().toJson(getFilesData(((Folder)blob).getBlobMap())));
+                map.put(blob.getName(), new Gson().toJson(getFilesData(((Folder) blob).getBlobMap())));
             } else {
                 map.put(blob.getName(), blob.getContent());
             }
@@ -1254,7 +1286,8 @@ public class Magit {
         if (file.exists()) {
             try (PrintWriter writer = new PrintWriter(file)) {
                 writer.print(content);
-            } catch (FileNotFoundException ignored) { }
+            } catch (FileNotFoundException ignored) {
+            }
         }
     }
 
@@ -1264,7 +1297,7 @@ public class Magit {
         BlobMap filesChanges = changes.get(Settings.KEY_CHANGE_MAP);
 
         Blob random = filesChanges.getRandomBlob();
-        while(random != null) {
+        while (random != null) {
             Map<String, String> fileContent = new HashMap<>();
             Map<eUserMergeChoice, Blob> contents = filesChanges.getDuplicate(random, changes);
             fileContent.put(Settings.KEY_ACTIVE_MAP, contents.get(eUserMergeChoice.ACTIVE).getContent());
@@ -1286,7 +1319,9 @@ public class Magit {
 
     private BlobMap[] updateUserChoiceFromWeb(Map<String, String[]> filesContents, BlobMap files) {
         BlobMap[] userApprove = new BlobMap[2];
-        for (int i = 0; i < 2; i++) { userApprove[i] = new BlobMap(new HashMap<>()); }
+        for (int i = 0; i < 2; i++) {
+            userApprove[i] = new BlobMap(new HashMap<>());
+        }
 
         Blob random = files.getRandomBlob();
         while (random != null) {
@@ -1337,27 +1372,104 @@ public class Magit {
 
     }
 
-    public String getAggregation(Map<String, String> details, Magit localRepository) throws RepositoryException, IOException {
-        if(details == null) {
+    public List<Commit> getAllCommitsForPR(Map<String, String> details, Magit localRepository) throws RepositoryException, IOException {
+        if (details == null) {
             throw new RepositoryException(eErrorCodes.PR_NOT_FOUND);
         }
 
-        Commit deltaCommit = localRepository.findCommitsFromRepositories(
+        Commit ancestorCommit = localRepository.findCommitsFromRepositories(
                 currentRepository.getName() + File.separator + details.get(Settings.PR_REMOTE_BRANCH_NAME),
                 details.get(Settings.PR_LOCAL_BRANCH_NAME));
 
+        Commit current = localRepository.findBranch(details.get(Settings.PR_LOCAL_BRANCH_NAME)).getCommit();
+        return new LinkedList<>(findAllCommits(current, ancestorCommit));
+    }
 
+    private List<Commit> findAllCommits(Commit current, Commit ancestorCommit) {
+        List<Commit> commits = new LinkedList<>();
 
-        return "";
+        if (current != null) {
+            if (!current.equals(ancestorCommit)) {
+                commits.add(current);
+                commits.addAll(findAllCommits(current.getPrevCommit(), ancestorCommit));
+                commits.addAll(findAllCommits(current.getAnotherPrevCommit(), ancestorCommit));
+            }
+        }
+
+        return commits;
     }
 
     private Commit findCommitsFromRepositories(String remoteBranchName, String localBranchName) throws IOException {
-        Branch  remote = findRemoteBranch(remoteBranchName),
+        Branch remote = findRemoteBranch(remoteBranchName),
                 local = findBranch(localBranchName);
 
         Commit remoteCommit = remote.getCommit(),
                 localCommit = local.getCommit();
 
         return getAncestorCommit(remoteCommit, localCommit);
+    }
+
+    //Map<FilePath, deleted, edited or new>
+    public Map<String, String> getDeltaFromCommits(List<Commit> allCommitsForPR, String targetSHA_ONE) throws RepositoryException, IOException, MyFileException {
+        Map<String, String> filesDelta = new HashMap<>();
+
+        Commit commit = allCommitsForPR.stream().filter(commit1 -> commit1.getSHA_ONE().equals(targetSHA_ONE)).findFirst().get();
+
+        Map<MapKeys, List<BasicFile>> changes = currentRepository.createMapForScanning();
+        BlobMap current = currentRepository.loadDataFromCommit(commit),
+                prevCommit = currentRepository.loadDataFromCommit(commit.getPrevCommit()),
+                anotherPrevCommit = currentRepository.loadDataFromCommit(commit.getAnotherPrevCommit());
+
+
+        if (commit.getPrevCommit() != null) {
+            currentRepository.scanBetweenMaps(current.getMap(), prevCommit.getMap(), changes);
+            currentRepository.scanForDeletedFiles(current.getMap(), prevCommit.getMap(),
+                    changes.get(MapKeys.LIST_DELETED));
+        }
+        if (commit.getAnotherPrevCommit() != null) {
+            currentRepository.scanBetweenMaps(current.getMap(), anotherPrevCommit.getMap(), changes);
+            currentRepository.scanForDeletedFiles(current.getMap(), anotherPrevCommit.getMap(),
+                    changes.get(MapKeys.LIST_DELETED));
+        }
+
+        for (Map.Entry<MapKeys, List<BasicFile>> entry : changes.entrySet()) {
+            for (BasicFile file : entry.getValue()) {
+                filesDelta.put(file.shortPath(), entry.getKey().name());
+            }
+        }
+
+        return filesDelta;
+    }
+
+    public Set<File> getDeltaFilesForChanges(List<Commit> allCommitsForPR) throws RepositoryException {
+        Set<File> files = new LinkedHashSet<>();
+        for (Commit commit : allCommitsForPR) {
+            files.addAll(commit.getCommitsFiles(currentRepository.getObjectPath().toString()));
+        }
+
+        return files;
+    }
+
+    public void getDeltaFromPR(Set<File> delta) {
+        for (File file : delta) {
+            try {
+                Files.copy(file.toPath(),Paths.get((currentRepository.getObjectPath() + File.separator + file.getName())));
+            } catch (IOException ignored) {
+            }
+        }
+    }
+
+    public File commitFile(Commit localCommit) {
+        return new File(currentRepository.getObjectPath() + File.separator + localCommit.getSHA_ONE());
+    }
+
+    public Map<String, String> getFileContent(String filePath, String commitSHA_one) throws IOException, RepositoryException, MyFileException {
+        Commit commit = loadCommitBySHA(commitSHA_one);
+        BlobMap map = currentRepository.loadDataFromCommit(commit);
+        Blob file = map.findFile(filePath);
+        Map<String, String> result = new HashMap<>();
+        result.put(Settings.PR_FILE_CONTENT, file.getContent());
+
+        return result;
     }
 }

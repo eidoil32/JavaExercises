@@ -67,23 +67,23 @@ public class CommitsDetailsController {
     public void updateDiffListView(Map<MapKeys, List<BasicFile>> map) {
         new Thread(() -> {
             List<WarpBlob>
-                    deleted = getDataFromBasicFile(
-                            map.get(MapKeys.LIST_DELETED),
-                            eType.DELETE),
-                    edited = getDataFromBasicFile(
-                            map.get(MapKeys.LIST_CHANGED),
-                            eType.EDITED),
-                    newFiles = getDataFromBasicFile(
-                            map.get(MapKeys.LIST_NEW),
-                            eType.NEW);
+                deleted = getDataFromBasicFile(
+                map.get(MapKeys.LIST_DELETED),
+                eType.DELETE),
+                edited = getDataFromBasicFile(
+                        map.get(MapKeys.LIST_CHANGED),
+                        eType.EDITED),
+                newFiles = getDataFromBasicFile(
+                        map.get(MapKeys.LIST_NEW),
+                        eType.NEW);
 
-            List<WarpBlob> union = ListUtils.union(ListUtils.union(deleted, edited), newFiles);
+        List<WarpBlob> union = ListUtils.union(ListUtils.union(deleted, edited), newFiles);
 
-            Platform.runLater(() -> {
-                diffDetailsListView.getItems().clear();
-                diffDetailsListView.getItems().addAll(union);
-            });
-        }).start();
+        Platform.runLater(() -> {
+            diffDetailsListView.getItems().clear();
+            diffDetailsListView.getItems().addAll(union);
+        });
+    }).start();
 
         diffDetailsListView.setCellFactory(param -> new ListCell<WarpBlob>() {
             @Override

@@ -215,6 +215,7 @@ public class Settings {
             WSA_USER = "WSA_USER";
 
     public static final String
+            PR_FILE_CONTENT = "CONTENT",
             PR_ALL_COMMITS = "PR_ALL_COMMITS",
             PR_ID = "PR_ID",
             PR_LOCAL_BRANCH_NAME = "PR_LOCAL_BRANCH_NAME",
@@ -225,6 +226,11 @@ public class Settings {
             PR_LOCAL_REPOSITORY_ID = "PR_LOCAL_REPOSITORY_ID",
             PR_REQUEST_CREATOR = "PR_REQUEST_CREATOR";
 
+    public static final String[]
+            FORK_REPOSITORY = {Settings.language.getString("USER_FORK_REPOSITORY_KEY"),
+                    Settings.language.getString("USER_MESSAGE_FORK")},
+            PUSH_BRANCH = {Settings.language.getString("BRANCH_PUSHED_TO_REPOSITORY_KEY"),
+                    Settings.language.getString("BRANCH_PUSHED_TO_REPOSITORY")};
 
     public static final String
             SINGLE_REPOSITORY_PREFIX = "repository_",
@@ -241,8 +247,8 @@ public class Settings {
             USERS_REPOSITORY_ROOT_FOLDER = USERS_FOLDER + File.separator + "%s" + File.separator + "repositories", // argument user name
             USERS_REPOSITORY_FOLDER = USERS_REPOSITORY_ROOT_FOLDER + File.separator + "repository_%s"; // argument repository number
 
-    public static final String USER_MESSAGE_PARTS[] = new String[] {
-            "MESSAGE_KEY_TYPE", "MESSAGE_KEY_REPOSITORY", "MESSAGE_KEY_CONTENT", "MESSAGE_KEY_TIME", "MESSAGE_KEY_CREATOR" };
+    public static final String USER_MESSAGE_PARTS[] = new String[]{
+            "MESSAGE_KEY_TYPE", "MESSAGE_KEY_REPOSITORY", "MESSAGE_KEY_CONTENT", "MESSAGE_KEY_TIME", "MESSAGE_KEY_CREATOR"};
 
     public static final String
             PAGE_LOGIN = "/login.html",
