@@ -1,21 +1,32 @@
-# JavaExercises
+# Java Exercises
 Part of Java Course in MTA
 
 # Reflection:
-Testing reflection abillities of Java.
+Testing reflection abilities of Java.
 
 # M.A.Git
 ![Screenshot](LOGO.jpg)
-A console application for manage repository, like Git.
-In M.A.Git user can:
-1. create new repository
-2. load and export repository data to XML (all history)
-3. Managing commits and branches
-
-Comming in part 2:
-1. Marge branches
-2. Windows application using JavaFX
-
-Comming in part 3:
-1. Web application
-2. User managing
+A three kind applications:
+## Console application
+![Screenshot](CONSOLE_SCREENSHOT.jpg)
+### Basic working with M.A.Git
+User can create and manage repository, load and export repository via XML files.
+Also, create branches, watch and make commits.
+## Window application (JavaFX)
+![Screenshot](JAVAFX_SCREENSHOT.jpg)
+### Advanced M.A.Git
+A lot of new features:
+Manage repository and watch all commits and file tree of each of them.
+Show current working copy status, create branches and reset there point.
+Watch all commits in a tree view.
+Also, user can now clone a repository and with this option for the cloned repository 
+the user can push, pull and merge changes between those two repositories.
+## Web application
+![Screenshot](WEB_SCREENSHOT.jpg)
+### Super cool M.A.Git
+Now M.A.Git is a huge website! now each person can create a user to himself,
+upload a repository and do all he wants via the web interface.
+Merge, pull and push (branches) changes from forked repository and new feature is 
+Pull requests.
+Also, for push branch, pull request and fork repository the owners will get a notification
+about those actions.
