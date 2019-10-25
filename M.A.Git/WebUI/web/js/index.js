@@ -128,7 +128,19 @@ $(function() { // onload...do
 	} else {
 		$("#page-content").load("users.html?user=" + user_chosen);
 	}
-})
+
+	$("#clear_notifications").click(function () {
+		$.ajax({
+			async: true,
+			data: {},
+			url: "clear_notifications",
+			timeout: 2000,
+			success: function(data) {
+				checkForMessages(null);
+			}
+		});
+	});
+});
 
 function activeOnlyThis(item) {
 	var items = ["menu-my-repositories", "menu-users"];

@@ -1,5 +1,6 @@
 $(function() { // onload...do
-    $("#loginForm").submit(function() {
+    $("#loginForm").submit(function(e) {
+        e.preventDefault();
         var parameters = $(this).serialize();
 
         $.ajax({
@@ -11,7 +12,7 @@ $(function() { // onload...do
                 console.error("Error from server!");
             },
             success: function(data) {
-              if (data == "success") {
+              if (data === "success") {
                 location.href = "index.html";
               } else {
                 var x = document.getElementById("errorblock");

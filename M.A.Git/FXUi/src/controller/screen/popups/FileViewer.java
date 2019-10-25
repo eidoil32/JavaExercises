@@ -28,7 +28,7 @@ public class FileViewer {
     private void update(Blob blob) {
         this.blob = blob;
         fileName.setText(blob.getName());
-        fileDateModified.setText(new SimpleDateFormat(Settings.DATE_FORMAT).format(blob.getDate()));
+        fileDateModified.setText(new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(blob.getDate()));
         fileEditorName.setText(blob.getEditorName());
         fileContent.setText(blob.getContent());
     }

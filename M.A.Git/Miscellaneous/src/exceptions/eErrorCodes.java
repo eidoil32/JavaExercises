@@ -3,6 +3,7 @@ package exceptions;
 import settings.Settings;
 
 public enum eErrorCodes {
+    PR_NOT_FOUND(Settings.language.getString("PR_NOT_FOUND")),
     NO_REPOSITORY(Settings.language.getString("NO_REPOSITORY")),
     REMOTE_REPO_CONTAIN_BRANCH(Settings.language.getString("REMOTE_REPO_CONTAIN_BRANCH")),
     OPEN_CHANGES_NEEDS_PULL(Settings.language.getString("OPEN_CHANGES_NEEDS_PULL")),

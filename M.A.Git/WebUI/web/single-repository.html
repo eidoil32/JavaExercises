@@ -10,9 +10,21 @@
 		</ul>
 		<div class="tab-content">
 			<div id="tabs-1" class="tab-pane fade">
+				<div class="row" id="single_commit_show" style="display:none;">
+					<div class="col">
+						<div ></div>
+					</div>	
+				</div>
+				<div class="row" style="display:none;">
+					<div class="col">
+						<div id="single_commit_sha1"></div>
+						<div id="single_commit_repo_id"></div>
+						<div id="single_commit_user"></div>
+					</div>	
+				</div>
 				<div class="row">
 					<div class="col-12">
-				        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+				        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden" id="all_commits_show">
 				            <div class="panel-heading templatemo-position-relative">
 				                <h2 class="text-uppercase">Commits</h2>
 				            </div>
@@ -45,14 +57,17 @@
 			    </div>
 			</div>
 			<div id="tabs-2" class="tab-pane fade">
+				<div class="row" style="margin: 10px 20px 0px 0px;" id="more_options">
+                	<button type="button" id="create_new_file_btn" class="btn btn-primary" data-toggle='modal' data-target='#createNewFileModal' style="display:none;"></button>
+                </div>
 				<div class="row">
 					<div class="col-sm-6">
 			            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
 			                <div class="panel-heading templatemo-position-relative">
 			                    <h2 class="text-uppercase">File tree</h2>
 			                </div>
-			                <div id="filetree_div">
-			                    <ul id="root_folder">
+			                <div id="full_filetree_div">
+			                    <ul id="full_root_folder">
 			                    </ul>
 			                </div>
 			            </div>
@@ -62,9 +77,11 @@
 			                <div class="panel-heading templatemo-position-relative">
 			                    <h2 class="text-uppercase">File viewer</h2>
 			                </div>
-			                <div id="textEditor" style="margin: 5px;max-width: 100%;" class="text-center">
-			                    Choose file to view his content.
-			                </div>
+			                <div class="panel-body">
+				                <div id="full_textEditor" style="margin: 5px;max-width: 100%;" class="row text-center">
+				                    Choose file to view his content.
+				                </div>
+			            	</div>
 			            </div>
 			        </div>
 			    </div>
@@ -79,7 +96,7 @@
 								</div>
 								<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion_files">
 									<div class="panel-body" style="padding: 	5px;" id="new_files">
-										There's no any new files.
+										<p id="new_files_empty">There's no any new files.</p>
 									</div>
 								</div>
 			    			</div>
@@ -87,12 +104,11 @@
 			    				<div class="panel-heading" id="headingTwo" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="cursor: pointer;">
 									<h2 class="panel-title">
 										Edited files
-										</button>
 									</h2>
 								</div>
 								<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion_files">
 									<div class="panel-body" id="edited_files">
-										There's no any edited files.
+										<p id="edited_files_empty">There's no any edited files.</p>
 									</div>
 								</div>
 			    			</div>
@@ -100,12 +116,12 @@
 			    				<div class="panel-heading" id="headingThree" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="cursor: pointer;">
 									<h2 class="panel-title">
 										Deleted files
-										</button>
 									</h2>
 								</div>
 								<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordion_files">
 									<div class="panel-body" id="deleted_files">
-										There's no any deleted files.
+										<p id="deleted_files_empty">There's no any deleted files.</p>
+										
 									</div>
 								</div>
 			    			</div>
@@ -152,6 +168,8 @@
 				                        </tr>
 				                        <tr id="repository_options_second_row">
 				                        </tr>
+				                        <tr id="repository_options_third_row">
+				                        </tr>
 				                    </tbody>
 				                </table>
 				            </div>
@@ -174,19 +192,35 @@
 				</div>
 			</div>
 			<div id="tabs-6" class="tab-pane fade">
-				<div class="row">
+				<div id="pull_requests_outter_div">
+				</div>
+				<div class="row" id="pull_requests_inner_div">
 					<div class="col">
 				        <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
 				            <div class="panel-heading templatemo-position-relative">
 				                <h2 class="text-uppercase">Pull Requests</h2>
 				            </div>
 				            <div class="table-responsive">
-				               	<table class="table table-striped table-bordered">
-				                    <tbody>
-				                    	<tr id="repository_options">
+				               	<table class="table table-striped table-bordered" id="pull_request_table">
+				                	<colgroup>
+										<col span="1" style="width: 5%;">
+										<col span="1" style="width: 10%;">
+										<col span="1" style="width: 15%;">
+										<col span="1" style="width: 15%;">
+										<col span="1" style="width: 40%;">
+										<col span="1" style="width: 15%;">
+					                </colgroup>
+				                    <thead>
+				                        <tr style="font-weight: bold;">
+				                        	<td>ID</td>
+				                            <td>PR Creator</td>
+				                            <td>Local branch</td>
+				                            <td>Remote branch</td>
+				                            <td>Comment</td>
+				                            <td>Date</td>
 				                        </tr>
-				                        <tr id="repository_options_second_row">
-				                        </tr>
+				                    </thead>
+				                    <tbody id="pull_request_table_body">
 				                    </tbody>
 				                </table>
 				            </div>

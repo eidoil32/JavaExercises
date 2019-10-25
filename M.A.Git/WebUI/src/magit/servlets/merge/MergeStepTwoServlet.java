@@ -1,4 +1,4 @@
-package magit.servlets;
+package magit.servlets.merge;
 
 import exceptions.MyFileException;
 import exceptions.RepositoryException;

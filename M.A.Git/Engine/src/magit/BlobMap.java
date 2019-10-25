@@ -4,6 +4,7 @@ import settings.Settings;
 import utils.WarpBasicFile;
 import utils.eUserMergeChoice;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -204,5 +205,40 @@ public class BlobMap {
         }
 
         return size;
+    }
+
+    public Blob findFile(String filePath) {
+        File file = new File(filePath);
+
+        List<String> folders = new LinkedList<>();
+        boolean flag = true;
+        int i = 0;
+
+        while(flag) {
+            try {
+                String part = file.toPath().getName(i).toString();
+                folders.add(part);
+                i++;
+            } catch (IllegalArgumentException e) {
+                flag = false;
+            }
+        }
+
+            while (i >= 0) {
+                i--;
+                Map<BasicFile, Blob> currentMap = map;
+                for (Map.Entry<BasicFile, Blob> entry : currentMap.entrySet()) {
+                    if (entry.getValue().getName().equals(folders.get(i))) {
+                        if (entry.getValue().type == eFileTypes.FILE) {
+                            return entry.getValue();
+                        } else {
+                            currentMap = ((Folder)entry.getValue()).getBlobMap().getMap();
+                            break;
+                        }
+                    }
+                }
+            }
+
+        return new Blob();
     }
 }

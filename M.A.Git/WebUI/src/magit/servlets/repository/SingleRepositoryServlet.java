@@ -1,4 +1,4 @@
-package magit.servlets;
+package magit.servlets.repository;
 
 import com.google.gson.Gson;
 import exceptions.MyFileException;
@@ -39,6 +39,7 @@ public class SingleRepositoryServlet extends HttpServlet {
                     Utilities.createSingleItemList(currentUser.getName()));
             result.put(Settings.WSA_REPOSITORY_LOCATION,
                     Utilities.createSingleItemList(String.format(Settings.USERS_REPOSITORY_FOLDER, currentUser.getName(), repository_id)));
+            result.put(Settings.WSA_SINGLE_REPOSITORY_PR, currentUser.getPullRequests(repository_id));
 
             Gson gson = new Gson();
 

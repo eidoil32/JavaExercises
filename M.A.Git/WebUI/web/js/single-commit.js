@@ -1,57 +1,34 @@
-function GetCookieValue(name) {
-    var cookies = document.cookie;
-    var str = cookies.split(";");
-    var parameters = str[0].split("?");
-    var urlParams = parameters[1].split("&");
-    for (var i = 0; i < Object.keys(urlParams).length; i++) {
-        var parts = urlParams[i].split("=");
-        if (parts[0] === name) {
-            return parts[1];
-        }
-    }
-}
-
 function loadCommitData(data, rootFolderID) {
-    var tree = jQuery.parseJSON(data);
+    let tree = jQuery.parseJSON(data);
 
-    Object.keys(tree).forEach(function(key) {
+    Object.keys(tree).forEach(function (key) {
         if (checkFolder(tree[key])) {
-            var folderID = "folder_" + key;
+            let folderID = "folder_" + key;
             createFolder(key, rootFolderID, folderID);
             loadCommitData(tree[key], folderID);
         } else {
-            createNode(key, rootFolderID);
+            createNode(key, rootFolderID, "fa fa-file");
         }
     })
 }
 
-function saveFile() {
-	var repository = $("#repository").value;
-	var path = $("#path").value;
-	var user = $("#user").value;
-	console.log("form input - repository:" + repository + ", path: " + path + ", user: " + user);
-}
-
 function createFileViewer(filename, content) {
     if (content !== "") {
-        var viewer = '<b>' + filename.getElementsByTagName("a")[0].innerText + '\'s content:</b></br>' +
+        document.getElementById('textEditor').innerHTML = '<b>' + filename.getElementsByTagName("a")[0].innerText + '\'s content:</b></br>' +
             '<textarea class="form-control" rows="10" style="min-width: 250px; min-height: 10%; height:100%; resize:vertical;" id="content" rows="3" disabled>' + content + '</textarea>';
-
-
-        document.getElementById('textEditor').innerHTML = viewer;
     }
 }
 
 
 function getFullPath(file, counter) {
-    var rootFolder = file.parentElement.parentElement;
+    let rootFolder = file.parentElement.parentElement;
     if (rootFolder.id === "filetree_div")
         return file.getElementsByTagName("a")[0].innerText;
     return getFullPath(rootFolder) + "," + file.getElementsByTagName("a")[0].innerText;
 }
 
 function loadFileData(file, repository, user, commitSHA) {
-    var path = getFullPath(file);
+    let path = getFullPath(file);
     $.ajax({
         async: true,
         data: {
@@ -62,10 +39,10 @@ function loadFileData(file, repository, user, commitSHA) {
         },
         url: "file_content",
         timeout: 2000,
-        error: function() {
+        error: function () {
             console.error("Error from server!");
         },
-        success: function(data) {
+        success: function (data) {
             createFileViewer(file, data, path, repository, user);
         }
     });
@@ -76,16 +53,20 @@ function createFirstNode() {
 }
 
 function makeItTree(repository, user, commitSHA) {
-    $('#filetree_div').jstree();
-    $('#filetree_div').on('changed.jstree', function(e, data) {
+    $('#filetree_div').on('changed.jstree', function (e, data) {
         loadFileData(document.getElementById(data.selected), repository, user, commitSHA);
     }).jstree();
 }
 
-$(function() {
-    var commitSHA = GetCookieValue('sha1');
-    var repository = GetCookieValue('repository_id');
-    var user = GetCookieValue('user_id');
+$(function () {
+    let commitSHA = $("#single_commit_sha1").html(),
+        repository = $("#single_commit_repo_id").html(),
+        user = $("#single_commit_user").html();
+
+    $("#show_all_commits_btn").click(function () {
+        $("#single_commit_show").css('display', 'none');
+        $("#all_commits_show").css('display','block');
+    });
 
     if (commitSHA != null) {
         $.ajax({
@@ -97,10 +78,10 @@ $(function() {
             },
             url: "single_commit",
             timeout: 2000,
-            error: function() {
+            error: function () {
                 console.error("Error from server!");
             },
-            success: function(data) {
+            success: function (data) {
                 loadCommitData(data, "root_folder");
                 makeItTree(repository, user, commitSHA);
             }

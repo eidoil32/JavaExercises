@@ -221,4 +221,36 @@ public class FileManager {
 
         return stringBuilder.toString();
     }
+
+    public static int countLines(File prCenter) throws FileNotFoundException {
+        int counter = 0;
+        Scanner scanner = new Scanner(prCenter);
+        while (scanner.hasNextLine()) {
+            counter++;
+            scanner.nextLine();
+        }
+
+        return counter;
+    }
+
+    public static void removeLineFromFile(String lineToRemove, File file) throws FileNotFoundException, IOException{
+        StringBuilder sb = new StringBuilder();
+        try (Scanner sc = new Scanner(file)) {
+            String currentLine;
+            while(sc.hasNext()){
+                currentLine = sc.nextLine();
+                if(currentLine.equals(lineToRemove)){
+                    continue; //skips lineToRemove
+                }
+                sb.append(currentLine).append("\n");
+            }
+        }
+        //Delete File Content
+        PrintWriter pw = new PrintWriter(file);
+        pw.close();
+
+        BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
+        writer.append(sb.toString());
+        writer.close();
+    }
 }

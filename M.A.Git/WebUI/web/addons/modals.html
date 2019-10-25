@@ -27,13 +27,12 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="commitModalLabel">Add comment to commit: </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="commitModalLabel">Add comment to commit</h4>
       </div>
       <div class="modal-body">
-        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="commit_comment_textarea"></textarea>
+        <span>Enter comment:</span></br>
+        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="commit_comment_textarea" required></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="commit_comment_close">Close</button>
@@ -47,13 +46,12 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="mergeModalLabel">Add comment to merge: </h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="mergeModalLabel">Add comment to merge</h4>
       </div>
       <div class="modal-body">
-        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="merge_comment_textarea"></textarea>
+        <span>Enter comment:</span></br>
+        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="merge_comment_textarea" required></textarea >
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="merge_comment_close">Close</button>
@@ -67,10 +65,8 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="pullRequest">Pull Request:</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="pullRequest">Pull Request</h4>
       </div>
       <div class="modal-body">
         <span>Select Local branch target:</span></br>
@@ -80,11 +76,89 @@
         <select class="form-control form-control-sm" id="PR_RR_branchSelector" name="PR_RR_branchSelector">
         </select>
         <span>Enter commant:</span></br>
-        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="pull_request_comment_textarea"></textarea>
+        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="pull_request_comment_textarea" required></textarea>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" id="pull_request_close">Close</button>
         <button type="button" class="btn btn-primary" id="send_pr">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Reject Pull request form modal -->
+<div class="modal fade" id="reject_pullRequestModal" tabindex="-1" role="dialog" aria-labelledby="reject_pullRequestLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="reject_pullRequest">Reject Pull Request</h4>
+      </div>
+      <div class="modal-body">
+        <span>Enter commant:</span></br>
+        <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="reject_pull_request_comment_textarea" required></textarea>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="reject_pull_request_close">Close</button>
+        <button type="button" class="btn btn-primary" id="send_reject_pr">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Create new branch modal -->
+<div class="modal fade" id="createNewBranchModal" tabindex="-1" role="dialog" aria-labelledby="createNewBranchModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="createNewBranchModal_title">Create new branch</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="branch_name">Branch name:</label>
+          <input type="text" class="form-control" id="branch_name" placeholder="Branch name" required="true">
+        </div>
+        <div class="form-group">
+          <label for="branch_commit">Select commit you want the branch will point:</label>
+          <select class="form-control" id="branch_commit">
+          </select>
+        </div>
+        <div class="form-group" style="display: none;" id="remote_tracking_branch">
+          <label for="branch_remote">Select branch you want to tracking after:</label>
+          <select class="form-control" id="branch_remote">
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="branch_close">Close</button>
+        <button type="button" class="btn btn-primary" id="branch_create">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Create new file form modal -->
+<div class="modal fade" id="createNewFileModal" tabindex="-1" role="dialog" aria-labelledby="createNewFileModal" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title" id="createNewFileModal">Create new file</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="branch_name">Full file name <b>(include extension)</b>:</label>
+          <input type="text" class="form-control" id="new_file_name" placeholder="File name" required="true">
+        </div>
+        <div class="form-group">
+          <label for="branch_commit">Root folder:</label>
+          <input type="text" class="form-control" id="new_file_folder" required="true" disabled>
+        </div>
+        <div class="form-group">
+          <span>Enter content:</span></br>
+          <textarea class="form-control form-control-sm" style="resize:vertical;" rows="4" id="new_file_content" required></textarea>
+        </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="close_modal_new_file" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" id="create_new_file">Save changes</button>
       </div>
     </div>
   </div>

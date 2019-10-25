@@ -31,6 +31,7 @@ public class Blob extends BasicFile {
     }
 
     public Blob() {
+        this.content = "";
     }
 
     public Blob(MagitBlob blob, String pathToFile, Folder rootFolder) {

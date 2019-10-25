@@ -1,0 +1,70 @@
+<div class="container-fluid" id="single_pull_request_page">
+    <div class="row" style="margin: 10px 20px 0px 0px">
+        <div class="col-sm-4">
+            <button class="btn btn-primary mb-2" id="show_all_pull_requests">< Show all pull requests</button>
+        </div>
+        <div class="col-sm-4" style="text-align: center;">
+            <button class="btn btn-success mb-2" id="approve_pr">Approve Pull Request</button>
+        </div>
+        <div class="col-sm-4" style="text-align: right;">
+            <button class="btn btn-danger mb-2" data-toggle='modal' data-target='#reject_pullRequestModal'>Reject Pull Request</button>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+                <div class="panel-heading templatemo-position-relative">
+                    <h2 class="text-uppercase">Commit list</h2>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered" id="pr_commits-table">
+                        <colgroup>
+                          <col span="1" style="width: 5%;">
+                          <col span="1" style="width: 20%;">
+                          <col span="1" style="width: 20%;">
+                          <col span="1" style="width: 10%;">
+                          <col span="1" style="width: 10%;">
+                          <col span="1" style="width: 25%;">
+                        </colgroup>
+                        <thead>
+                            <tr style="font-weight: bold;">
+                                <td>No.</td>
+                                <td>SHA-1</td>
+                                <td>Comment</td>
+                                <td>Creation date</td>
+                                <td>Created by</td>
+                            </tr>
+                        </thead>
+                        <tbody id="commit-table-tbody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" id="commits_files_viewer" style="display:none;">
+        <div class="col-sm-6">
+            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+                <div class="panel-heading templatemo-position-relative">
+                    <h2 class="text-uppercase">Modified files</h2>
+                </div>
+                <div style="padding: 10px;">
+                    <p id="modified_files_list"></p>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default templatemo-content-widget white-bg no-padding templatemo-overflow-hidden">
+                <div class="panel-heading templatemo-position-relative">
+                    <h2 class="text-uppercase">File viewer</h2>
+                </div>
+                <div id="pr_textEditor" style="margin: 5px;" class="text-center">
+                    Choose file to view his content.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="pull_request_id" style="display: none;"></div>
+<!-- Repositories table row ends -->
+<script type="text/javascript" src="js/single-pull_request.js"></script>

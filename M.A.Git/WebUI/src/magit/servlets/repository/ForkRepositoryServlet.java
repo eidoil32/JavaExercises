@@ -1,4 +1,4 @@
-package magit.servlets;
+package magit.servlets.repository;
 
 import exceptions.RepositoryException;
 import magit.Magit;
@@ -37,7 +37,7 @@ public class ForkRepositoryServlet extends HttpServlet {
                             Settings.language.getString("USER_FORK_REPOSITORY_KEY"),
                             magit.getCurrentRepository().getName(),
                             Settings.language.getString("USER_MESSAGE_FORK"),
-                            new SimpleDateFormat(Settings.DATE_FORMAT).format(new Date()),
+                            new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(new Date()),
                             userRequest.getName()
                         );
                 Integer numOfRepositories = userRequest.countRepositories();
