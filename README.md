@@ -21,6 +21,7 @@ Show current working copy status, create branches and reset there point.
 Watch all commits in a tree view.
 Also, user can now clone a repository and with this option for the cloned repository 
 the user can push, pull and merge changes between those two repositories.
+[README](JAVAFX_README.pdf)
 ## Web application
 ![Screenshot](WEB_SCREENSHOT.jpg)
 ### Super cool M.A.Git
@@ -30,3 +31,4 @@ Merge, pull and push (branches) changes from forked repository and new feature i
 Pull requests.
 Also, for push branch, pull request and fork repository the owners will get a notification
 about those actions.
+[README](WEB_README.pdf)
