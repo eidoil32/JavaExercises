@@ -42,6 +42,7 @@ public class SinglePullRequestServlet extends HttpServlet {
                 commitsDetails.put(commit.getSHA_ONE(), commit.toJSON());
             }
             data.put(Settings.PR_ALL_COMMITS,new Gson().toJson(commitsDetails));
+            data.put(Settings.PR_STATUS, pullRequest.get(Settings.PR_STATUS));
             out.write(new Gson().toJson(data));
         } catch (RepositoryException | IOException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

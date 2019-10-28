@@ -563,10 +563,14 @@ function showCommit(sha_1, repository_id, user) {
 
 function pullRequestsCenter(data, repository, user) {
     const pullRequestsSize = Object.keys(data).length;
+    let counterAvailablePR = 0;
     try {
         if (pullRequestsSize > 0) {
             for (let i = 0; i < pullRequestsSize; i++) {
                 let pullRequest = jQuery.parseJSON(data[i]);
+                if (pullRequest.PR_STATUS === 'Waiting') {
+                    counterAvailablePR++;
+                }
                 const row = '<tr ' + addTagsForTR("pull_request_" + i, "") + '><td>' +
                     (parseInt(pullRequest.PR_ID) + 1) +
                     '</td><td>' +
@@ -579,6 +583,8 @@ function pullRequestsCenter(data, repository, user) {
                     pullRequest.PR_COMMENT +
                     '</td><td>' +
                     pullRequest.PR_DATE_CREATION +
+                    '</td><td>' +
+                    pullRequest.PR_STATUS +
                     '</td></tr>';
                 $('#pull_request_table tr:last').after(row);
 
@@ -587,7 +593,7 @@ function pullRequestsCenter(data, repository, user) {
                 });
             }
 
-            $("#repository_pull_requests").html("<a data-toggle='tab' href='#tabs-6'>Pull Requests <span class='badge badge-secondary'>" + pullRequestsSize + "</span></a>")
+            $("#repository_pull_requests").html("<a data-toggle='tab' href='#tabs-6'>Pull Requests <span class='badge badge-secondary'>" + counterAvailablePR + "</span></a>")
             $("#repository_pull_requests").css("display", "block");
         }
     } catch (error) {

@@ -38,7 +38,7 @@ public class RejectPullRequestServlet extends HttpServlet {
                     comment,
                     new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(new Date()),
                     user.getName());
-            user.removePullRequest(repository_id, pr_id);
+            user.updatePullRequest(repository_id, pr_id, Settings.PR_STATUS_REJECTED);
             response.getWriter().print(new Gson().toJson("DONE"));
         } catch (RepositoryException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

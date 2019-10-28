@@ -233,16 +233,17 @@ public class FileManager {
         return counter;
     }
 
-    public static void removeLineFromFile(String lineToRemove, File file) throws FileNotFoundException, IOException{
+    public static void updateLineInFile(String lineToRemove, String updatedLine, File file) throws FileNotFoundException, IOException {
         StringBuilder sb = new StringBuilder();
         try (Scanner sc = new Scanner(file)) {
             String currentLine;
-            while(sc.hasNext()){
+            while (sc.hasNext()) {
                 currentLine = sc.nextLine();
-                if(currentLine.equals(lineToRemove)){
-                    continue; //skips lineToRemove
+                if (currentLine.equals(lineToRemove)) {
+                    sb.append(updatedLine).append("\n");
+                } else {
+                    sb.append(currentLine).append("\n");
                 }
-                sb.append(currentLine).append("\n");
             }
         }
         //Delete File Content

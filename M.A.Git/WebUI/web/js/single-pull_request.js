@@ -136,6 +136,9 @@ $(function () {
 
         },
         success: function (data) {
+            if (data.PR_STATUS !== 'Waiting') {
+                $("#opened-pull-request").css('display','none');
+            }
             window.repo_ID = $("#repo_id").text();
             fetchCommits(data);
         }
@@ -146,6 +149,8 @@ $(function () {
         $("#pull_requests_outter_div").css('display', 'none');
         $('#pull_requests_inner_div').css('display', 'block');
     });
+
+
 
     $("#approve_pr").click(function () {
         sendApprovePR(window.pr_ID, $("#repo_id").text());

@@ -223,12 +223,16 @@ public class Settings {
             PR_COMMENT = "PR_COMMENT",
             PR_DATE_CREATION = "PR_DATE_CREATION",
             PR_REMOTE_REPOSITORY_ID = "PR_REMOTE_REPOSITORY_ID",
+            PR_STATUS = "PR_STATUS",
+            PR_STATUS_OPEN = "Waiting",
+            PR_STATUS_REJECTED = "Rejected",
+            PR_STATUS_APPROVED = "Approved",
             PR_LOCAL_REPOSITORY_ID = "PR_LOCAL_REPOSITORY_ID",
             PR_REQUEST_CREATOR = "PR_REQUEST_CREATOR";
 
     public static final String[]
             FORK_REPOSITORY = {Settings.language.getString("USER_FORK_REPOSITORY_KEY"),
-                    Settings.language.getString("USER_MESSAGE_FORK")},
+            Settings.language.getString("USER_MESSAGE_FORK")},
             PUSH_BRANCH = {Settings.language.getString("BRANCH_PUSHED_TO_REPOSITORY_KEY"),
                     Settings.language.getString("BRANCH_PUSHED_TO_REPOSITORY")};
 

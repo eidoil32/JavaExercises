@@ -123,12 +123,13 @@ public class User {
     public String readMessages() throws IOException {
         Map<Integer, Map<String, String>> messagesMap = new HashMap<>();
         int i = 0;
-        Scanner scanner = new Scanner(new File(String.format(Settings.USER_MESSAGES_CENTER, name)));
-        while (scanner.hasNextLine()) {
-            Type converter = new TypeToken<Map<String, String>>() {
-            }.getType();
-            Map<String, String> message = new HashMap<>(new Gson().fromJson(scanner.nextLine(), converter));
-            messagesMap.put(i++, message);
+        try (Scanner scanner = new Scanner(new File(String.format(Settings.USER_MESSAGES_CENTER, name)))) {
+            while (scanner.hasNextLine()) {
+                Type converter = new TypeToken<Map<String, String>>() {
+                }.getType();
+                Map<String, String> message = new HashMap<>(new Gson().fromJson(scanner.nextLine(), converter));
+                messagesMap.put(i++, message);
+            }
         }
 
         return new Gson().toJson(messagesMap);
@@ -153,14 +154,15 @@ public class User {
     public List<String> getPullRequests(String repository_id) throws IOException {
         List<String> results = new LinkedList<>();
 
-        Scanner scanner = new Scanner(new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
-        while (scanner.hasNextLine()) {
-            Type converter = new TypeToken<Map<String, String>>() {
-            }.getType();
-            String line = scanner.nextLine();
-            Map<String, String> pullRequest = new HashMap<>(new Gson().fromJson(line, converter));
-            if (pullRequest.get(Settings.PR_REMOTE_REPOSITORY_ID).equals(repository_id)) {
-                results.add(line);
+        try (Scanner scanner = new Scanner(new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)))) {
+            while (scanner.hasNextLine()) {
+                Type converter = new TypeToken<Map<String, String>>() {
+                }.getType();
+                String line = scanner.nextLine();
+                Map<String, String> pullRequest = new HashMap<>(new Gson().fromJson(line, converter));
+                if (pullRequest.get(Settings.PR_REMOTE_REPOSITORY_ID).equals(repository_id)) {
+                    results.add(line);
+                }
             }
         }
 
@@ -168,15 +170,16 @@ public class User {
     }
 
     public Map<String, String> getPullRequest(String repository_id, String pullRequest_id) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
-        while (scanner.hasNextLine()) {
-            Type converter = new TypeToken<Map<String, String>>() {
-            }.getType();
-            String line = scanner.nextLine();
-            Map<String, String> pullRequest = new HashMap<>(new Gson().fromJson(line, converter));
-            if (pullRequest.get(Settings.PR_REMOTE_REPOSITORY_ID).equals(repository_id)
-                    && pullRequest.get(Settings.PR_ID).equals(pullRequest_id)) {
-                return pullRequest;
+        try (Scanner scanner = new Scanner(new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)))) {
+            while (scanner.hasNextLine()) {
+                Type converter = new TypeToken<Map<String, String>>() {
+                }.getType();
+                String line = scanner.nextLine();
+                Map<String, String> pullRequest = new HashMap<>(new Gson().fromJson(line, converter));
+                if (pullRequest.get(Settings.PR_REMOTE_REPOSITORY_ID).equals(repository_id)
+                        && pullRequest.get(Settings.PR_ID).equals(pullRequest_id)) {
+                    return pullRequest;
+                }
             }
         }
 
@@ -192,9 +195,11 @@ public class User {
         return remote.getCurrentRepository().getCurrentPath().getName(i).toString();
     }
 
-    public void removePullRequest(String repository_id, String pr_id) throws IOException {
+    public void updatePullRequest(String repository_id, String pr_id, String newStatus) throws IOException {
         Map<String, String> pullRequest = getPullRequest(repository_id, pr_id);
         String request = new Gson().toJson(pullRequest);
-        FileManager.removeLineFromFile(request, new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
+        pullRequest.put(Settings.PR_STATUS, newStatus);
+        String updated = new Gson().toJson(pullRequest);
+        FileManager.updateLineInFile(request, updated, new File(String.format(Settings.USER_PULL_REQUEST_CENTER, name)));
     }
 }

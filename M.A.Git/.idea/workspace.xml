@@ -7,42 +7,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="862a0ac5-22e0-4f3b-9d3b-ab499dee4457" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/general/ClearNotificationsServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/RejectPullRequestServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/ShowPRFileContentServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/SingleCommitPRChangesServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/PullHeadServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Blob.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Blob.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/BlobMap.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Engine/src/magit/Magit.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/magit/Magit.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/usermanager/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/usermanager/User.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/Engine/src/utils/FileManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FXUi/src/controller/screen/main/CommitsDetailsController.java" beforeDir="false" afterPath="$PROJECT_DIR$/FXUi/src/controller/screen/main/CommitsDetailsController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/Languages/src/languages/lang_he_IL.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/Miscellaneous/src/settings/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/WebUI.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/ExecutePullRequestServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/ExecutePullRequestServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/PullRequestCreatorServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/PullRequestCreatorServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/RejectPullRequestServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/RejectPullRequestServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/SinglePullRequestServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/pullrequests/SinglePullRequestServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/CreateNewBranchServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/CreateNewBranchServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/PushBranchServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/src/magit/servlets/repository/PushBranchServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/addons/modals.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/addons/modals.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/index.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/index.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/js/single-commit.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/single-commit.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/single-pull_request.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/single-pull_request.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/js/single-repository.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebUI/web/single-commit.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/single-commit.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/single-pullRequest.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/single-pullRequest.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebUI/web/single-repository.html" beforeDir="false" afterPath="$PROJECT_DIR$/WebUI/web/single-repository.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Blob.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Blob.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/BlobMap.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/BlobMap.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/magit/Magit.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Engine/utils/FileManager.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Languages/languages/lang_he_IL.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/Miscellaneous/settings/Settings.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -135,12 +114,9 @@
     <property name="settings.editor.selected.configurable" value="Settings.JavaScript" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resources\img" />
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resource" />
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\external" />
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\controller\resource" />
-      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\Miscellaneous\src\controller" />
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="magit.utils" />
+      <recent name="controller" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\Projects\Java\JavaExercises\M.A.Git\external" />
@@ -156,9 +132,12 @@
       <recent name="magit.servlets" />
       <recent name="magit.start" />
     </key>
-    <key name="CreateClassDialog.RecentsKey">
-      <recent name="magit.utils" />
-      <recent name="controller" />
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resources\img" />
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\magit\resource" />
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\external" />
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\FXUi\src\controller\resource" />
+      <recent name="D:\Projects\Java\JavaExercises\M.A.Git\Miscellaneous\src\controller" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -389,7 +368,12 @@
       <workItem from="1571571367064" duration="29471000" />
       <workItem from="1571818553515" duration="24608000" />
       <workItem from="1571899328609" duration="25254000" />
-      <workItem from="1571989566715" duration="3836000" />
+      <workItem from="1571989566715" duration="4728000" />
+      <workItem from="1572001220016" duration="29000" />
+      <workItem from="1572169205506" duration="813000" />
+      <workItem from="1572173286884" duration="10981000" />
+      <workItem from="1572245667853" duration="4072000" />
+      <workItem from="1572274794576" duration="2604000" />
     </task>
     <task id="LOCAL-00001" summary="Split to 2 modules (Ui and Engine)">
       <created>1564482903941</created>
@@ -587,7 +571,14 @@
       <option name="project" value="LOCAL" />
       <updated>1571899700730</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="- Pull request is not working, When user creating an PR the remote repository owner will see an notification about it and can now watching all pull request details (include all commits and files).&#10;- bug fix">
+      <created>1571993974408</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1571993974408</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -622,7 +613,6 @@
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
-    <MESSAGE value="Show all commit that execute in current active branch" />
     <MESSAGE value="Starting reading repository from XML" />
     <MESSAGE value="Finished: User now can read and load repository from XML file." />
     <MESSAGE value="Some bug-fix (loading exist repository has missing data)&#10;Adding option to export repository to XML file,&#10;Adding option to change branch's pointed commit." />
@@ -647,13 +637,14 @@
     <MESSAGE value="Create single-repository page, can watch branch list, commit list and do checkout.&#10;for each commit user can watch the files that saved in the selected commit." />
     <MESSAGE value="Add option to commit, merge and fork repository.&#10;when user fork repository the owner will get an notification about it." />
     <MESSAGE value="Adding option to create branch, push branch to remote repository and start working on Pull request feature." />
-    <option name="LAST_COMMIT_MESSAGE" value="Adding option to create branch, push branch to remote repository and start working on Pull request feature." />
+    <MESSAGE value="- Pull request is not working, When user creating an PR the remote repository owner will see an notification about it and can now watching all pull request details (include all commits and files).&#10;- bug fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Pull request is not working, When user creating an PR the remote repository owner will see an notification about it and can now watching all pull request details (include all commits and files).&#10;- bug fix" />
   </component>
   <component name="XDebuggerManager">
     <watches-manager>
       <configuration name="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
-        <watch expression="remote.getCurrentBranch().getName().equals()" language="JAVA" />
-        <watch expression="new File(trackingAfter).getName()" language="JAVA" custom="java.io.File" />
+        <watch expression="remote.getCurrentBranch().getName().equals()" />
+        <watch expression="new File(trackingAfter).getName()" custom="java.io.File" />
       </configuration>
     </watches-manager>
   </component>

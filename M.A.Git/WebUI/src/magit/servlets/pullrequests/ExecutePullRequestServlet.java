@@ -58,7 +58,7 @@ public class ExecutePullRequestServlet extends HttpServlet {
                     Settings.language.getString("USER_PULL_REQUEST_APPROVED"),
                     new SimpleDateFormat(Settings.WEB_DATE_FORMAT).format(new Date()),
                     user.getName());
-            user.removePullRequest(repository_id, pr_id);
+            user.updatePullRequest(repository_id, pr_id, Settings.PR_STATUS_APPROVED);
             response.getWriter().print(new Gson().toJson("DONE"));
         } catch (RepositoryException | MyFileException e) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);

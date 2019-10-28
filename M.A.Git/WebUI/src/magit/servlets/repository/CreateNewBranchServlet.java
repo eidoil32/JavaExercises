@@ -27,7 +27,7 @@ public class CreateNewBranchServlet extends HttpServlet {
 
         try {
             Magit magit = WebUI.getUser(request,username).getRepository(Integer.parseInt(repository_id));
-            if (!trackingAfter.equals("none")) {
+            if (!trackingAfter.equals("none") && !trackingAfter.equals("")) {
                 String remoteName = new File(trackingAfter).getName();
 
                 magit.tryCreateNewRemoteTrackingBranch(remoteName, new Branch(remoteName));

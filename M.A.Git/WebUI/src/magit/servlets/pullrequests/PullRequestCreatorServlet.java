@@ -43,7 +43,7 @@ public class PullRequestCreatorServlet extends HttpServlet {
             data.put(Settings.PR_REMOTE_REPOSITORY_ID,
                     user.getRepositoryPathParameter(magit.getRemoteRepository(), "repositories").replaceFirst(Settings.SINGLE_REPOSITORY_PREFIX,""));
             data.put(Settings.PR_LOCAL_REPOSITORY_ID, repository_id);
-
+            data.put(Settings.PR_STATUS, Settings.PR_STATUS_OPEN);
             User remoteOwner = WebUI.getUser(request, user.getRepositoryPathParameter(magit.getRemoteRepository(), "users"));
             remoteOwner.createPullRequest(data);
             remoteOwner.leaveMessageToMe(
